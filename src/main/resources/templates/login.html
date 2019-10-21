@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login Page</title>
+    <style>
+.button{
+    border: none;
+    color: white;
+    padding: 16px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    margin: 4px 2px;
+    transition-duration: 0.3s;
+    cursor: pointer;
+}
+.button1{
+    background-color: white;
+    color: black;
+    border: 2px solid black;
+}
+.button1:hover {
+    background-color: black;
+    color: white;
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+.button2{
+    background-color: white;
+    border: 2px solid black;
+}
+.button2:hover {
+    background-color: black;
+    color: white;
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+.title {
+    color: red;
+}
+    </style>
+    <!-- Bootstrap library -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="Container my-auto">
+    <div class ="col-sm-4"></div>
+    <div class="col-sm-4">
+        <center><h3><span class="title">Log</span><span>in</span></h3></center>
+        <form th:action="@{/login}" method="POST" method="post">
+            <div class="form-group">
+                <label for="email">Email address:</label>
+                <input type="email" class="form-control" id="email">
+            </div>
+            <div class="form-group">
+                <label for="passwd">Password:</label>
+                <input type="password" class="form-control" id="passwd">
+            </div>
+            <div class="checkbox">
+                <label><input type="checkbox"> Remember me</label>
+            </div>
+            <div>
+                <span><button type="submit" class="button1" value="login" th:text="Login">Login</button></span>
+                <span><button class="button1" type="reset" value="reset" th:text="Clear">Clear</button></span>
+            </div>
+
+        </form>
+        <div>
+            <br>
+            &nbsp&nbsp New User? <button class="button2" value="registration" th:text="Sign up">Sign up</button>
+        </div>
+    </div>
+    <div class ="col-sm-4"></div>
+</div>
+
+</body>
+</html>

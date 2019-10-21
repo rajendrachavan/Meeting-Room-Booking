@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http:www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <!-- Bootstrap library -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+</head>
+<body><div class="container">
+    <h2>Admin Console</h2>
+    <table class="table table-hover" id="users">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Firstname</th>
+            <th>Lastname</th>
+            <th>Gender</th>
+            <th>Email</th>
+            <th>Mobile No</th>
+            <th>Department</th>
+            <th>Role</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user: ${users}">
+            <td th:text="${user.id}">1</td>
+            <td th:text="${user.firstName}">Test</td>
+            <td th:text="${user.lastName}">Class</td>
+            <td th:text="${user.gender}">male</td>
+            <td th:text="${user.email}">test@example.com</td>
+            <td th:text="${user.mobileno}">123456789</td>
+            <td th:text="${user.department}">testdept</td>
+            <td th:text="${user.role}">testAdmin</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
