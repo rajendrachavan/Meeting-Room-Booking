@@ -1,6 +1,6 @@
 package neo.spring5.MeetingRoomBooking.services;
 
-import org.apache.catalina.User;
+import neo.spring5.MeetingRoomBooking.models.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,4 +13,5 @@ public interface UserService {
     List<User> findAll();
     Optional<User> findById(Long id);
     void deleteById(Long id);
+    User findByEmail(String email);
 }

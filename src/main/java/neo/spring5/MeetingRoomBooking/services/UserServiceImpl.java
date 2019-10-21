@@ -1,7 +1,7 @@
 package neo.spring5.MeetingRoomBooking.services;
 
 import neo.spring5.MeetingRoomBooking.repositories.UserRepository;
-import org.apache.catalina.User;
+import neo.spring5.MeetingRoomBooking.models.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,5 +34,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteById(Long id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 }
