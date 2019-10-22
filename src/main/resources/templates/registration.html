@@ -53,7 +53,7 @@
     <div class="col-sm-6">
         <center><h3><span class="title">Regist</span><span>ration</span></h3></center>
         <form autocomplete="off" action="#" th:action="@{/registration}"
-              th:object="${user}" method="post">
+              th:object="${user}" role="form" method="post">
             <div class="form-group">
                 <label>First Name:</label>
                 <input type="text" class="form-control" th:field="*{firstName}" placeholder="Enter First Name" autofocus/>
@@ -107,8 +107,11 @@
             </div>
         </form>
         <div>
-            <br>
-            &nbsp&nbsp Already a User? <button class="button2" >Sign in</button>
+            <form th:action="@{/}" method="get">
+                <br>
+                &nbsp&nbsp Already a User? <button class="button2" type="submit">Sign in</button>
+            </form>
+
         </div>
         <span th:utext="${successMessage}"></span>
     </div>

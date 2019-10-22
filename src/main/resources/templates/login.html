@@ -51,7 +51,7 @@
     <div class ="col-sm-4"></div>
     <div class="col-sm-4">
         <center><h3><span class="title">Log</span><span>in</span></h3></center>
-        <form th:action="@{/login}" method="POST" method="post">
+        <form th:action="@{/login}" method="post">
             <div class="form-group">
                 <label for="email">Email address:</label>
                 <input type="email" class="form-control" id="email">
@@ -70,8 +70,10 @@
 
         </form>
         <div>
-            <br>
-            &nbsp&nbsp New User? <button class="button2" value="registration" th:text="Sign up">Sign up</button>
+            <form th:action="@{/registration}" method="get">
+                <br>
+                &nbsp&nbsp New User? <button class="button2" type="submit">Sign up</button>
+            </form>
         </div>
     </div>
     <div class ="col-sm-4"></div>
