@@ -31,7 +31,7 @@ public class IndexController {
     }
 
     @RequestMapping(value = {"/login"}, method = RequestMethod.GET)
-    public ModelAndView loginpage(Model model){
+    public ModelAndView loginpage(){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("login");
         return modelAndView;
@@ -69,6 +69,13 @@ public class IndexController {
         modelAndView.addObject("userName", "Welcome " + user.getFirstName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
         modelAndView.addObject("adminMessage","Content Available Only for Users with Admin Role");
         modelAndView.setViewName("dashboard");
+        return modelAndView;
+    }
+
+    @RequestMapping(value = {"/accessdeniedpage"}, method = RequestMethod.GET)
+    public ModelAndView accessDenied(){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("accessdeniedpage");
         return modelAndView;
     }
 }
