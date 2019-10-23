@@ -17,28 +17,18 @@ import javax.validation.Valid;
 @Controller
 public class IndexController {
 
-    private final UserService userService;
+    @Autowired
+    private UserService userService;
 
-    public IndexController(UserService userService) {
-        this.userService = userService;
-    }
-
-    @RequestMapping(value = {"/","/homepage"}, method = RequestMethod.GET)
-    public ModelAndView homepage(Model model){
+    @RequestMapping(value = {"/","/login"}, method = RequestMethod.GET)
+    public ModelAndView login(){
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("homepage");
-        return modelAndView;
-    }
-
-    @RequestMapping(value = {"/login"}, method = RequestMethod.GET)
-    public ModelAndView loginpage(){
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("login");
+        modelAndView.setViewName("/login");
         return modelAndView;
     }
 
     @RequestMapping(value = {"/registration"}, method = RequestMethod.GET)
-    public ModelAndView registrationpage(){
+    public ModelAndView registration(){
         ModelAndView modelAndView = new ModelAndView();
         User user = new User();
         modelAndView.addObject("user", user);

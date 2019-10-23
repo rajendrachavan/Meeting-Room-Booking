@@ -50,6 +50,7 @@
 <body>
 <div class="Container">
     <div class ="col-sm-3"></div>
+
     <div class="col-sm-6">
         <center><h3><span class="title">Regist</span><span>ration</span></h3></center>
         <form autocomplete="off" action="#" th:action="@{/registration}"
@@ -107,7 +108,7 @@
             </div>
         </form>
         <div>
-            <form th:action="@{/}" method="get">
+            <form th:action="@{/login}" method="get">
                 <br>
                 &nbsp&nbsp Already a User? <button class="button2" type="submit">Sign in</button>
             </form>
