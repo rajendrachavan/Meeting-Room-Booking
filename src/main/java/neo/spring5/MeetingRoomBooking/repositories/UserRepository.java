@@ -4,8 +4,7 @@ import neo.spring5.MeetingRoomBooking.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository
+@Repository("userRepository")
 public interface UserRepository extends JpaRepository<User, Long> {
-
-    User findUserByEmail(String email);
+	 User findByEmail(String email);
 }
