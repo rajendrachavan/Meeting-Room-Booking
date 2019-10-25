@@ -6,30 +6,70 @@
 <title>Admin Page</title>
 <link rel="stylesheet" type="text/css" th:href="@{/css/home.css}" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 
 <body>
 	<div class="container">
-	
-		<form th:action="@{/logout}" method="get">
-			<button class="btn btn-md btn-danger btn-block" name="registration"
-				type="Submit">Logout</button>
-		</form>    
-		
 		<div class="panel-group" style="margin-top:40px">
 			<div class="panel panel-primary">
 				<div class="panel-heading">
 					<span th:utext="${userName}"></span>
 				</div>
 				<div class="panel-body">
-					<img th:src="@{/images/beer.jpg}" class="img-responsive center-block" width="400" height="400" alt="Beer" /> 
+					<h3>Admin Console</h3>
+					<table class="table table-hover" id="users">
+						<thead>
+						<tr>
+							<th>ID</th>
+							<th>Firstname</th>
+							<th>Lastname</th>
+							<th>Gender</th>
+							<th>Email</th>
+							<th>Mobile No</th>
+							<th>Department</th>
+							<th>Status</th>
+							<th>Role</th>
+							<th colspan="2">Operations</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr th:each="user: ${users}">
+							<td th:text="${user.id}">1</td>
+							<td th:text="${user.firstName}">Test</td>
+							<td th:text="${user.lastName}">Class</td>
+							<td th:text="${user.gender}">male</td>
+							<td th:text="${user.email}">test@example.com</td>
+							<td th:text="${user.mobileno}">123456789</td>
+							<td th:text="${user.department}">testdept</td>
+							<td th:text="${user.active}">1</td>
+							<td th:text="${user.role}">TestAdmin</td>
+							<td>
+								<a th:href="@{/edit/{id}(id=${user.id})}"
+								   class="btn btn-primary">
+									<i class="fas fa-user-edit ml-2"></i>
+								</a>
+							</td>
+							<td>
+								<a th:href="@{/delete/{id}(id=${user.id})}"
+								   class="btn btn-primary">
+									<i class="fas fa-user-times ml-2"></i>
+								</a>
+							</td>
+						</tr>
+						</tbody>
+					</table>
 				</div>
 				<p class="admin-message-text text-center" th:utext="${adminMessage}"></p>
 			</div>
 		</div>
-		
+		<form th:action="@{/logout}" method="get">
+			<button class="button2" name="logout"
+					type="Submit">Logout</button>
+		</form>
+
 	</div>
 </body>
 </html>
