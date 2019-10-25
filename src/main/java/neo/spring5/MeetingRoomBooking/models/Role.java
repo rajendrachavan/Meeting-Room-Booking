@@ -1,40 +1,17 @@
 package neo.spring5.MeetingRoomBooking.models;
 
+import lombok.Data;
 import javax.persistence.*;
-import java.util.List;
 
+@Data
 @Entity
+@Table(name = "role")
 public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="role_id")
     private Long id;
+    @Column(name="role")
     private String roleType;
-
-    @OneToMany(mappedBy = "role")
-    private List<User> users;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getRoleType() {
-        return roleType;
-    }
-
-    public void setRoleType(String roleType) {
-        this.roleType = roleType;
-    }
-
-    public List<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<User> users) {
-        this.users = users;
-    }
 }

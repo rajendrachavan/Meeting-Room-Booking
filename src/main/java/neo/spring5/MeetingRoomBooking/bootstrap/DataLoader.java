@@ -37,11 +37,22 @@ public class DataLoader implements CommandLineRunner {
         user.setEmail("test@gmail.com");
         user.setMobileno("0987654321");
         user.setDepartment("Java");
-        user.setPasswd(new BCryptPasswordEncoder().encode("incorrect"));
+        user.setPassword(new BCryptPasswordEncoder().encode("incorrect"));
         user.setRole(role);
 
-
         userRepository.save(user);
+
+        User user1 = new User();
+        user1.setFirstName("test1");
+        user1.setLastName("testtest1");
+        user1.setGender("Female");
+        user1.setEmail("test1@gmail.com");
+        user1.setMobileno("0987654321");
+        user1.setDepartment("Java");
+        user1.setPassword(new BCryptPasswordEncoder().encode("correct"));
+        user1.setRole(role1);
+
+        userRepository.save(user1);
         System.out.println("-----------------initial-User-Added-----------------");
 
     }
