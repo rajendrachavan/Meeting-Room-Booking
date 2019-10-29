@@ -8,7 +8,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class DataLoader implements CommandLineRunner {
 
     private final UserRepository userRepository;
@@ -23,23 +23,28 @@ public class DataLoader implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         Role role = new Role();
-        role.setRoleType("ADMIN");
-
-        roleRepository.save(role);
+        role.setId(1L);
+        role.setRole("ADMIN");
 
         User user = new User();
-        user.setFirstName("test");
-        user.setLastName("testtest");
-        user.setGender("Male");
-        user.setEmail("test@gmail.com");
-        user.setMobileno("0987654321");
-        user.setDepartment("Java");
-        user.setPasswd(new BCryptPasswordEncoder().encode("incorrect"));
+        user.setId(1L);
+        user.setFirstName("test1");
+        user.setLastName("test");
+        user.setEmail("test@test.com");
+        user.setPassword(new BCryptPasswordEncoder().encode("correct"));
+        user.setGender("Others");
+        user.setMobileNo("987456321");
+        user.setDepartment("IOS");
+        user.setActive(1);
         user.setRole(role);
 
-
         userRepository.save(user);
-        System.out.println("-----------------initial-User-Added-----------------");
+        System.out.println("-----------------initial-Users-Added-----------------");
 
+        Role role1 = new Role();
+        role1.setId(6L);
+        role1.setRole("USER");
+        roleRepository.save(role1);
+        System.out.println("-----------------initial-Roles-Added-----------------");
     }
 }

@@ -1,93 +1,47 @@
 package neo.spring5.MeetingRoomBooking.models;
 
 import javax.persistence.*;
+import lombok.Data;
+import org.hibernate.validator.constraints.Length;
+import org.springframework.data.annotation.Transient;
 
+@Data
 @Entity
+@Table(name = "user")
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String firstName;
-    private String lastName;
-    private String gender;
-    private String email;
-    private String mobileno;
-    private String department;
-    private String passwd;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "user_id")
+	private Long id;
 
-    @ManyToOne
-    private Role role;
+	@Column(name = "email")
+	private String email;
 
-    public Long getId() {
-        return id;
-    }
+	@Column(name = "password")
+	@Length(min = 5, message = "*Your password must have at least 5 characters")
+	@Transient
+	private String password;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	@Column(name = "first_name")
+	private String firstName;
 
-    public String getFirstName() {
-        return firstName;
-    }
+	@Column(name = "last_name")
+	private String lastName;
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+	@Column(name = "gender")
+	private String gender;
 
-    public String getLastName() {
-        return lastName;
-    }
+	@Column(name = "mobile_no")
+	private String mobileNo;
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
+	@Column(name = "department")
+	private String department;
 
-    public String getGender() {
-        return gender;
-    }
+	@Column(name = "active")
+	private int active;
 
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
+	@ManyToOne(cascade = CascadeType.ALL)
+	private Role role;
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getMobileno() {
-        return mobileno;
-    }
-
-    public void setMobileno(String mobileno) {
-        this.mobileno = mobileno;
-    }
-
-    public String getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(String department) {
-        this.department = department;
-    }
-
-    public String getPasswd() {
-        return passwd;
-    }
-
-    public void setPasswd(String passwd) {
-        this.passwd = passwd;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
 }
