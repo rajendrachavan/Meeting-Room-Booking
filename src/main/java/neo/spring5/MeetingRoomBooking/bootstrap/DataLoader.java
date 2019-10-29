@@ -7,7 +7,8 @@ import neo.spring5.MeetingRoomBooking.repositories.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
-@Component
+
+//@Component
 public class DataLoader implements CommandLineRunner {
 
     private final UserRepository userRepository;
@@ -24,13 +25,6 @@ public class DataLoader implements CommandLineRunner {
         Role role = new Role();
         role.setId(1L);
         role.setRole("ADMIN");
-        roleRepository.save(role);
-
-        Role role1 = new Role();
-        role.setId(6L);
-        role1.setRole("USER");
-        roleRepository.save(role1);
-        System.out.println("-----------------initial-Roles-Added-----------------");
 
         User user = new User();
         user.setId(1L);
@@ -47,5 +41,10 @@ public class DataLoader implements CommandLineRunner {
         userRepository.save(user);
         System.out.println("-----------------initial-Users-Added-----------------");
 
+        Role role1 = new Role();
+        role1.setId(6L);
+        role1.setRole("USER");
+        roleRepository.save(role1);
+        System.out.println("-----------------initial-Roles-Added-----------------");
     }
 }
