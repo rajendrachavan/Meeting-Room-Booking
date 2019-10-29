@@ -23,11 +23,11 @@ public class DataLoader implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         Role role = new Role();
-        role.setId(1L);
+        //role.setId(1L);
         role.setRole("ADMIN");
 
         User user = new User();
-        user.setId(1L);
+        //user.setId(1L);
         user.setFirstName("test1");
         user.setLastName("test");
         user.setEmail("test@test.com");

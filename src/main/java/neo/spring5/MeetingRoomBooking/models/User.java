@@ -1,17 +1,20 @@
 package neo.spring5.MeetingRoomBooking.models;
 
 import javax.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.Transient;
 
-@Data
+@Getter
+@Setter
+
 @Entity
 @Table(name = "user")
 public class User {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "user_id")
 	private Long id;
 
@@ -41,7 +44,22 @@ public class User {
 	@Column(name = "active")
 	private int active;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.PERSIST)
 	private Role role;
 
+	@Override
+	public String toString() {
+		return "User{" +
+				"id=" + id +
+				", email='" + email + '\'' +
+				", password='" + password + '\'' +
+				", firstName='" + firstName + '\'' +
+				", lastName='" + lastName + '\'' +
+				", gender='" + gender + '\'' +
+				", mobileNo='" + mobileNo + '\'' +
+				", department='" + department + '\'' +
+				", active=" + active +
+				", role=" + role +
+				'}';
+	}
 }

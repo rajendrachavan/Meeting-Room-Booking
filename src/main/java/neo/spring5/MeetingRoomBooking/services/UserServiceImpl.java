@@ -3,6 +3,7 @@ package neo.spring5.MeetingRoomBooking.services;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 import neo.spring5.MeetingRoomBooking.models.Role;
 import neo.spring5.MeetingRoomBooking.models.User;
@@ -31,7 +32,7 @@ public class UserServiceImpl implements UserService{
 	public void saveUser(User user) {
 		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user.setActive(1);
-        Role userRole = roleRepository.findByRole("USER");
+        Role userRole = roleRepository.findByRole("USER").orElse(null);
         user.setRole(userRole);
 		userRepository.save(user);
 	}
@@ -43,13 +44,18 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public User findById(Long id) {
-		User user = userRepository.findById(id).get();
+	public Optional<User> findById(Long id) {
+		Optional<User> user = userRepository.findById(id);
 		return user;
 	}
 
 	@Override
 	public void deleteById(Long id) {
 		userRepository.deleteById(id);
+	}
+
+	@Override
+	public void editSave(User user) {
+		userRepository.save(user);
 	}
 }

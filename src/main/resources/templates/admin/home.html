@@ -4,7 +4,7 @@
 
 <head>
 <title>Admin Page</title>
-<link rel="stylesheet" type="text/css" th:href="@{/css/home.css}" />
+<link rel="stylesheet" type="text/css" th:href="@{/css/design.css}" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -47,13 +47,13 @@
 							<td th:text="${user.active}">1</td>
 							<td th:text="${user.Role.role}">TestAdmin</td>
 							<td>
-								<a th:href="@{/edit/{id}(id=${user.id})}"
+								<a th:href="@{/admin/update/{id}(id=${user.id})}"
 								   class="btn btn-primary">
 									<i class="fas fa-user-edit ml-2"></i>
 								</a>
 							</td>
 							<td>
-								<a th:href="@{/delete/{id}(id=${user.id})}"
+								<a th:href="@{/admin/delete/{id}(id=${user.id})}"
 								   class="btn btn-primary">
 									<i class="fas fa-user-times ml-2"></i>
 								</a>
@@ -62,7 +62,7 @@
 						</tbody>
 					</table>
 				</div>
-				<p class="admin-message-text text-center" th:utext="${adminMessage}"></p>
+				<p class="text-center" th:utext="${successMessage}"></p>
 			</div>
 		</div>
 		<form th:action="@{/logout}" method="get">
