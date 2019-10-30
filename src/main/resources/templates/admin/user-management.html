@@ -18,6 +18,12 @@
 				<div class="panel-heading">
 					<h4>Admin Console</h4>
 					<span th:utext="${userName}"></span>
+					<div align="right">
+						<form th:action="@{/logout}" method="get">
+							<button class="button2" name="logout"
+									type="Submit">Logout</button>
+						</form>
+					</div>
 				</div>
 				<div class="panel-body">
 					<table class="table table-hover" id="users">
@@ -65,11 +71,6 @@
 				<p class="text-center" th:utext="${successMessage}"></p>
 			</div>
 		</div>
-		<form th:action="@{/logout}" method="get">
-			<button class="button2" name="logout"
-					type="Submit">Logout</button>
-		</form>
-
 	</div>
 </body>
 </html>

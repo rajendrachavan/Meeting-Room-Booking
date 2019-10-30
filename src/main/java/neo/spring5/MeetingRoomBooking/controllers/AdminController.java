@@ -26,15 +26,14 @@ public class AdminController {
     @Autowired
     private RoleRepository roleRepository;
 
-    @RequestMapping(value="/home", method = RequestMethod.GET)
-    public ModelAndView home(){
+    @RequestMapping(value="/user-management", method = RequestMethod.GET)
+    public ModelAndView userManagement(){
         ModelAndView modelAndView = new ModelAndView();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
         modelAndView.addObject("userName", "Welcome " + user.getFirstName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
-        modelAndView.addObject("adminMessage","Content Available Only for Users with Admin Role");
         modelAndView.addObject("users", userService.findAll());
-        modelAndView.setViewName("admin/home");
+        modelAndView.setViewName("admin/user-management");
         return modelAndView;
     }
 
@@ -59,11 +58,12 @@ public class AdminController {
                                  @RequestParam(name = "role") Long role,
                                  @Valid @ModelAttribute("user") User user){
         ModelAndView modelAndView = new ModelAndView();
+        User userDataDB = userService.findById(id).orElse(null);
         Role role1 = roleRepository.findById(role).orElse(null);
         user.setFirstName(user.getFirstName());
         user.setLastName(user.getLastName());
         user.setEmail(user.getEmail());
-        user.setPassword(user.getPassword());
+        user.setPassword(userDataDB.getPassword());
         user.setGender(user.getGender());
         user.setMobileNo(user.getMobileNo());
         user.setDepartment(user.getDepartment());
@@ -73,7 +73,7 @@ public class AdminController {
         modelAndView.addObject("successMessage", "User has been Updated successfully");
         modelAndView.addObject("user", user);
         System.out.println(user);
-        modelAndView.setViewName("redirect:/admin/home");
+        modelAndView.setViewName("redirect:/admin/user-management");
         return modelAndView;
     }
 
@@ -82,7 +82,7 @@ public class AdminController {
         ModelAndView modelAndView = new ModelAndView();
         userService.deleteById(id);
         modelAndView.addObject("successMessage", "User Deleted Successfully.");
-        modelAndView.setViewName("redirect:/admin/home");
+        modelAndView.setViewName("redirect:/admin/user-management");
         return modelAndView;
     }
 }

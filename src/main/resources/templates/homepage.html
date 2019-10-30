@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Homepage</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/design.css}" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+    <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <h3><span th:utext="${homepage}"></span></h3>
+
+    <div th:switch="${role}">
+        <div th:case="ADMIN">
+            <div class="container">
+                <div class="panel-group" style="margin-top:40px">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h4>Admin Console</h4>
+                            <span th:utext="${userName}"></span>
+                            <div align="right">
+                                <form th:action="@{/logout}" method="get">
+                                    <button class="button2" name="logout"
+                                            type="Submit">Logout</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <table class="table table-hover">
+                                <tbody>
+                                    <tr><td>
+                                        <form th:action="@{/admin/user-management}" method="get">
+                                            <button class="button2" type="submit">User Management</button>
+                                        </form>
+                                    </td></tr>
+                                    <tr><td>
+                                        <form th:action="@{/admin/meeting-room-details}" method="get">
+                                            <button class="button2" type="submit">Meeting-Room Details</button>
+                                        </form>
+                                    </td></tr>
+                                    <tr><td>
+                                        <form th:action="@{/admin/booking-requests}" method="get">
+                                            <button class="button2" type="submit">Booking Requests</button>
+                                        </form>
+                                    </td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div th:case="USER">
+            <div class="container">
+                <div class="panel-group" style="margin-top:40px">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h4>User Console</h4>
+                            <span th:utext="${userName}"></span>
+                            <div align="right">
+                                <form th:action="@{/logout}" method="get">
+                                    <button class="button2" name="logout"
+                                            type="Submit">Logout</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <table class="table table-hover">
+                                <tbody>
+                                <tr><td>
+                                    <form th:action="@{/user/user-management}" method="get">
+                                        <button class="button2" type="submit">User Management</button>
+                                    </form>
+                                </td></tr>
+                                <tr><td>
+                                    <form th:action="@{/user/meeting-room-details}" method="get">
+                                        <button class="button2" type="submit">Meeting-Room Details</button>
+                                    </form>
+                                </td></tr>
+                                <tr><td>
+                                    <form th:action="@{/user/booking-room}" method="get">
+                                        <button class="button2" type="submit">Booking Requests</button>
+                                    </form>
+                                </td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p th:case="*">User is some other thing</p>
+    </div>
+</body>
+</html>

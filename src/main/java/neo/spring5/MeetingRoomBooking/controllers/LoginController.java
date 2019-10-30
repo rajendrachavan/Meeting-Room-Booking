@@ -2,13 +2,16 @@ package neo.spring5.MeetingRoomBooking.controllers;
 
 import javax.validation.Valid;
 
+import neo.spring5.MeetingRoomBooking.models.Role;
 import neo.spring5.MeetingRoomBooking.models.User;
+import neo.spring5.MeetingRoomBooking.repositories.RoleRepository;
 import neo.spring5.MeetingRoomBooking.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 
@@ -17,6 +20,9 @@ public class LoginController {
 	
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private RoleRepository roleRepository;
 
 	@RequestMapping(value={"/", "/login"}, method = RequestMethod.GET)
 	public ModelAndView login(){
@@ -61,6 +67,18 @@ public class LoginController {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.addObject("accessDeniedMessage", "Access Denied.");
 		modelAndView.setViewName("access-denied");
+		return modelAndView;
+	}
+
+	@RequestMapping(value = "/homepage", method = RequestMethod.GET)
+	public ModelAndView homepage(){
+		ModelAndView modelAndView = new ModelAndView();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = userService.findUserByEmail(auth.getName());
+		modelAndView.addObject("role", user.getRole().getRole());
+		modelAndView.addObject("userName", "Welcome " + user.getFirstName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
+		modelAndView.addObject("homepage", "Homepage under development.");
+		modelAndView.setViewName("homepage");
 		return modelAndView;
 	}
 }
