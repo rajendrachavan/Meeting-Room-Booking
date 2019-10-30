@@ -11,8 +11,6 @@
     <script	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <h3><span th:utext="${homepage}"></span></h3>
-
     <div th:switch="${role}">
         <div th:case="ADMIN">
             <div class="container">
@@ -37,8 +35,8 @@
                                         </form>
                                     </td></tr>
                                     <tr><td>
-                                        <form th:action="@{/admin/meeting-room-details}" method="get">
-                                            <button class="button2" type="submit">Meeting-Room Details</button>
+                                        <form th:action="@{/meeting-room-details}" method="get">
+                                            <button class="button2" type="submit">Meeting Room Details</button>
                                         </form>
                                     </td></tr>
                                     <tr><td>
@@ -71,13 +69,13 @@
                             <table class="table table-hover">
                                 <tbody>
                                 <tr><td>
-                                    <form th:action="@{/user/user-management}" method="get">
-                                        <button class="button2" type="submit">User Management</button>
+                                    <form th:action="@{/user/user-profile}" method="get">
+                                        <button class="button2" type="submit">User Profile</button>
                                     </form>
                                 </td></tr>
                                 <tr><td>
-                                    <form th:action="@{/user/meeting-room-details}" method="get">
-                                        <button class="button2" type="submit">Meeting-Room Details</button>
+                                    <form th:action="@{/meeting-room-details}" method="get">
+                                        <button class="button2" type="submit">Meeting Room Details</button>
                                     </form>
                                 </td></tr>
                                 <tr><td>
