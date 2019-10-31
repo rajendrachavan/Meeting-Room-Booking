@@ -18,7 +18,7 @@
 				<div class="panel-heading">
 					<h4>Admin Console</h4>
 					<span th:utext="${userName}"></span>
-					<div align="right">
+					<div style="float:right;">
 						<form th:action="@{/logout}" method="get">
 							<button class="button2" name="logout"
 									type="Submit">Logout</button>
@@ -26,7 +26,7 @@
 					</div>
 				</div>
 				<div class="panel-body">
-					<table class="table table-hover" id="users">
+					<table class="table table-hover">
 						<thead>
 						<tr>
 							<th>ID</th>
@@ -60,7 +60,7 @@
 							</td>
 							<td>
 								<a th:href="@{/admin/delete/{id}(id=${user.id})}"
-								   class="btn btn-primary">
+								   class="btn btn-danger">
 									<i class="fas fa-user-times ml-2"></i>
 								</a>
 							</td>

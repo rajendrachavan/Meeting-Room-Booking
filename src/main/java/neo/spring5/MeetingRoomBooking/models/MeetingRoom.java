@@ -23,4 +23,5 @@ public class MeetingRoom {
 
     @OneToMany(mappedBy = "meetingRoom")
     private Set<BookingDetails> bookingDetails;
+
 }

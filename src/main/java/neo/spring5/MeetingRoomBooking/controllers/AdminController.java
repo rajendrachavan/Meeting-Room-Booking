@@ -72,7 +72,6 @@ public class AdminController {
         userService.editSave(user);
         modelAndView.addObject("successMessage", "User has been Updated successfully");
         modelAndView.addObject("user", user);
-        System.out.println(user);
         modelAndView.setViewName("redirect:/admin/user-management");
         return modelAndView;
     }

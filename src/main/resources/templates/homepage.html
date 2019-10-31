@@ -19,7 +19,7 @@
                         <div class="panel-heading">
                             <h4>Admin Console</h4>
                             <span th:utext="${userName}"></span>
-                            <div align="right">
+                            <div style="float:right;">
                                 <form th:action="@{/logout}" method="get">
                                     <button class="button2" name="logout"
                                             type="Submit">Logout</button>
@@ -58,7 +58,7 @@
                         <div class="panel-heading">
                             <h4>User Console</h4>
                             <span th:utext="${userName}"></span>
-                            <div align="right">
+                            <div style="float:right;">
                                 <form th:action="@{/logout}" method="get">
                                     <button class="button2" name="logout"
                                             type="Submit">Logout</button>
@@ -79,8 +79,8 @@
                                     </form>
                                 </td></tr>
                                 <tr><td>
-                                    <form th:action="@{/user/booking-room}" method="get">
-                                        <button class="button2" type="submit">Booking Requests</button>
+                                    <form th:action="@{/user/view-booking-status}" method="get">
+                                        <button class="button2" type="submit">View Booking Status</button>
                                     </form>
                                 </td></tr>
                                 </tbody>

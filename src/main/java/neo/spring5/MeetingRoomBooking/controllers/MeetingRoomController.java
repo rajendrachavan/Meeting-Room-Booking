@@ -1,18 +1,21 @@
 package neo.spring5.MeetingRoomBooking.controllers;
 
+import neo.spring5.MeetingRoomBooking.models.Facilities;
 import neo.spring5.MeetingRoomBooking.models.MeetingRoom;
 import neo.spring5.MeetingRoomBooking.models.User;
+import neo.spring5.MeetingRoomBooking.repositories.FacilitiesRepository;
 import neo.spring5.MeetingRoomBooking.services.MeetingRoomService;
 import neo.spring5.MeetingRoomBooking.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.HashSet;
+import java.util.Set;
 
 @Controller
 public class MeetingRoomController {
@@ -22,6 +25,9 @@ public class MeetingRoomController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private FacilitiesRepository facilitiesRepository;
 
     @RequestMapping({"/meeting-room-details"})
     public ModelAndView meetingRoom(){
@@ -41,22 +47,77 @@ public class MeetingRoomController {
         ModelAndView modelAndView = new ModelAndView();
         MeetingRoom meetingRoom = new MeetingRoom();
         modelAndView.addObject("meetingRoom", meetingRoom);
+        modelAndView.addObject("facilities", facilitiesRepository.findAll());
         modelAndView.setViewName("admin/add-room");
         return modelAndView;
     }
 
     @RequestMapping(value = "/admin/add-room", method = RequestMethod.POST)
-    public ModelAndView createNewRoom(@Valid MeetingRoom meetingRoom) {
+    public ModelAndView createNewRoom(@Valid MeetingRoom meetingRoom,
+                                      @RequestParam("facilities") Long[] id) {
         ModelAndView modelAndView = new ModelAndView();
         MeetingRoom meetingRoom1 = meetingRoomService.findMeetingRoomByName(meetingRoom.getName());
         if (meetingRoom1 != null) {
+            modelAndView.addObject("successMessage","Room already exists!!!");
             modelAndView.setViewName("admin/add-room");
         } else {
+            if(id != null){
+                Set<Facilities> facilitiesSet = new HashSet<>();
+                Facilities facility;
+                for (Long i : id){
+                    facility = facilitiesRepository.findFacilityById(i);
+                    if(facility != null){
+                        facilitiesSet.add(facility);
+                    }
+                }
+                meetingRoom.setFacilities(facilitiesSet);
+            }
             meetingRoomService.save(meetingRoom);
             modelAndView.addObject("successMessage", "Room has been added successfully");
             modelAndView.addObject("meetingRoom", new MeetingRoom());
-            modelAndView.setViewName("admin/add-room");
+            modelAndView.setViewName("redirect:/meeting-room-details");
         }
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/admin/updateMeetingRoom/{id}", method = RequestMethod.GET)
+    public ModelAndView updatepage(@PathVariable(value="id") Long id) throws Exception {
+        ModelAndView modelAndView = new ModelAndView();
+        MeetingRoom meetingRoom = meetingRoomService.findById(id).orElse(null);
+        if(meetingRoom == null){
+            System.out.println("MeetingRoom Not Found");
+            modelAndView.addObject("successMessage","MeetingRoom Not Found");
+            modelAndView.setViewName("admin/updateMeetingRoom");
+            return modelAndView;
+        }
+        modelAndView.addObject("meetingRoom", meetingRoom);
+        modelAndView.addObject("facilities", facilitiesRepository.findAll());
+        modelAndView.addObject("id", id);
+        modelAndView.setViewName("admin/updateMeetingRoom");
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/admin/updateMeetingRoom/{id}", method = RequestMethod.PUT)
+    public ModelAndView editUser(@PathVariable(value="id") Long id,
+                                 @Valid @ModelAttribute("meetingRoom") MeetingRoom meetingRoomData){
+        ModelAndView modelAndView = new ModelAndView();
+        meetingRoomData.setName(meetingRoomData.getName());
+        meetingRoomData.setLocation(meetingRoomData.getLocation());
+        meetingRoomData.setFacilities(meetingRoomData.getFacilities());
+        meetingRoomData.setStatus(meetingRoomData.getStatus());
+        meetingRoomService.save(meetingRoomData);
+        modelAndView.addObject("successMessage", "MeetingRoom has been Updated successfully");
+        modelAndView.addObject("meetingRoom", meetingRoomData);
+        modelAndView.setViewName("redirect:/meeting-room-details");
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/admin/deleteMeetingRoom/{id}")
+    public ModelAndView delete(@PathVariable Long id){
+        ModelAndView modelAndView = new ModelAndView();
+        meetingRoomService.deleteById(id);
+        modelAndView.addObject("successMessage", "MeetingRoom Deleted Successfully.");
+        modelAndView.setViewName("redirect:/meeting-room-details");
         return modelAndView;
     }
 }

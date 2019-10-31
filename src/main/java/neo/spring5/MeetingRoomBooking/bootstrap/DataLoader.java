@@ -1,50 +1,71 @@
 package neo.spring5.MeetingRoomBooking.bootstrap;
 
-import neo.spring5.MeetingRoomBooking.models.Role;
-import neo.spring5.MeetingRoomBooking.models.User;
-import neo.spring5.MeetingRoomBooking.repositories.RoleRepository;
-import neo.spring5.MeetingRoomBooking.repositories.UserRepository;
+import neo.spring5.MeetingRoomBooking.models.Facilities;
+import neo.spring5.MeetingRoomBooking.models.MeetingRoom;
+import neo.spring5.MeetingRoomBooking.repositories.FacilitiesRepository;
+import neo.spring5.MeetingRoomBooking.services.MeetingRoomService;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.util.HashSet;
+import java.util.Set;
 
 //@Component
 public class DataLoader implements CommandLineRunner {
 
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
+    private final MeetingRoomService meetingRoomService;
+    private final FacilitiesRepository facilitiesRepository;
 
-    public DataLoader(UserRepository userRepository, RoleRepository roleRepository) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
+    public DataLoader(MeetingRoomService meetingRoomService, FacilitiesRepository facilitiesRepository) {
+        this.meetingRoomService = meetingRoomService;
+        this.facilitiesRepository = facilitiesRepository;
     }
 
     @Override
     public void run(String... args) throws Exception {
 
-        Role role = new Role();
-        //role.setId(1L);
-        role.setRole("ADMIN");
+        Set<Facilities> facilitiesList = new HashSet<>();
+        Facilities facilities = new Facilities();
+        facilities.setFacility("AC");
+        facilitiesList.add(facilities);
 
-        User user = new User();
-        //user.setId(1L);
-        user.setFirstName("test1");
-        user.setLastName("test");
-        user.setEmail("test@test.com");
-        user.setPassword(new BCryptPasswordEncoder().encode("correct"));
-        user.setGender("Others");
-        user.setMobileNo("987456321");
-        user.setDepartment("IOS");
-        user.setActive(1);
-        user.setRole(role);
+        Facilities facilities1 = new Facilities();
+        facilities1.setFacility("Projector");
+        facilitiesList.add(facilities1);
 
-        userRepository.save(user);
-        System.out.println("-----------------initial-Users-Added-----------------");
+        Facilities facilities2 = new Facilities();
+        facilities2.setFacility("WhiteBoard");
+        facilitiesList.add(facilities2);
 
-        Role role1 = new Role();
-        role1.setId(6L);
-        role1.setRole("USER");
-        roleRepository.save(role1);
-        System.out.println("-----------------initial-Roles-Added-----------------");
+        Facilities facilities3 = new Facilities();
+        facilities3.setFacility("Markers");
+        facilitiesList.add(facilities3);
+
+        Facilities facilities4 = new Facilities();
+        facilities4.setFacility("Large Monitor");
+        facilitiesList.add(facilities4);
+
+        Facilities facilities5 = new Facilities();
+        facilities5.setFacility("WiFi");
+        facilitiesList.add(facilities5);
+
+        Facilities facilities6 = new Facilities();
+        facilities6.setFacility("Speakers");
+        facilitiesList.add(facilities6);
+
+        Facilities facilities7 = new Facilities();
+        facilities7.setFacility("Phone");
+        facilitiesList.add(facilities7);
+
+        facilitiesRepository.saveAll(facilitiesList);
+        System.out.println("------------------Facilities Added------------------");
+
+        /*MeetingRoom meetingRoom = new MeetingRoom();
+        meetingRoom.setName("Green Room");
+        meetingRoom.setLocation("Parel");
+        meetingRoom.setFacilities(facilitiesList);
+        meetingRoom.setStatus("Available");
+        meetingRoomService.save(meetingRoom);*/
+        System.out.println("------------------Meeting Rooms Added---------------");
     }
 }

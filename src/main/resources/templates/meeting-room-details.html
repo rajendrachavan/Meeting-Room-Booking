@@ -19,15 +19,17 @@
                     <div class="panel-heading">
                         <h4><span th:utext="${meetingRoomDetails}"></span></h4>
                         <span th:utext="${userName}"></span>
-                        <div align="right">
-                            <span><form th:action="@{/admin/add-room}" method="get">
-                                    <button class="button2" name="add-room"
-                                            type="Submit">Add Room</button>
-                            </form></span> &nbsp;
-                            <span><form th:action="@{/logout}" method="get">
-                                    <button class="button2" name="logout"
-                                            type="Submit">Logout</button>
-                            </form></span>
+                        <div style="float:right;">
+                            <form th:action="@{/logout}" method="get">
+                                <button class="button2" name="logout"
+                                        type="Submit">Logout</button>
+                            </form>
+                        </div>
+                        <div style="float:right;">
+                            <form th:action="@{/admin/add-room}" method="get">
+                                <button class="button2" name="add-room"
+                                        type="Submit">Add Room</button>
+                            </form>
                         </div>
                     </div>
                     <div class="panel-body">
@@ -47,16 +49,16 @@
                                 <td th:text="${meetingRoom.id}">1</td>
                                 <td th:text="${meetingRoom.name}">Test</td>
                                 <td th:text="${meetingRoom.location}">TestLocation</td>
-                                <td th:text="${meetingRoom.Facilities.facilities}">[AC]</td>
+                                <td th:text="${meetingRoom.facilities}">[AC]</td>
                                 <td th:text="${meetingRoom.status}">Available</td>
                                 <td>
-                                    <a th:href="@{/admin/room/update/{id}(id=${meetingRoom.id})}"
+                                    <a th:href="@{/admin/updateMeetingRoom/{id}(id=${meetingRoom.id})}"
                                        class="btn btn-primary">Edit
                                     </a>
                                 </td>
                                 <td>
-                                    <a th:href="@{/admin/room/delete/{id}(id=${meetingRoom.id})}"
-                                       class="btn btn-primary">Delete
+                                    <a th:href="@{/admin/deleteMeetingRoom/{id}(id=${meetingRoom.id})}"
+                                       class="btn btn-danger">Delete
                                     </a>
                                 </td>
                             </tr>
@@ -97,13 +99,17 @@
                             <tr th:each="meetingRoom: ${meetingRooms}">
                                 <td th:text="${meetingRoom.name}">Test</td>
                                 <td th:text="${meetingRoom.location}">TestLocation</td>
-                                <td th:text="${meetingRoom.Facilities.facilities}">[AC]</td>
+                                <td th:text="${meetingRoom.facilities}">[AC]</td>
                                 <td th:text="${meetingRoom.status}">Available</td>
                                 <td>
-                                    <form th:action="@{/user/book/{id}(id=${meetingRoom.id})}">
-                                        <button class="button2" name="book"
-                                                type="Submit">Book</button>
-                                    </form>
+                                    <a th:href="@{/user/bookRoom/{id}(id=${meetingRoom.id})}"
+                                       class="btn btn-primary">Book
+                                    </a>
+                                </td>
+                                <td>
+                                    <a th:href="@{/user/cancelBooking/{id}(id=${meetingRoom.id})}"
+                                       class="btn btn-danger">Cancel
+                                    </a>
                                 </td>
                             </tr>
                             </tbody>
