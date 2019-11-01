@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Booking Status</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/design.css}" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+    <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+<div class="container">
+    <div class="panel-group" style="margin-top:40px">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h4>User Console</h4>
+                <span th:utext="${userName}"></span>
+                <div style="float:right;">
+                    <form th:action="@{/logout}" method="get">
+                        <button class="button2" name="logout"
+                                type="Submit">Logout</button>
+                    </form>
+                </div>
+                <h5>Booking Requests</h5>
+            </div>
+            <div class="panel-body">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Meeting Room Name</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th></th>
+                        <th>Operations</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="booking: ${bookingDetails}">
+                        <td th:text="${booking.MeetingRoom.name}">Test</td>
+                        <td th:text="${booking.date}">31-10-2019</td>
+                        <td th:text="${booking.status}">confirm</td>
+                        <td align="center" aria-disabled="true">
+                            <a th:href="@{/deleteRequest/{id}(id=${booking.id})}"
+                               class="btn btn-danger">Delete
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="text-center" th:utext="${successMessage}"></p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

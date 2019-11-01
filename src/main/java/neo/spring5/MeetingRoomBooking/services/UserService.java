@@ -2,17 +2,21 @@ package neo.spring5.MeetingRoomBooking.services;
 
 
 import neo.spring5.MeetingRoomBooking.models.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
 
-	public User findUserByEmail(String email);
-	public void saveUser(User user);
-	public List<User> findAll();
-	public Optional<User> findById(Long id);
-	public void deleteById(Long id);
+	User findUserByEmail(String email);
+	void saveUser(User user);
+	List<User> findAll();
+	Optional<User> findById(Long id);
+	void deleteById(Long id);
 
-	public void editSave(User user);
+	void editSave(User user);
+
+	Page<User> getPaginatedUsers(Pageable pageable);
 }

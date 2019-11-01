@@ -85,7 +85,7 @@
 				</div>
 				<span th:utext="${successMessage}"></span>
 			</form>
-			<form th:action="@{/login}" method="get">
+			<form th:action="@{/login}" method="get" th:if="${}">
 				<br>
 				&nbsp&nbsp Already a User? <button class="button2" type="submit">Sign in</button>
 			</form>

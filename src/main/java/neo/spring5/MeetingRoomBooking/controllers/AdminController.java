@@ -1,10 +1,14 @@
 package neo.spring5.MeetingRoomBooking.controllers;
 
+import lombok.val;
 import neo.spring5.MeetingRoomBooking.models.Role;
 import neo.spring5.MeetingRoomBooking.models.User;
 import neo.spring5.MeetingRoomBooking.repositories.RoleRepository;
 import neo.spring5.MeetingRoomBooking.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -14,7 +18,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Null;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Controller
 @RequestMapping("admin")
@@ -26,13 +33,23 @@ public class AdminController {
     @Autowired
     private RoleRepository roleRepository;
 
-    @RequestMapping(value="/user-management", method = RequestMethod.GET)
-    public ModelAndView userManagement(){
+    @RequestMapping(value="/user-management/{page}", method = RequestMethod.GET)
+    public ModelAndView userManagement(@PathVariable(value = "page") int page,
+                                       @RequestParam(defaultValue = "id") String sortBy){
         ModelAndView modelAndView = new ModelAndView();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
+        PageRequest pageable = PageRequest.of(page - 1, 3, Sort.Direction.DESC, sortBy);
+        Page<User> userPage = userService.getPaginatedUsers(pageable);
+        int totalPages = userPage.getTotalPages();
+        if(totalPages > 0) {
+            List<Integer> pageNumbers = IntStream.rangeClosed(1,totalPages).boxed().collect(Collectors.toList());
+            modelAndView.addObject("pageNumbers", pageNumbers);
+        }
+        modelAndView.addObject("activeUserList", true);
+        modelAndView.addObject("users", userPage.getContent());
+
         modelAndView.addObject("userName", "Welcome " + user.getFirstName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
-        modelAndView.addObject("users", userService.findAll());
         modelAndView.setViewName("admin/user-management");
         return modelAndView;
     }

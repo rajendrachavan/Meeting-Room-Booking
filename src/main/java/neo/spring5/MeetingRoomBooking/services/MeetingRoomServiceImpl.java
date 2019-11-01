@@ -3,6 +3,8 @@ package neo.spring5.MeetingRoomBooking.services;
 import neo.spring5.MeetingRoomBooking.models.MeetingRoom;
 import neo.spring5.MeetingRoomBooking.repositories.MeetingRoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -38,5 +40,10 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
     @Override
     public MeetingRoom findMeetingRoomByName(String name) {
         return meetingRoomRepository.findMeetingRoomByName(name);
+    }
+
+    @Override
+    public Page<MeetingRoom> getPaginatedMeetingRooms(Pageable pageable) {
+        return meetingRoomRepository.findAll(pageable);
     }
 }
