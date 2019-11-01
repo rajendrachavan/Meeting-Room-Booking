@@ -6,9 +6,11 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.Transient;
 
+import java.util.Set;
+
+
 @Getter
 @Setter
-
 @Entity
 @Table(name = "user")
 public class User {
@@ -47,6 +49,9 @@ public class User {
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	private Role role;
 
+	@OneToMany(mappedBy = "user")
+	private Set<BookingDetails> bookingDetails;
+
 	@Override
 	public String toString() {
 		return "User{" +
@@ -60,6 +65,7 @@ public class User {
 				", department='" + department + '\'' +
 				", active=" + active +
 				", role=" + role +
+				", bookingDetails=" + bookingDetails +
 				'}';
 	}
 }

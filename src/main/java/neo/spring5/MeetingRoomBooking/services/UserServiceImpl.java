@@ -1,15 +1,17 @@
 package neo.spring5.MeetingRoomBooking.services;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import neo.spring5.MeetingRoomBooking.models.Role;
 import neo.spring5.MeetingRoomBooking.models.User;
 import neo.spring5.MeetingRoomBooking.repositories.RoleRepository;
 import neo.spring5.MeetingRoomBooking.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -58,4 +60,10 @@ public class UserServiceImpl implements UserService{
 	public void editSave(User user) {
 		userRepository.save(user);
 	}
+
+	@Override
+	public Page<User> getPaginatedUsers(Pageable pageable) {
+		return userRepository.findAll(pageable);
+	}
+
 }

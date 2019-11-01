@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Date</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/design.css}" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+    <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="panel-group" style="margin-top:40px">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h4>User Console</h4>
+                    <span th:utext="${userName}"></span><br>
+                    <div style="float:right;">
+                        <form th:action="@{/logout}" method="get">
+                            <button class="button2" name="logout"
+                                    type="Submit">Logout</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div align="center">
+                    <form autocomplete="off" action="#" th:action="@{'/bookRoom/'+${id}+'/'+${userId}}"
+                       th:object="${bookingDetails}" th:method="post" class="form-horizontal"
+                              role="form">
+                        <div class="form-group">
+                            <label>Date: </label>
+                            <input type="date" name="date" th:field="*{date}" autofocus/>
+                        </div>
+                        <div class="form-group">
+                            <div>
+                                <span><button class="button1" type="submit" >Submit</button></span>
+                                <span><button class="button1" type="reset" value="reset">Clear</button></span>
+                            </div>
+                        </div>
+                    </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -12,21 +12,37 @@
 </head>
 
 <body>
+<nav class="navbar navbar-inverse">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<a class="navbar-brand" href="/homepage">Book A MeetingRoom</a>
+		</div>
+		<ul class="nav navbar-nav">
+		<li class="active"><a href="/admin/user-management/1">Users</a></li>
+			<li><a href="/meeting-room-details/1">Rooms</a></li>
+			<li><a href="/admin/booking-requests/1">Bookings</a></li>
+		</ul>
+		<ul class="nav navbar-nav navbar-right">
+			<li><a th:href="@{/logout}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+		</ul>
+	</div>
+</nav>
 	<div class="container">
 		<div class="panel-group" style="margin-top:40px">
 			<div class="panel panel-primary">
 				<div class="panel-heading">
 					<h4>Admin Console</h4>
+					<h5>User Management</h5>
 					<span th:utext="${userName}"></span>
-					<div align="right">
-						<form th:action="@{/logout}" method="get">
-							<button class="button2" name="logout"
-									type="Submit">Logout</button>
+					<div style="float:right;">
+						<form th:action="@{/registration}" method="get">
+							<button class="button2" name="registration"
+									type="Submit">Add</button>
 						</form>
 					</div>
 				</div>
 				<div class="panel-body">
-					<table class="table table-hover" id="users">
+					<table class="table table-hover">
 						<thead>
 						<tr>
 							<th>ID</th>
@@ -60,7 +76,7 @@
 							</td>
 							<td>
 								<a th:href="@{/admin/delete/{id}(id=${user.id})}"
-								   class="btn btn-primary">
+								   class="btn btn-danger">
 									<i class="fas fa-user-times ml-2"></i>
 								</a>
 							</td>
@@ -72,5 +88,18 @@
 			</div>
 		</div>
 	</div>
+<div class="row" th:fragment="pagination">
+	<div class="col-md-2"></div>
+	<div class="col-md-8">
+		<nav aria-label="Pagination">
+			<ul class="pagination justify-content-center">
+				<li class="page-item" th:each="pageNumber : ${pageNumbers}" >
+					<a class="page-link" th:href="@{|/admin/user-management/${pageNumber}|}" th:text=${pageNumber}>1</a>
+				</li>
+			</ul>
+		</nav>
+	</div>
+	<div class="col-md-2"></div>
+</div>
 </body>
 </html>

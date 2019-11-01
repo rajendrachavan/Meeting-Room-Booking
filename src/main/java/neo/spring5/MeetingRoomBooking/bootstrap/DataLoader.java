@@ -1,50 +1,61 @@
 package neo.spring5.MeetingRoomBooking.bootstrap;
 
-import neo.spring5.MeetingRoomBooking.models.Role;
+import neo.spring5.MeetingRoomBooking.models.BookingDetails;
+import neo.spring5.MeetingRoomBooking.models.Facilities;
+import neo.spring5.MeetingRoomBooking.models.MeetingRoom;
 import neo.spring5.MeetingRoomBooking.models.User;
-import neo.spring5.MeetingRoomBooking.repositories.RoleRepository;
-import neo.spring5.MeetingRoomBooking.repositories.UserRepository;
+import neo.spring5.MeetingRoomBooking.repositories.FacilitiesRepository;
+import neo.spring5.MeetingRoomBooking.services.BookingService;
+import neo.spring5.MeetingRoomBooking.services.MeetingRoomService;
+import neo.spring5.MeetingRoomBooking.services.UserService;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 //@Component
 public class DataLoader implements CommandLineRunner {
 
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
+    private final MeetingRoomService meetingRoomService;
+    private final UserService userService;
+    private final BookingService bookingService;
+    private final FacilitiesRepository facilitiesRepository;
 
-    public DataLoader(UserRepository userRepository, RoleRepository roleRepository) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
+    public DataLoader(MeetingRoomService meetingRoomService, UserService userService, BookingService bookingService, FacilitiesRepository facilitiesRepository) {
+        this.meetingRoomService = meetingRoomService;
+        this.userService = userService;
+        this.bookingService = bookingService;
+        this.facilitiesRepository = facilitiesRepository;
     }
 
     @Override
     public void run(String... args) throws Exception {
 
-        Role role = new Role();
-        //role.setId(1L);
-        role.setRole("ADMIN");
+        LocalDate localDate= LocalDate.now();
+        Set<Facilities> facilitiesList = new HashSet<>();
+        Facilities facilities = facilitiesRepository.findFacilityById(1L);
+        facilitiesList.add(facilities);
+
+
+        MeetingRoom meetingRoom = new MeetingRoom();
+        meetingRoom.setLocation("Dadar");
+        meetingRoom.setName("Black Room");
+        meetingRoom.setStatus("Available");
+        meetingRoom.setFacilities(facilitiesList);
 
         User user = new User();
-        //user.setId(1L);
-        user.setFirstName("test1");
-        user.setLastName("test");
-        user.setEmail("test@test.com");
-        user.setPassword(new BCryptPasswordEncoder().encode("correct"));
-        user.setGender("Others");
-        user.setMobileNo("987456321");
-        user.setDepartment("IOS");
-        user.setActive(1);
-        user.setRole(role);
+        user.setFirstName("laxman");
 
-        userRepository.save(user);
-        System.out.println("-----------------initial-Users-Added-----------------");
+        BookingDetails bookingDetails = new BookingDetails();
+        bookingDetails.setDate(localDate);
+        bookingDetails.setStatus("Pending");
+        bookingDetails.setMeetingRoom(meetingRoom);
+        bookingDetails.setUser(user);
+        bookingService.save(bookingDetails);
 
-        Role role1 = new Role();
-        role1.setId(6L);
-        role1.setRole("USER");
-        roleRepository.save(role1);
-        System.out.println("-----------------initial-Roles-Added-----------------");
+        System.out.println("------------------Booking Details Added------------------");
+
     }
 }
