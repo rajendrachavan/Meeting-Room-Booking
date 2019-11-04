@@ -1,10 +1,84 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>User Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>User profile</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/design.css}" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 </head>
 <body>
-
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/homepage">
+                <i class="fas fa-chevron-circle-left"></i>
+            </a>
+            <a class="navbar-brand" href="/homepage">Book A MeetingRoom</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="/user/user-profile/">User Profile</a></li>
+            <li><a href="/meeting-room-details/1">Rooms</a></li>
+            <li><a href="/user/booking-status/1">Bookings</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a th:href="@{/logout}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+        </ul>
+    </div>
+</nav>
+<div class="container">
+    <div class="panel-group" style="margin-top:40px">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h4><span th:utext="${userProfile}">User-Profile</span></h4>
+                <span th:utext="${userName}"></span>
+                <div style="float:right;">
+                    <form th:action="@{'/user/updateUser/' +${user.id}}" method="get">
+                        <button class="button2" name="registration"
+                                type="Submit"><i class="fas fa-user-edit ml-2"></i></button>
+                    </form>
+                </div>
+            </div>
+            <div class="panel-body">
+                <table class="table table-hover">
+                    <thead>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <th>Firstname</th>
+                        <td th:text="${user.firstName}">Test</td>
+                    </tr>
+                    <tr>
+                        <th>Lastname</th>
+                        <td th:text="${user.lastName}">Class</td>
+                    </tr>
+                    <tr>
+                        <th>Gender</th>
+                        <td th:text="${user.gender}">male</td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td th:text="${user.email}">test@example.com</td>
+                    </tr>
+                    <tr>
+                        <th>Mobile No</th>
+                        <td th:text="${user.mobileNo}">123456789</td>
+                    </tr>
+                    <tr>
+                        <th>Department</th>
+                        <td th:text="${user.department}">testdept</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="text-center" th:utext="${successMessage}"></p>
+        </div>
+    </div>
+</div>
+</body>
 </body>
 </html>

@@ -18,11 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -37,6 +33,8 @@ public class BookingController {
 
     @Autowired
     private MeetingRoomService meetingRoomService;
+
+    //------------------------------------= ADMIN =-------------------------------------------------------------
 
     @RequestMapping(value = "/admin/booking-requests/{page}")
     public ModelAndView bookingRequests(@PathVariable(value = "page") int page,
@@ -56,10 +54,69 @@ public class BookingController {
         return modelAndView;
     }
 
-    @RequestMapping("/user/booking-status")
-    public ModelAndView bookingStatus(){
+    @PostMapping(value = "/admin/confirmRequest/{id}")
+    public ModelAndView confirmRequest(@PathVariable(value = "id") Long id){
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("bookingDetails", bookingService.findAll());
+        BookingDetails bookingDetails = bookingService.findById(id).orElse(null);
+        if(bookingDetails == null){
+            modelAndView.addObject("successMessage", "BookingDetails Not Found.");
+            modelAndView.setViewName("redirect:/admin/booking-requests");
+        }
+        else{
+            bookingDetails.setStatus("Confirmed");
+            MeetingRoom meetingRoom = bookingDetails.getMeetingRoom();
+            meetingRoom.setStatus("Not Available");
+            meetingRoomService.save(meetingRoom);
+            bookingDetails.setDate(bookingDetails.getDate());
+            bookingDetails.setMeetingRoom(bookingDetails.getMeetingRoom());
+            bookingDetails.setUser(bookingDetails.getUser());
+            bookingService.save(bookingDetails);
+        }
+        modelAndView.addObject("successMessage", "BookingDetails Confirmed.");
+        modelAndView.setViewName("redirect:/admin/booking-requests/1");
+        return modelAndView;
+    }
+
+    @PostMapping(value = "/admin/rejectRequest/{id}")
+    public ModelAndView rejectRequest(@PathVariable(value = "id") Long id){
+        ModelAndView modelAndView = new ModelAndView();
+        BookingDetails bookingDetails = bookingService.findById(id).orElse(null);
+        if(bookingDetails == null){
+            modelAndView.addObject("successMessage", "BookingDetails Not Found.");
+            modelAndView.setViewName("redirect:/admin/booking-requests");
+        }
+        else{
+            bookingDetails.setStatus("Rejected");
+            MeetingRoom meetingRoom = bookingDetails.getMeetingRoom();
+            meetingRoom.setStatus("Available");
+            meetingRoomService.save(meetingRoom);
+            bookingDetails.setDate(bookingDetails.getDate());
+            bookingDetails.setMeetingRoom(bookingDetails.getMeetingRoom());
+            bookingDetails.setUser(bookingDetails.getUser());
+            bookingService.save(bookingDetails);
+        }
+        modelAndView.addObject("successMessage", "BookingDetails Rejected.");
+        modelAndView.setViewName("redirect:/admin/booking-requests/1");
+        return modelAndView;
+    }
+
+    //-----------------------------------= USER =----------------------------------------------------------------
+
+    @RequestMapping("/user/booking-status/{page}")
+    public ModelAndView bookingStatus(@PathVariable(value = "page") int page,
+                                      @RequestParam(defaultValue = "id") String sortBy){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("bookingStatus","Booking status");
+
+        PageRequest pageable = PageRequest.of(page - 1, 5, Sort.Direction.DESC, sortBy);
+        Page<BookingDetails> bookingDetailsPage = bookingService.getPaginatedBookingDetails(pageable);
+        int totalPages = bookingDetailsPage.getTotalPages();
+        if(totalPages > 0) {
+            List<Integer> pageNumbers = IntStream.rangeClosed(1,totalPages).boxed().collect(Collectors.toList());
+            modelAndView.addObject("pageNumbers", pageNumbers);
+        }
+        modelAndView.addObject("activeBookingsList", true);
+        modelAndView.addObject("bookingDetails", bookingDetailsPage.getContent());
         modelAndView.setViewName("user/booking-status");
         return modelAndView;
     }
@@ -91,7 +148,7 @@ public class BookingController {
 
         modelAndView.addObject("successMessage", "Room Booked successfully");
         modelAndView.addObject("bookingDetails", bookingDetails);
-        modelAndView.setViewName("redirect:/user/booking-status");
+        modelAndView.setViewName("redirect:/user/booking-status/1");
         return modelAndView;
     }
 
@@ -101,53 +158,13 @@ public class BookingController {
         BookingDetails bookingDetails = bookingService.findById(id).orElse(null);
         if(bookingDetails == null){
             modelAndView.addObject("successMessage", "BookingDetails Not Found.");
-            modelAndView.setViewName("redirect:/user/booking-status");
+            modelAndView.setViewName("redirect:/user/booking-status/1");
         }
         else{
             bookingService.deleteById(id);
             modelAndView.addObject("successMessage", "BookingDetails Deleted Successfully.");
-            modelAndView.setViewName("redirect:/user/booking-status");
+            modelAndView.setViewName("redirect:/user/booking-status/1");
         }
-        return modelAndView;
-    }
-
-    @PostMapping(value = "/admin/confirmRequest/{id}")
-    public ModelAndView confirmRequest(@PathVariable(value = "id") Long id){
-        ModelAndView modelAndView = new ModelAndView();
-        BookingDetails bookingDetails = bookingService.findById(id).orElse(null);
-        if(bookingDetails == null){
-            modelAndView.addObject("successMessage", "BookingDetails Not Found.");
-            modelAndView.setViewName("redirect:/admin/booking-requests");
-        }
-        else{
-            bookingDetails.setStatus("Confirmed");
-            bookingDetails.setDate(bookingDetails.getDate());
-            bookingDetails.setMeetingRoom(bookingDetails.getMeetingRoom());
-            bookingDetails.setUser(bookingDetails.getUser());
-            bookingService.save(bookingDetails);
-        }
-        modelAndView.addObject("successMessage", "BookingDetails Confirmed.");
-        modelAndView.setViewName("redirect:/admin/booking-requests");
-        return modelAndView;
-    }
-
-    @PostMapping(value = "/admin/cancelRequest/{id}")
-    public ModelAndView cancelRequest(@PathVariable(value = "id") Long id){
-        ModelAndView modelAndView = new ModelAndView();
-        BookingDetails bookingDetails = bookingService.findById(id).orElse(null);
-        if(bookingDetails == null){
-            modelAndView.addObject("successMessage", "BookingDetails Not Found.");
-            modelAndView.setViewName("redirect:/admin/booking-requests");
-        }
-        else{
-            bookingDetails.setStatus("Confirmed");
-            bookingDetails.setDate(bookingDetails.getDate());
-            bookingDetails.setMeetingRoom(bookingDetails.getMeetingRoom());
-            bookingDetails.setUser(bookingDetails.getUser());
-            bookingService.save(bookingDetails);
-        }
-        modelAndView.addObject("successMessage", "BookingDetails Cancelled.");
-        modelAndView.setViewName("redirect:/admin/booking-requests");
         return modelAndView;
     }
 }

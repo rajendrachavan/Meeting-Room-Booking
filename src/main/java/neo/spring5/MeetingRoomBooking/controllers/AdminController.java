@@ -39,7 +39,7 @@ public class AdminController {
         ModelAndView modelAndView = new ModelAndView();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
-        PageRequest pageable = PageRequest.of(page - 1, 3, Sort.Direction.DESC, sortBy);
+        PageRequest pageable = PageRequest.of(page - 1, 5, Sort.Direction.DESC, sortBy);
         Page<User> userPage = userService.getPaginatedUsers(pageable);
         int totalPages = userPage.getTotalPages();
         if(totalPages > 0) {
@@ -47,8 +47,8 @@ public class AdminController {
             modelAndView.addObject("pageNumbers", pageNumbers);
         }
         modelAndView.addObject("activeUserList", true);
+        modelAndView.addObject("userManagement","User Management");
         modelAndView.addObject("users", userPage.getContent());
-
         modelAndView.addObject("userName", "Welcome " + user.getFirstName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
         modelAndView.setViewName("admin/user-management");
         return modelAndView;
@@ -77,19 +77,11 @@ public class AdminController {
         ModelAndView modelAndView = new ModelAndView();
         User userDataDB = userService.findById(id).orElse(null);
         Role role1 = roleRepository.findById(role).orElse(null);
-        user.setFirstName(user.getFirstName());
-        user.setLastName(user.getLastName());
-        user.setEmail(user.getEmail());
         user.setPassword(userDataDB.getPassword());
-        user.setGender(user.getGender());
-        user.setMobileNo(user.getMobileNo());
-        user.setDepartment(user.getDepartment());
-        user.setActive(user.getActive());
-        user.setRole(role1);
         userService.editSave(user);
         modelAndView.addObject("successMessage", "User has been Updated successfully");
         modelAndView.addObject("user", user);
-        modelAndView.setViewName("redirect:/admin/user-management");
+        modelAndView.setViewName("redirect:/admin/user-management/1");
         return modelAndView;
     }
 
@@ -98,7 +90,7 @@ public class AdminController {
         ModelAndView modelAndView = new ModelAndView();
         userService.deleteById(id);
         modelAndView.addObject("successMessage", "User Deleted Successfully.");
-        modelAndView.setViewName("redirect:/admin/user-management");
+        modelAndView.setViewName("redirect:/admin/user-management/1");
         return modelAndView;
     }
 }

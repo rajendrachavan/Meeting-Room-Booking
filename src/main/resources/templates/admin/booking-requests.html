@@ -5,6 +5,7 @@
 <head>
     <title>Admin Page</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/design.css}" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
     <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -15,12 +16,13 @@
 <nav class="navbar navbar-inverse">
     <div class="container-fluid">
         <div class="navbar-header">
+            <a class="navbar-brand" href="/homepage"><i class="fas fa-chevron-circle-left"></i></a>
             <a class="navbar-brand" href="/homepage">Book A MeetingRoom</a>
         </div>
         <ul class="nav navbar-nav">
-            <li class="active"><a href="/admin/user-management/1">Users</a></li>
+            <li><a href="/admin/user-management/1">Users</a></li>
             <li><a href="/meeting-room-details/1">Rooms</a></li>
-            <li><a href="/admin/booking-requests/1">Bookings</a></li>
+            <li class="active"><a href="/admin/booking-requests/1">Bookings</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <li><a th:href="@{/logout}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
@@ -44,7 +46,6 @@
                         <th>Date</th>
                         <th>Status</th>
                         <th>Booked By</th>
-                        <th></th>
                         <th colspan="2">Operations</th>
                     </tr>
                     </thead>
@@ -62,7 +63,7 @@
                             </form>
                         </td>
                         <td th:if="${booking.status} == 'Pending' or ${booking.status} == 'Confirmed'">
-                            <form th:action="@{/admin/cancelRequest/{id}(id=${booking.id})}" method="post">
+                            <form th:action="@{/admin/rejectRequest/{id}(id=${booking.id})}" method="post">
                                 <button class="btn btn-danger" name="confirm"
                                         type="Submit">Reject</button>
                             </form>

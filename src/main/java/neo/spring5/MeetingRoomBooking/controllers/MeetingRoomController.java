@@ -35,6 +35,8 @@ public class MeetingRoomController {
     @Autowired
     private FacilitiesRepository facilitiesRepository;
 
+    //----------------------------= COMMON =------------------------------------
+
     @RequestMapping("/meeting-room-details/{page}")
     public ModelAndView meetingRoom(@PathVariable(value = "page") int page,
                                     @RequestParam(defaultValue = "id") String sortBy){
@@ -57,6 +59,8 @@ public class MeetingRoomController {
         modelAndView.setViewName("meeting-room-details");
         return modelAndView;
     }
+
+    //--------------------------------= ADMIN =---------------------------------------------
 
     @RequestMapping(value="/admin/add-room", method = RequestMethod.GET)
     public ModelAndView addRoom(){

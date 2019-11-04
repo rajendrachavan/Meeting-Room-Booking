@@ -15,6 +15,7 @@
 <nav class="navbar navbar-inverse">
 	<div class="container-fluid">
 		<div class="navbar-header">
+			<a class="navbar-brand" href="/homepage"><i class="fas fa-chevron-circle-left"></i></a>
 			<a class="navbar-brand" href="/homepage">Book A MeetingRoom</a>
 		</div>
 		<ul class="nav navbar-nav">
@@ -31,8 +32,7 @@
 		<div class="panel-group" style="margin-top:40px">
 			<div class="panel panel-primary">
 				<div class="panel-heading">
-					<h4>Admin Console</h4>
-					<h5>User Management</h5>
+					<h4><span th:utext="${userManagement}">User-Management</span></h4>
 					<span th:utext="${userName}"></span>
 					<div style="float:right;">
 						<form th:action="@{/registration}" method="get">

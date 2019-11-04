@@ -6,11 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Registration</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/design.css}" />
-    <!-- Bootstrap library -->
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-    <!-- jQuery library -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 </head>
 <body>
@@ -69,7 +67,7 @@
 					<div>
 						<label>Select Department:</label>
 						<select class="form-control" th:field="*{department}">
-							<option value="Null" selected disabled>Select</option>
+							<option value="Null" disabled selected>Select</option>
 							<option value="Java">Java</option>
 							<option value="IOS">IOS</option>
 							<option value="JS">JS</option>
@@ -85,9 +83,9 @@
 				</div>
 				<span th:utext="${successMessage}"></span>
 			</form>
-			<form th:action="@{/login}" method="get" th:if="${}">
+			<form th:action="@{/login}" method="get">
 				<br>
-				&nbsp&nbsp Already a User? <button class="button2" type="submit">Sign in</button>
+				&nbsp Already a User? <button class="button2" type="submit">Sign in</button>
 			</form>
 		</div>
 		<div class ="col-sm-3"></div>

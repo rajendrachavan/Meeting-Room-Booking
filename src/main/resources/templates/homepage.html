@@ -16,10 +16,10 @@
             <nav class="navbar navbar-inverse">
                 <div class="container-fluid">
                     <div class="navbar-header">
-                        <a class="navbar-brand" href="#">Book A MeetingRoom</a>
+                        <a class="navbar-brand active" href="#">Book A MeetingRoom</a>
                     </div>
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="/admin/user-management/1">Users</a></li>
+                        <li><a href="/admin/user-management/1">Users</a></li>
                         <li><a href="/meeting-room-details/1">Rooms</a></li>
                         <li><a href="/admin/booking-requests/1">Bookings</a></li>
                     </ul>
@@ -42,45 +42,35 @@
             </div>
         </div>
         <div th:case="USER">
+            <nav class="navbar navbar-inverse">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <a class="navbar-brand active" href="#">Book A MeetingRoom</a>
+                    </div>
+                    <ul class="nav navbar-nav">
+                        <li><a th:href="@{'/user/user-profile/'+${id}}">User Profile</a></li>
+                        <li><a href="/meeting-room-details/1">Rooms</a></li>
+                        <li><a href="/user/booking-status/1">Bookings</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a th:href="@{/logout}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+                    </ul>
+                </div>
+            </nav>
             <div class="container">
                 <div class="panel-group" style="margin-top:40px">
                     <div class="panel panel-primary">
                         <div class="panel-heading">
                             <h4>User Console</h4>
-                            <span th:utext="${userName}"></span>
-                            <div style="float:right;">
-                                <form th:action="@{/logout}" method="get">
-                                    <button class="button2" name="logout"
-                                            type="Submit">Logout</button>
-                                </form>
-                            </div>
                         </div>
                         <div class="panel-body">
-                            <table class="table table-hover">
-                                <tbody>
-                                <tr><td>
-                                    <form th:action="@{/user/user-profile}" method="get">
-                                        <button class="button2" type="submit">User Profile</button>
-                                    </form>
-                                </td></tr>
-                                <tr><td>
-                                    <form th:action="@{/meeting-room-details}" method="get">
-                                        <button class="button2" type="submit">Meeting Room Details</button>
-                                    </form>
-                                </td></tr>
-                                <tr><td>
-                                    <form th:action="@{/user/view-booking-status}" method="get">
-                                        <button class="button2" type="submit">View Booking Status</button>
-                                    </form>
-                                </td></tr>
-                                </tbody>
-                            </table>
+                            <span th:utext="${userName}"></span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <p th:case="*">User is some other thing</p>
+        <p th:case="*">User is some other thing...</p>
     </div>
 </body>
 </html>
