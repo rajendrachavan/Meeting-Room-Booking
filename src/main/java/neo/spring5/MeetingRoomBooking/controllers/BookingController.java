@@ -106,10 +106,14 @@ public class BookingController {
     public ModelAndView bookingStatus(@PathVariable(value = "page") int page,
                                       @RequestParam(defaultValue = "id") String sortBy){
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("bookingStatus","Booking status");
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByEmail(auth.getName());
 
+        modelAndView.addObject("bookingStatus","Booking status");
         PageRequest pageable = PageRequest.of(page - 1, 5, Sort.Direction.DESC, sortBy);
-        Page<BookingDetails> bookingDetailsPage = bookingService.getPaginatedBookingDetails(pageable);
+        Page<BookingDetails> bookingDetailsPage = bookingService.getPaginatedBookingDetails(user, pageable);
+
+
         int totalPages = bookingDetailsPage.getTotalPages();
         if(totalPages > 0) {
             List<Integer> pageNumbers = IntStream.rangeClosed(1,totalPages).boxed().collect(Collectors.toList());

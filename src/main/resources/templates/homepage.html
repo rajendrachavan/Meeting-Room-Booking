@@ -11,66 +11,37 @@
     <script	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <div th:switch="${role}">
-        <div th:case="ADMIN">
-            <nav class="navbar navbar-inverse">
-                <div class="container-fluid">
-                    <div class="navbar-header">
-                        <a class="navbar-brand active" href="#">Book A MeetingRoom</a>
-                    </div>
-                    <ul class="nav navbar-nav">
-                        <li><a href="/admin/user-management/1">Users</a></li>
-                        <li><a href="/meeting-room-details/1">Rooms</a></li>
-                        <li><a href="/admin/booking-requests/1">Bookings</a></li>
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a th:href="@{/logout}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
-                    </ul>
-                </div>
-            </nav>
-            <div class="container">
-                <div class="panel-group" style="margin-top:40px">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">
-                            <h4>Admin Console</h4>
-                        </div>
-                        <div class="panel-body">
-                            <span th:utext="${userName}"></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand active" href="#">Book A MeetingRoom</a>
         </div>
-        <div th:case="USER">
-            <nav class="navbar navbar-inverse">
-                <div class="container-fluid">
-                    <div class="navbar-header">
-                        <a class="navbar-brand active" href="#">Book A MeetingRoom</a>
-                    </div>
-                    <ul class="nav navbar-nav">
-                        <li><a href="/user/user-profile">User Profile</a></li>
-                        <li><a href="/meeting-room-details/1">Rooms</a></li>
-                        <li><a href="/user/booking-status/1">Bookings</a></li>
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a th:href="@{/logout}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
-                    </ul>
-                </div>
-            </nav>
-            <div class="container">
-                <div class="panel-group" style="margin-top:40px">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">
-                            <h4>User Console</h4>
-                        </div>
-                        <div class="panel-body">
-                            <span th:utext="${userName}"></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <p th:case="*">User is some other thing...</p>
+        <ul class="nav navbar-nav">
+            <li th:if="${role} == 'ADMIN'"><a href="/admin/user-management/1">Users</a></li>
+            <li th:if="${role} == 'USER' or ${role} == 'TL' or ${role} == 'PM'"><a href="/user/user-profile">User Profile</a></li>
+            <li><a href="/meeting-room-details/1">Rooms</a></li>
+            <li th:if="${role} == 'USER' or ${role} == 'TL' or ${role} == 'PM'"><a href="/user/booking-status/1">Bookings</a></li>
+            <li th:if="${role} == 'ADMIN'"><a href="/admin/booking-requests/1">Bookings</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a th:href="@{/logout}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+        </ul>
     </div>
+</nav>
+<div class="container">
+    <div class="panel-group" style="margin-top:40px">
+        <div class="panel panel-primary">
+            <div th:switch="${role}" class="panel-heading">
+                <h4 th:case="ADMIN">Admin Console</h4>
+                <h4 th:case="PM">Project Manager Console</h4>
+                <h4 th:case="TL">Team Leader Console</h4>
+                <h4 th:case="USER">User Console</h4>
+            </div>
+            <div class="panel-body">
+                <span th:utext="${userName}"></span>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

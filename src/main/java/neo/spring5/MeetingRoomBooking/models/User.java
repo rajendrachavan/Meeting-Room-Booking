@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.Transient;
 
+import java.util.List;
 import java.util.Set;
 
 
@@ -50,7 +51,7 @@ public class User {
 	private Role role;
 
 	@OneToMany(mappedBy = "user")
-	private Set<BookingDetails> bookingDetails;
+	private List<BookingDetails> bookingDetails;
 
 	@Override
 	public String toString() {
