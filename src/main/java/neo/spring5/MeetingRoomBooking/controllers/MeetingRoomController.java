@@ -118,16 +118,12 @@ public class MeetingRoomController {
     }
 
     @RequestMapping(value = "/admin/updateMeetingRoom/{id}", method = RequestMethod.PUT)
-    public ModelAndView editUser(@PathVariable(value="id") Long id,
+        public ModelAndView editUser(@PathVariable(value="id") Long id,
                                  @Valid @ModelAttribute("meetingRoom") MeetingRoom meetingRoomData){
         ModelAndView modelAndView = new ModelAndView();
-        meetingRoomData.setName(meetingRoomData.getName());
-        meetingRoomData.setLocation(meetingRoomData.getLocation());
-        meetingRoomData.setFacilities(meetingRoomData.getFacilities());
-        meetingRoomData.setStatus(meetingRoomData.getStatus());
         meetingRoomService.save(meetingRoomData);
         modelAndView.addObject("successMessage", "MeetingRoom has been Updated successfully");
-        modelAndView.addObject("meetingRoom", meetingRoomData);
+        //modelAndView.addObject("meetingRoom", meetingRoomData);
         modelAndView.setViewName("redirect:/meeting-room-details");
         return modelAndView;
     }

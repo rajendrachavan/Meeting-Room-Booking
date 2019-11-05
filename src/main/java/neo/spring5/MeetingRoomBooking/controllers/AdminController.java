@@ -76,11 +76,10 @@ public class AdminController {
                                  @Valid @ModelAttribute("user") User user){
         ModelAndView modelAndView = new ModelAndView();
         User userDataDB = userService.findById(id).orElse(null);
-        Role role1 = roleRepository.findById(role).orElse(null);
         user.setPassword(userDataDB.getPassword());
         userService.editSave(user);
         modelAndView.addObject("successMessage", "User has been Updated successfully");
-        modelAndView.addObject("user", user);
+        //modelAndView.addObject("user", user);
         modelAndView.setViewName("redirect:/admin/user-management/1");
         return modelAndView;
     }

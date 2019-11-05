@@ -35,10 +35,10 @@
         <div class="panel panel-primary">
             <div class="panel-heading">
                 <h4><span th:utext="${userProfile}">User-Profile</span></h4>
-                <span th:utext="${userName}"></span>
+                <span>---------------------</span>
                 <div style="float:right;">
-                    <form th:action="@{'/user/updateUser/' +${user.id}}" method="get">
-                        <button class="button2" name="registration"
+                    <form th:action="@{/user/edit-user-profile}" method="get">
+                        <button class="button2" name="user-profile"
                                 type="Submit"><i class="fas fa-user-edit ml-2"></i></button>
                     </form>
                 </div>
