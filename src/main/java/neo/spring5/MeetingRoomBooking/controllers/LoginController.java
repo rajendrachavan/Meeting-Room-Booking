@@ -33,8 +33,7 @@ public class LoginController {
 	
 	
 	@RequestMapping(value="/registration", method = RequestMethod.GET)
-	public ModelAndView registration(){
-		ModelAndView modelAndView = new ModelAndView();
+	public ModelAndView registration(ModelAndView modelAndView){
 		User user = new User();
 		modelAndView.addObject("user", user);
 		modelAndView.setViewName("registration");
@@ -42,8 +41,7 @@ public class LoginController {
 	}
 	
 	@RequestMapping(value = "/registration", method = RequestMethod.POST)
-	public ModelAndView createNewUser(@Valid User user, BindingResult bindingResult) {
-		ModelAndView modelAndView = new ModelAndView();
+	public ModelAndView createNewUser(@Valid User user, BindingResult bindingResult, ModelAndView modelAndView) {
 		User userExists = userService.findUserByEmail(user.getEmail());
 		if (userExists != null) {
 			bindingResult
@@ -63,16 +61,14 @@ public class LoginController {
 	}
 
 	@RequestMapping(value = "/access-denied")
-	public ModelAndView accessDenied(){
-		ModelAndView modelAndView = new ModelAndView();
+	public ModelAndView accessDenied(ModelAndView modelAndView){
 		modelAndView.addObject("accessDeniedMessage", "Access Denied.");
 		modelAndView.setViewName("access-denied");
 		return modelAndView;
 	}
 
 	@RequestMapping(value = "/homepage", method = RequestMethod.GET)
-	public ModelAndView homepage(){
-		ModelAndView modelAndView = new ModelAndView();
+	public ModelAndView homepage(ModelAndView modelAndView){
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
 		modelAndView.addObject("id", user.getId());

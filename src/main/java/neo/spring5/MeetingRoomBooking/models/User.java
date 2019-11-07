@@ -50,7 +50,7 @@ public class User {
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	private Role role;
 
-	@OneToMany(mappedBy = "user")
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private List<BookingDetails> bookingDetails;
 
 	@Override

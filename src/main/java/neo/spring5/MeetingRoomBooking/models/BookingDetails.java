@@ -22,7 +22,7 @@ public class BookingDetails {
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     private MeetingRoom meetingRoom;
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     private User user;
 
 }
