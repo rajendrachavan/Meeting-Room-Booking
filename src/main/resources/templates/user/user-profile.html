@@ -21,7 +21,7 @@
             <a class="navbar-brand" href="/homepage">Book A MeetingRoom</a>
         </div>
         <ul class="nav navbar-nav">
-            <li class="active"><a href="/user/user-profile/">User Profile</a></li>
+            <li class="active"><a href="/user/user-profile">User Profile</a></li>
             <li><a href="/meeting-room-details/1">Rooms</a></li>
             <li><a href="/user/booking-status/1">Bookings</a></li>
         </ul>
@@ -71,6 +71,14 @@
                     <tr>
                         <th>Department</th>
                         <td th:text="${user.department}">testdept</td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <form th:action="@{/user/changePassword}" method="get">
+                                <button class="button2" name="changePassword"
+                                        type="Submit">Change Password</button>
+                            </form>
+                        </th>
                     </tr>
                     </tbody>
                 </table>

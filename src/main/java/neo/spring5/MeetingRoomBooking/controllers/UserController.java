@@ -22,8 +22,7 @@ public class UserController {
     private UserService userService;
 
     @RequestMapping(value = "/user-profile")
-    public ModelAndView userProfile(){
-        ModelAndView modelAndView = new ModelAndView();
+    public ModelAndView userProfile(ModelAndView modelAndView){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
         modelAndView.addObject("user", user);
@@ -34,8 +33,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/edit-user-profile")
-    public ModelAndView editProfilepage(){
-        ModelAndView modelAndView = new ModelAndView();
+    public ModelAndView editProfilepage(ModelAndView modelAndView){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
         modelAndView.addObject("user", user);
@@ -44,9 +42,9 @@ public class UserController {
     }
 
     @RequestMapping(value = "/edit-user-profile/{id}", method = RequestMethod.PUT)
-    public ModelAndView updateUserProfile(@PathVariable("id") Long id,
+    public ModelAndView updateUserProfile(ModelAndView modelAndView,
+                                          @PathVariable("id") Long id,
                                           @Valid @ModelAttribute("user") User user){
-        ModelAndView modelAndView = new ModelAndView();
         User userDB = userService.findById(id).orElse(null);
         user.setEmail(userDB.getEmail());
         user.setPassword(userDB.getPassword());
@@ -56,6 +54,13 @@ public class UserController {
         userService.editSave(user);
         modelAndView.addObject("successMessage", "User Updated Successfully.");
         modelAndView.setViewName("redirect:/user/user-profile");
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/changePassword")
+    public ModelAndView changePassword(ModelAndView modelAndView){
+        modelAndView.addObject("temp", 1);
+        modelAndView.setViewName("/forgot-password");
         return modelAndView;
     }
 }
