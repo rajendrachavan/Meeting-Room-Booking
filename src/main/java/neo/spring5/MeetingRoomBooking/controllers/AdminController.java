@@ -92,5 +92,16 @@ public class AdminController {
         modelAndView.setViewName("redirect:/admin/user-management/1");
         return modelAndView;
     }
+
+    @RequestMapping(value="/registration", method = RequestMethod.GET)
+    public ModelAndView registration(ModelAndView modelAndView){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User userRole = userService.findUserByEmail(auth.getName());
+        User user = new User();
+        modelAndView.addObject("user", user);
+        modelAndView.addObject("role", userRole.getRole().getRole());
+        modelAndView.setViewName("registration");
+        return modelAndView;
+    }
 }
 
