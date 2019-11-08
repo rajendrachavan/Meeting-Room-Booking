@@ -3,6 +3,7 @@ package neo.spring5.MeetingRoomBooking.models;
 import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -19,9 +20,8 @@ public class MeetingRoom {
     private String status;
 
     @ManyToMany
-    private Set<Facilities> facilities;
+    private List<Facilities> facilities;
 
     @OneToMany(mappedBy = "meetingRoom")
-    private Set<BookingDetails> bookingDetails;
-
+    private List<BookingDetails> bookingDetails;
 }

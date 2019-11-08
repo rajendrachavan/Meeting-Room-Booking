@@ -1,5 +1,6 @@
 package neo.spring5.MeetingRoomBooking.controllers;
 
+import neo.spring5.MeetingRoomBooking.models.BookingDetails;
 import neo.spring5.MeetingRoomBooking.models.Facilities;
 import neo.spring5.MeetingRoomBooking.models.MeetingRoom;
 import neo.spring5.MeetingRoomBooking.models.User;
@@ -10,13 +11,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -60,6 +65,38 @@ public class MeetingRoomController {
         return modelAndView;
     }
 
+    @RequestMapping("/filter-room-with-date")
+    public ModelAndView filterRoom(ModelAndView modelAndView,
+                             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date){
+        List<MeetingRoom> meetingRooms = new ArrayList<>();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByEmail(auth.getName());
+        for (MeetingRoom meetingRoom: meetingRoomService.findAll()) {
+            boolean flag = true;
+            if(meetingRoom.getBookingDetails().isEmpty()) meetingRooms.add(meetingRoom);
+            else{
+                for(BookingDetails bookingDetail: meetingRoom.getBookingDetails()){
+                    if(bookingDetail.getDate().isEqual(date) && bookingDetail.getStatus().equals("Confirmed")){
+                        flag = false;
+                        break;
+                    }else
+                        flag = true;
+                }
+                if(flag == true)
+                    meetingRooms.add(meetingRoom);
+            }
+        }
+        modelAndView.addObject("role", user.getRole().getRole());
+        modelAndView.addObject("userName", "Welcome " + user.getFirstName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
+        modelAndView.addObject("meetingRoomDetails", "Meeting-Room Details");
+        modelAndView.addObject("meetingRooms", meetingRooms);
+        modelAndView.setViewName("/meeting-room-details");
+        return modelAndView;
+    }
+
+
+
+
     //--------------------------------= ADMIN =---------------------------------------------
 
     @RequestMapping(value="/admin/add-room", method = RequestMethod.GET)
@@ -82,20 +119,20 @@ public class MeetingRoomController {
             modelAndView.setViewName("admin/add-room");
         } else {
             if(id != null){
-                Set<Facilities> facilitiesSet = new HashSet<>();
+                List<Facilities> facilitiesList = new ArrayList<>();
                 Facilities facility;
                 for (Long i : id){
                     facility = facilitiesRepository.findFacilityById(i);
                     if(facility != null){
-                        facilitiesSet.add(facility);
+                        facilitiesList.add(facility);
                     }
                 }
-                meetingRoom.setFacilities(facilitiesSet);
+                meetingRoom.setFacilities(facilitiesList);
             }
             meetingRoomService.save(meetingRoom);
             modelAndView.addObject("successMessage", "Room has been added successfully");
             modelAndView.addObject("meetingRoom", new MeetingRoom());
-            modelAndView.setViewName("redirect:/meeting-room-details");
+            modelAndView.setViewName("redirect:/meeting-room-details/1");
         }
         return modelAndView;
     }
@@ -121,10 +158,12 @@ public class MeetingRoomController {
         public ModelAndView editUser(@PathVariable(value="id") Long id,
                                  @Valid @ModelAttribute("meetingRoom") MeetingRoom meetingRoomData){
         ModelAndView modelAndView = new ModelAndView();
+        MeetingRoom meetingRoom = meetingRoomService.findById(id).orElse(null);
+        meetingRoomData.setStatus(meetingRoom.getStatus());
         meetingRoomService.save(meetingRoomData);
         modelAndView.addObject("successMessage", "MeetingRoom has been Updated successfully");
-        //modelAndView.addObject("meetingRoom", meetingRoomData);
-        modelAndView.setViewName("redirect:/meeting-room-details");
+        modelAndView.addObject("meetingRoom", meetingRoomData);
+        modelAndView.setViewName("redirect:/meeting-room-details/1");
         return modelAndView;
     }
 
@@ -133,7 +172,7 @@ public class MeetingRoomController {
         ModelAndView modelAndView = new ModelAndView();
         meetingRoomService.deleteById(id);
         modelAndView.addObject("successMessage", "MeetingRoom Deleted Successfully.");
-        modelAndView.setViewName("redirect:/meeting-room-details");
+        modelAndView.setViewName("redirect:/meeting-room-details/1");
         return modelAndView;
     }
 }

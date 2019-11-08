@@ -87,7 +87,6 @@ public class PasswordController {
         Token token1 = tokenRepository.findByToken(token);
         User user = userService.findById(token1.getUser().getId()).orElse(null);
         if(user == null){
-            System.out.println("----------------------user is null---------------");
             modelAndView.addObject("errorMessage", "Oops!  This is an invalid password reset link.");
             modelAndView.setViewName("reset-password");
         } else{

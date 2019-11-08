@@ -31,7 +31,17 @@
 </nav>
 
 <div class="container">
-<div class="panel-group" style="margin-top:40px">
+    <div th:if="${role} == 'USER' or ${role} == 'TL' or ${role} == 'PM'">
+        <form  action="#" th:action="@{/filter-room-with-date}" th:method="POST">
+            <tr>
+                <td>Date:</td><td><input type="date" name="date" autofocus></td>
+            </tr>
+            <tr>
+                <td><input class="button2" type="submit" id="submit" value="Check Availability"></td>
+            </tr>
+        </form>
+    </div>
+    <div class="panel-group" style="margin-top:40px">
     <div class="panel panel-primary">
         <div class="panel-heading">
             <h4><span th:utext="${meetingRoomDetails}"></span></h4>
@@ -57,7 +67,7 @@
                 </thead>
                 <tbody>
                 <tr th:each="meetingRoom: ${meetingRooms}">
-                    <td th:text="${meetingRoom.id}">1</td>
+                    <td th:if="${role} == 'ADMIN'" th:text="${meetingRoom.id}">1</td>
                     <td th:text="${meetingRoom.name}">Test</td>
                     <td th:text="${meetingRoom.location}">TestLocation</td>
                     <td th:text="${meetingRoom.facilities}">[AC]</td>
