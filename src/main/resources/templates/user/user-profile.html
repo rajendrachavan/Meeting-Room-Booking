@@ -24,6 +24,7 @@
             <li class="active"><a href="/user/user-profile">User Profile</a></li>
             <li><a href="/meeting-room-details/1">Rooms</a></li>
             <li><a href="/user/booking-status/1">Bookings</a></li>
+            <li><a href="/user/profile-change-requests">Change Request Status</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <li><a th:href="@{/logout}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
@@ -31,7 +32,7 @@
     </div>
 </nav>
 <div class="container">
-    <div class="panel-group" style="margin-top:40px">
+    <div class="panel-group" style="margin-top:20px; margin-left:60px; margin-right:60px;">
         <div class="panel panel-primary">
             <div class="panel-heading">
                 <h4><span th:utext="${userProfile}">User-Profile</span></h4>
@@ -51,26 +52,42 @@
                     <tr>
                         <th>Firstname</th>
                         <td th:text="${user.firstName}">Test</td>
+                        <td> </td>
                     </tr>
                     <tr>
                         <th>Lastname</th>
                         <td th:text="${user.lastName}">Class</td>
+                        <td> </td>
                     </tr>
                     <tr>
                         <th>Gender</th>
                         <td th:text="${user.gender}">male</td>
+                        <td> </td>
                     </tr>
                     <tr>
                         <th>Email</th>
                         <td th:text="${user.email}">test@example.com</td>
+                        <td>
+                            <form th:action="@{/user/changeEmail}" method="get">
+                                <button class="button2" name="changeEmail"
+                                        type="Submit">Change Email Id</button>
+                            </form>
+                        </td>
                     </tr>
                     <tr>
                         <th>Mobile No</th>
                         <td th:text="${user.mobileNo}">123456789</td>
+                        <td> </td>
                     </tr>
                     <tr>
                         <th>Department</th>
                         <td th:text="${user.department}">testdept</td>
+                        <td>
+                            <form th:action="@{/user/changeDepartment}" method="get">
+                                <button class="button2" name="changeDepartment"
+                                        type="Submit">Change Department</button>
+                            </form>
+                        </td>
                     </tr>
                     <tr>
                         <th>
@@ -79,11 +96,14 @@
                                         type="Submit">Change Password</button>
                             </form>
                         </th>
+                        <td> </td>
+                        <td> </td>
                     </tr>
                     </tbody>
                 </table>
             </div>
             <p class="text-center" th:utext="${successMessage}"></p>
+            <p class="text-center" th:utext="${errorMessage}"></p>
         </div>
     </div>
 </div>

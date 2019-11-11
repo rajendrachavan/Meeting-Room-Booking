@@ -53,6 +53,10 @@ public class User {
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private List<BookingDetails> bookingDetails;
 
+
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	private List<ChangeRequest> changeRequests;
+
 	@Override
 	public String toString() {
 		return "User{" +
