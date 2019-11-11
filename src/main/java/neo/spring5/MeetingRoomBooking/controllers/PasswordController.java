@@ -5,19 +5,12 @@ import neo.spring5.MeetingRoomBooking.models.User;
 import neo.spring5.MeetingRoomBooking.repositories.TokenRepository;
 import neo.spring5.MeetingRoomBooking.services.EmailService;
 import neo.spring5.MeetingRoomBooking.services.UserService;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.mail.MessagingException;
-import javax.validation.Valid;
-import java.util.Map;
-import java.util.Properties;
 import java.util.UUID;
 
 @Controller
@@ -60,7 +53,7 @@ public class PasswordController {
             String subject= "Password Reset Request";
             String body = "To reset your password, click the link below:\n" +"<a href='"+ appUrl
                     + "/reset-password?token=" + token.getToken()+"'>Reset link</a>";
-            emailService.sendEmail("rajendra.chavan@neosofttech.com", subject, body);
+            emailService.sendEmail(user.getEmail(), subject, body);
             modelAndView.addObject("successMessage", "A password reset link has been sent to " + email);
         }
         modelAndView.setViewName("forgot-password");
@@ -94,7 +87,7 @@ public class PasswordController {
             tokenRepository.save(token1);
             user.setPassword(bCryptPasswordEncoder.encode(password));
             userService.editSave(user);
-            modelAndView.addObject("successMessage", "You have successfully reset your password.  You may now login.");
+            modelAndView.addObject("successMessage", "You have successfully reset your password.  You may now login with new credentials.");
             modelAndView.setViewName("reset-password");
         }
         return modelAndView;
