@@ -19,10 +19,13 @@
             <a class="navbar-brand" href="/homepage">Book A MeetingRoom</a>
         </div>
         <ul class="nav navbar-nav">
-            <li><a href="/admin/user-management/1">Users</a></li>
+            <li th:if="${role} == 'ADMIN'"><a href="/admin/user-management/1">Users</a></li>
+            <li th:if="${role} == 'TL' or ${role} == 'PM'"><a href="/user/user-profile">User Profile</a></li>
             <li><a href="/meeting-room-details/1">Rooms</a></li>
-            <li><a href="/admin/booking-requests/1">Bookings</a></li>
-            <li class="active"><a href="/admin/change-requests">Change Requests</a></li>
+            <li th:if="${role} == 'TL' or ${role} == 'PM'"><a href="/user/booking-status/1">Bookings</a></li>
+            <li th:if="${role} == 'ADMIN'"><a href="/admin/booking-requests/1">Bookings</a></li>
+            <li class="active"><a href="/change-requests">Change Requests</a></li>
+            <li th:if="${role} == 'TL' or ${role} == 'PM'"><a href="/user/profile-change-requests">Change Request Status</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <li><a th:href="@{/logout}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
@@ -30,7 +33,7 @@
     </div>
 </nav>
 <div class="container">
-    <div class="panel-group" style="margin-top:20px; margin-left:60px; margin-right:60px;">
+    <div class="panel-group" style="margin-top:20px; margin-left:40px; margin-right:40px;">
         <div class="panel panel-primary">
             <div class="panel-heading">
                 <h4><span>Change Requests</span></h4>
@@ -43,6 +46,7 @@
                         <th>Type</th>
                         <th>Old </th>
                         <th>New </th>
+                        <th colspan="2">Requested By</th>
                         <th>Status</th>
                         <th colspan="2">Operations</th>
                     </tr>
@@ -53,15 +57,17 @@
                         <td th:text="${changeRequest.Type}">Test</td>
                         <td th:text="${changeRequest.oldValue}">Class</td>
                         <td th:text="${changeRequest.newValue}">Class</td>
+                        <td th:text="${changeRequest.User.firstName}"></td>
+                        <td th:text="${changeRequest.User.lastName}"></td>
                         <td th:text="${changeRequest.status}">Pending</td>
                         <td th:if="${changeRequest.status} == 'Pending'">
-                            <form th:action="@{/admin/confirmChangeRequest/{id}(id=${changeRequest.id})}" method="post">
+                            <form th:action="@{/confirmChangeRequest/{id}(id=${changeRequest.id})}" method="post">
                                 <button class="btn btn-primary" name="confirm"
                                         type="Submit">Confirm</button>
                             </form>
                         </td>
                         <td th:if="${changeRequest.status} == 'Pending' or ${changeRequest.status} == 'Confirmed'">
-                            <form th:action="@{/admin/rejectChangeRequest/{id}(id=${changeRequest.id})}" method="post">
+                            <form th:action="@{/rejectChangeRequest/{id}(id=${changeRequest.id})}" method="post">
                                 <button class="btn btn-danger" name="confirm"
                                         type="Submit">Reject</button>
                             </form>

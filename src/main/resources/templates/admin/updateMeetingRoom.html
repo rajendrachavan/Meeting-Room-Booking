@@ -24,6 +24,7 @@
             <li><a href="/admin/user-management/1">Users</a></li>
             <li class="active"><a href="/meeting-room-details/1">Rooms</a></li>
             <li><a href="/admin/booking-requests/1">Bookings</a></li>
+            <li><a href="/change-requests">Change Requests</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <li><a th:href="@{/logout}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
@@ -68,7 +69,10 @@
                     <span><button class="button1" type="reset" value="reset">Clear</button></span>
                 </div>
             </div>
-            <span th:utext="${successMessage}"></span>
+            <div>
+                <p class="text-center" style="font-size: 20; color:#00BF6F;" th:utext="${successMessage}"></p>
+                <p class="text-center" style="font-size: 20; color:#FF1C19;" th:utext="${errorMessage}"></p>
+            </div>
         </form>
     </div>
     <div class ="col-sm-3"></div>

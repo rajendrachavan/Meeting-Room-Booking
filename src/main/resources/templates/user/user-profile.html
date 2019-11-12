@@ -24,6 +24,7 @@
             <li class="active"><a href="/user/user-profile">User Profile</a></li>
             <li><a href="/meeting-room-details/1">Rooms</a></li>
             <li><a href="/user/booking-status/1">Bookings</a></li>
+            <li th:if="${role} == 'PM' or ${role} == 'TL'"><a href="/change-requests">Change Requests</a></li>
             <li><a href="/user/profile-change-requests">Change Request Status</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
@@ -102,8 +103,10 @@
                     </tbody>
                 </table>
             </div>
-            <p class="text-center" th:utext="${successMessage}"></p>
-            <p class="text-center" th:utext="${errorMessage}"></p>
+            <div>
+                <p class="text-center" style="font-size: 20; color:#00BF6F;" th:utext="${successMessage}"></p>
+                <p class="text-center" style="font-size: 20; color:#FF1C19;" th:utext="${errorMessage}"></p>
+            </div>
         </div>
     </div>
 </div>

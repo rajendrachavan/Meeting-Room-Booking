@@ -28,6 +28,7 @@ public class UserController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
         modelAndView.addObject("user", user);
+        modelAndView.addObject("role", user.getRole().getRole());
         modelAndView.addObject("userProfile", "User Profile");
         modelAndView.addObject("userName", "Welcome " + user.getFirstName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
         modelAndView.setViewName("user/user-profile");
@@ -124,6 +125,7 @@ public class UserController {
     public ModelAndView profileChangeRequestStatus(ModelAndView modelAndView){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
+        modelAndView.addObject("role", user.getRole().getRole());
         modelAndView.addObject("requests", user.getChangeRequests());
         modelAndView.setViewName("user/profile-change-requests");
         return modelAndView;
@@ -137,6 +139,4 @@ public class UserController {
         modelAndView.setViewName("user/profile-change-requests");
         return modelAndView;
     }
-
-
 }

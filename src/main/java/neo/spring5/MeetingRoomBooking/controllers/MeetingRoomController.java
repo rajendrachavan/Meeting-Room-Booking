@@ -21,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -59,6 +60,7 @@ public class MeetingRoomController {
             List<Integer> pageNumbers = IntStream.rangeClosed(1,totalPages).boxed().collect(Collectors.toList());
             modelAndView.addObject("pageNumbers", pageNumbers);
         }
+        modelAndView.addObject("role", user.getRole().getRole());
         modelAndView.addObject("activeRoomsList", true);
         modelAndView.addObject("meetingRooms", meetingRoomPage.getContent());
         modelAndView.setViewName("meeting-room-details");
@@ -67,36 +69,56 @@ public class MeetingRoomController {
 
     @RequestMapping("/filter-room-with-date")
     public ModelAndView filterRoom(ModelAndView modelAndView,
-                             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date){
-        List<MeetingRoom> meetingRooms = new ArrayList<>();
+                                   @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+                                   @RequestParam @DateTimeFormat(pattern = "HH:MM") LocalTime startTime,
+                                   @RequestParam @DateTimeFormat(pattern = "HH:MM") LocalTime endTime){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
-        for (MeetingRoom meetingRoom: meetingRoomService.findAll()) {
-            boolean flag = true;
-            if(meetingRoom.getBookingDetails().isEmpty()) meetingRooms.add(meetingRoom);
-            else{
-                for(BookingDetails bookingDetail: meetingRoom.getBookingDetails()){
-                    if(bookingDetail.getDate().isEqual(date) && bookingDetail.getStatus().equals("Confirmed")){
-                        flag = false;
-                        break;
-                    }else
-                        flag = true;
+        LocalDate today = LocalDate.now();
+        if(date.isBefore(today)){
+            modelAndView.addObject("errorMessage", "Enter a valid Date.");
+            modelAndView.addObject("role", user.getRole().getRole());
+            modelAndView.addObject("userName", "Welcome " + user.getFirstName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
+            modelAndView.addObject("meetingRoomDetails", "Meeting-Room Details");
+            modelAndView.setViewName("/meeting-room-details");
+            return modelAndView;
+        } else {
+            List<MeetingRoom> meetingRooms = new ArrayList<>();
+            for (MeetingRoom meetingRoom: meetingRoomService.findAll()) {
+                boolean flag = true;
+                if(meetingRoom.getBookingDetails().isEmpty()) meetingRooms.add(meetingRoom);
+                else{
+                    for(BookingDetails bookingDetail: meetingRoom.getBookingDetails()){
+                        if(bookingDetail.getDate().isEqual(date) && bookingDetail.getStatus().equals("Confirmed")){
+                            if(startTime.equals(bookingDetail.getStartTime()) && endTime.equals(bookingDetail.getEndTime())){
+                                flag = false;
+                                break;
+                            } else if(startTime.isBefore(bookingDetail.getStartTime()) && endTime.isBefore(bookingDetail.getStartTime())){
+                                flag = true;
+                                break;
+                            } else if(startTime.isAfter(bookingDetail.getEndTime()) && endTime.isAfter(startTime)){
+                                flag = true;
+                                break;
+                            } else{
+                                flag = false;
+                                break;
+                            }
+                        }else
+                            flag = true;
+                    }
+                    if(flag == true)
+                        meetingRooms.add(meetingRoom);
                 }
-                if(flag == true)
-                    meetingRooms.add(meetingRoom);
             }
+            modelAndView.addObject("successMessage", "Meeting Room Booked.");
+            modelAndView.addObject("role", user.getRole().getRole());
+            modelAndView.addObject("userName", "Welcome " + user.getFirstName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
+            modelAndView.addObject("meetingRoomDetails", "Meeting-Room Details");
+            modelAndView.addObject("meetingRooms", meetingRooms);
+            modelAndView.setViewName("/meeting-room-details");
+            return modelAndView;
         }
-        modelAndView.addObject("role", user.getRole().getRole());
-        modelAndView.addObject("userName", "Welcome " + user.getFirstName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
-        modelAndView.addObject("meetingRoomDetails", "Meeting-Room Details");
-        modelAndView.addObject("meetingRooms", meetingRooms);
-        modelAndView.setViewName("/meeting-room-details");
-        return modelAndView;
     }
-
-
-
-
     //--------------------------------= ADMIN =---------------------------------------------
 
     @RequestMapping(value="/admin/add-room", method = RequestMethod.GET)

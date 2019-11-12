@@ -57,6 +57,9 @@ public class User {
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private List<ChangeRequest> changeRequests;
 
+	@ManyToMany
+	private List<User> subordinates;
+
 	@Override
 	public String toString() {
 		return "User{" +

@@ -23,6 +23,8 @@
             <li class="active"><a href="/meeting-room-details/1">Rooms</a></li>
             <li th:if="${role} == 'USER' or ${role} == 'TL' or ${role} == 'PM'"><a href="/user/booking-status/1">Bookings</a></li>
             <li th:if="${role} == 'ADMIN'"><a href="/admin/booking-requests/1">Bookings</a></li>
+            <li th:if="${role} == 'ADMIN' or ${role} == 'PM' or ${role} == 'TL'"><a href="/change-requests">Change Requests</a></li>
+            <li th:if="${role} == 'PM' or ${role} == 'TL'"><a href="/user/profile-change-requests">Change Request Status</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <li><a th:href="@{/logout}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
@@ -33,15 +35,23 @@
 <div class="container">
     <div th:if="${role} == 'USER' or ${role} == 'TL' or ${role} == 'PM'">
         <form  action="#" th:action="@{/filter-room-with-date}" th:method="POST">
-            <tr>
-                <td>Date:</td><td><input type="date" name="date" autofocus></td>
-            </tr>
-            <tr>
-                <td><input class="button2" type="submit" id="submit" value="Check Availability"></td>
-            </tr>
+            <table>
+                <tr>
+                    <th>Date: </th>
+                    <td><input type="date" name="date" autofocus required>&nbsp;&nbsp;</td>
+                    <th>Start Time: </th>
+                    <td><input type="time" name="startTime" required>&nbsp;&nbsp;</td>
+                    <th>End Time: </th>
+                    <td><input type="time" name="endTime" required>&nbsp;&nbsp;</td>
+                    <td>
+                        &nbsp;&nbsp;
+                        <input class="button2" type="submit" id="submit" value="Check Availability">
+                    </td>
+                </tr>
+            </table>
         </form>
     </div>
-    <div class="panel-group" style="margin-top:40px">
+    <div class="panel-group" style="margin-top:30px">
     <div class="panel panel-primary">
         <div class="panel-heading">
             <h4><span th:utext="${meetingRoomDetails}"></span></h4>
@@ -91,7 +101,10 @@
                 </tbody>
             </table>
         </div>
-        <p class="text-center" th:utext="${successMessage}">successMessage</p>
+        <div>
+            <p class="text-center" style="font-size: 20; color:#00BF6F;" th:utext="${successMessage}"></p>
+            <p class="text-center" style="font-size: 20; color:#FF1C19;" th:utext="${errorMessage}"></p>
+        </div>
     </div>
     <div class="row" th:fragment="pagination">
         <div class="col-md-2"></div>

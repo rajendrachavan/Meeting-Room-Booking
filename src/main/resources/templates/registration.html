@@ -97,8 +97,8 @@
 					</div>
 				</div>
 				<div>
-					<span style="font-size: 20; color:#00BF6F;" th:utext="${successMessage}"></span>
-					<span style="font-size: 20; color:#FF1C19;" th:utext="${errorMessage}"></span>
+					<p class="text-center" style="font-size: 20; color:#00BF6F;" th:utext="${successMessage}"></p>
+					<p class="text-center" style="font-size: 20; color:#FF1C19;" th:utext="${errorMessage}"></p>
 				</div>
 			</form>
 			<form th:action="@{/login}" method="get" th:if="${role} == null">

@@ -40,7 +40,8 @@ public class BookingController {
     public ModelAndView bookingRequests(@PathVariable(value = "page") int page,
                                         @RequestParam(defaultValue = "id") String sortBy){
         ModelAndView modelAndView = new ModelAndView();
-
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByEmail(auth.getName());
         PageRequest pageable = PageRequest.of(page - 1, 5, Sort.Direction.DESC, sortBy);
         Page<BookingDetails> bookingPage = bookingService.getPaginatedBookingDetails(pageable);
         int totalPages = bookingPage.getTotalPages();
@@ -48,6 +49,7 @@ public class BookingController {
             List<Integer> pageNumbers = IntStream.rangeClosed(1,totalPages).boxed().collect(Collectors.toList());
             modelAndView.addObject("pageNumbers", pageNumbers);
         }
+        modelAndView.addObject("role", user.getRole().getRole());
         modelAndView.addObject("activeBookingList", true);
         modelAndView.addObject("bookingDetails", bookingPage.getContent());
         modelAndView.setViewName("admin/booking-requests");

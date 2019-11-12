@@ -112,59 +112,5 @@ public class AdminController {
         modelAndView.setViewName("registration");
         return modelAndView;
     }
-
-    @RequestMapping(value="/change-requests", method = RequestMethod.GET)
-    public ModelAndView changeRequests(ModelAndView modelAndView){
-        modelAndView.addObject("requests", changeRequestRepository.findAll());
-        modelAndView.setViewName("admin/change-requests");
-        return modelAndView;
-    }
-
-    @RequestMapping(value="/confirmChangeRequest/{id}", method = RequestMethod.POST)
-    public ModelAndView confirmChangeRequest(ModelAndView modelAndView,
-                                             @PathVariable("id") Long id){
-        ChangeRequest changeRequest = changeRequestRepository.findById(id).orElse(null);
-        User user = userService.findById(changeRequest.getUser().getId()).orElse(null);
-
-        if(changeRequest.getType().equals("email")){
-          user.setEmail(changeRequest.getNewValue());
-          userService.editSave(user);
-            String appUrl = "http://localhost:8080";
-            String subject= "Email Change Request";
-            String body = "Your Request for Change in Email Address is Confirmed!\n" +
-                    "Your can now login with your new Email ID: "+changeRequest.getNewValue();
-            emailService.sendEmail(changeRequest.getOldValue(), subject, body);
-        } else {
-            user.setDepartment(changeRequest.getNewValue());
-            userService.editSave(user);
-        }
-        changeRequest.setStatus("Confirmed");
-        changeRequestRepository.save(changeRequest);
-        modelAndView.setViewName("redirect:/admin/change-requests");
-        return modelAndView;
-    }
-
-    @RequestMapping(value="/rejectChangeRequest/{id}", method = RequestMethod.POST)
-    public ModelAndView rejectChangeRequest(ModelAndView modelAndView,
-                                            @PathVariable("id") Long id){
-        ChangeRequest changeRequest = changeRequestRepository.findById(id).orElse(null);
-        User user = userService.findById(changeRequest.getUser().getId()).orElse(null);
-        if(changeRequest.getType().equals("email")){
-            user.setEmail(changeRequest.getOldValue());
-            userService.editSave(user);
-
-            String appUrl = "http://localhost:8080";
-            String subject= "Email Change Request";
-            String body = "Your Request for Change in Email Address is Rejected!\n";
-            emailService.sendEmail(changeRequest.getOldValue(), subject, body);
-        } else {
-            user.setDepartment(changeRequest.getOldValue());
-            userService.editSave(user);
-        }
-        changeRequest.setStatus("Rejected");
-        changeRequestRepository.save(changeRequest);
-        modelAndView.setViewName("redirect:/admin/change-requests");
-        return modelAndView;
-    }
 }
 
