@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -127,34 +130,27 @@ public class BookingController {
         return modelAndView;
     }
 
-    @RequestMapping(value={"/bookRoom/{id}"}, method = RequestMethod.GET)
-    public ModelAndView bookRoom(@PathVariable(value="id") Long id) throws Exception{
+    @PostMapping("/bookRoom/{id}/{date}/{startTime}/{endTime}")
+    public ModelAndView bookRoom(@PathVariable(value="id") Long id,
+                                 @DateTimeFormat(pattern = "yyyy-MM-dd") @PathVariable("date") LocalDate date,
+                                 @DateTimeFormat(pattern = "HH:mm") @PathVariable("startTime") LocalTime startTime,
+                                 @DateTimeFormat(pattern = "HH:mm") @PathVariable("endTime") LocalTime endTime) throws Exception{
         ModelAndView modelAndView = new ModelAndView();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
         modelAndView.addObject("userName", "Welcome " + user.getFirstName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
 
-        modelAndView.addObject("bookingDetails", new BookingDetails());
-        modelAndView.addObject("userId", user.getId());
-        modelAndView.addObject("id", id);
-        modelAndView.setViewName("user/bookRoom");
-        return modelAndView;
-    }
-
-    @PostMapping(value = "/bookRoom/{id}/{userId}")
-    public ModelAndView NewBookingRequest(@PathVariable(value="id") Long id,
-                                 @PathVariable(value="userId") Long userId,
-                                 @Valid BookingDetails bookingDetails){
-        ModelAndView modelAndView = new ModelAndView();
+        BookingDetails bookingDetails = new BookingDetails();
         MeetingRoom meetingRoom = meetingRoomService.findById(id).orElse(null);
         bookingDetails.setStatus("Pending");
         bookingDetails.setMeetingRoom(meetingRoom);
-        bookingDetails.setUser(userService.findById(userId).orElse(null));
+        bookingDetails.setUser(user);
+        bookingDetails.setDate(date);
+        bookingDetails.setStartTime(startTime);
+        bookingDetails.setEndTime(endTime);
         bookingService.save(bookingDetails);
-
         modelAndView.addObject("successMessage", "Room Booked successfully");
-        modelAndView.addObject("bookingDetails", bookingDetails);
-        modelAndView.setViewName("redirect:/user/booking-status/1");
+        modelAndView.setViewName("redirect:/meeting-room-details/1");
         return modelAndView;
     }
 

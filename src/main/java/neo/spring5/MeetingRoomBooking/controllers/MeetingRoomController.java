@@ -74,47 +74,19 @@ public class MeetingRoomController {
                                    @RequestParam @DateTimeFormat(pattern = "HH:MM") LocalTime endTime){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
+        modelAndView.addObject("role", user.getRole().getRole());
+        modelAndView.addObject("userName", "Welcome " + user.getFirstName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
         LocalDate today = LocalDate.now();
         if(date.isBefore(today)){
             modelAndView.addObject("errorMessage", "Enter a valid Date.");
-            modelAndView.addObject("role", user.getRole().getRole());
-            modelAndView.addObject("userName", "Welcome " + user.getFirstName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
-            modelAndView.addObject("meetingRoomDetails", "Meeting-Room Details");
             modelAndView.setViewName("/meeting-room-details");
             return modelAndView;
         } else {
-            List<MeetingRoom> meetingRooms = new ArrayList<>();
-            for (MeetingRoom meetingRoom: meetingRoomService.findAll()) {
-                boolean flag = true;
-                if(meetingRoom.getBookingDetails().isEmpty()) meetingRooms.add(meetingRoom);
-                else{
-                    for(BookingDetails bookingDetail: meetingRoom.getBookingDetails()){
-                        if(bookingDetail.getDate().isEqual(date) && bookingDetail.getStatus().equals("Confirmed")){
-                            if(startTime.equals(bookingDetail.getStartTime()) && endTime.equals(bookingDetail.getEndTime())){
-                                flag = false;
-                                break;
-                            } else if(startTime.isBefore(bookingDetail.getStartTime()) && endTime.isBefore(bookingDetail.getStartTime())){
-                                flag = true;
-                                break;
-                            } else if(startTime.isAfter(bookingDetail.getEndTime()) && endTime.isAfter(startTime)){
-                                flag = true;
-                                break;
-                            } else{
-                                flag = false;
-                                break;
-                            }
-                        }else
-                            flag = true;
-                    }
-                    if(flag == true)
-                        meetingRooms.add(meetingRoom);
-                }
-            }
-            modelAndView.addObject("successMessage", "Meeting Room Booked.");
-            modelAndView.addObject("role", user.getRole().getRole());
-            modelAndView.addObject("userName", "Welcome " + user.getFirstName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
-            modelAndView.addObject("meetingRoomDetails", "Meeting-Room Details");
-            modelAndView.addObject("meetingRooms", meetingRooms);
+            modelAndView.addObject("date", date);
+            modelAndView.addObject("startTime", startTime);
+            modelAndView.addObject("endTime", endTime);
+            modelAndView.addObject("temp", 1);
+            modelAndView.addObject("meetingRooms", meetingRoomService.filterByDateAndTime(date, startTime, endTime));
             modelAndView.setViewName("/meeting-room-details");
             return modelAndView;
         }
@@ -154,7 +126,7 @@ public class MeetingRoomController {
             meetingRoomService.save(meetingRoom);
             modelAndView.addObject("successMessage", "Room has been added successfully");
             modelAndView.addObject("meetingRoom", new MeetingRoom());
-            modelAndView.setViewName("redirect:/meeting-room-details/1");
+            modelAndView.setViewName("redirect:/meeting-room-details");
         }
         return modelAndView;
     }
