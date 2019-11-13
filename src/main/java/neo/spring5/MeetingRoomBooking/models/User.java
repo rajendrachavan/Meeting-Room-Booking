@@ -41,8 +41,8 @@ public class User {
 	@Column(name = "mobile_no")
 	private String mobileNo;
 
-	@Column(name = "department")
-	private String department;
+	@ManyToOne(cascade = CascadeType.PERSIST)
+	private Department department;
 
 	@Column(name = "active")
 	private int active;
@@ -60,20 +60,4 @@ public class User {
 	@ManyToMany
 	private List<User> subordinates;
 
-	@Override
-	public String toString() {
-		return "User{" +
-				"id=" + id +
-				", email='" + email + '\'' +
-				", password='" + password + '\'' +
-				", firstName='" + firstName + '\'' +
-				", lastName='" + lastName + '\'' +
-				", gender='" + gender + '\'' +
-				", mobileNo='" + mobileNo + '\'' +
-				", department='" + department + '\'' +
-				", active=" + active +
-				", role=" + role +
-				", bookingDetails=" + bookingDetails +
-				'}';
-	}
 }

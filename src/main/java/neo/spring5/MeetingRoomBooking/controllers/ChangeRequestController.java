@@ -1,9 +1,11 @@
 package neo.spring5.MeetingRoomBooking.controllers;
 
 import neo.spring5.MeetingRoomBooking.models.ChangeRequest;
+import neo.spring5.MeetingRoomBooking.models.Department;
 import neo.spring5.MeetingRoomBooking.models.Role;
 import neo.spring5.MeetingRoomBooking.models.User;
 import neo.spring5.MeetingRoomBooking.repositories.ChangeRequestRepository;
+import neo.spring5.MeetingRoomBooking.repositories.DepartmentRepository;
 import neo.spring5.MeetingRoomBooking.repositories.RoleRepository;
 import neo.spring5.MeetingRoomBooking.services.EmailService;
 import neo.spring5.MeetingRoomBooking.services.UserService;
@@ -27,6 +29,8 @@ public class ChangeRequestController {
     private RoleRepository roleRepository;
     @Autowired
     private EmailService emailService;
+    @Autowired
+    private DepartmentRepository departmentRepository;
 
     @RequestMapping(value="/change-requests", method = RequestMethod.GET)
     public ModelAndView changeRequests(ModelAndView modelAndView){
@@ -66,7 +70,8 @@ public class ChangeRequestController {
                     "Your can now login with your new Email ID: "+changeRequest.getNewValue();
             emailService.sendEmail(changeRequest.getOldValue(), subject, body);
         } else {
-            user.setDepartment(changeRequest.getNewValue());
+            Department department = departmentRepository.findByName(changeRequest.getNewValue());
+            user.setDepartment(department);
             userService.editSave(user);
         }
         changeRequest.setStatus("Confirmed");
@@ -89,7 +94,8 @@ public class ChangeRequestController {
             String body = "Your Request for Change in Email Address is Rejected!\n";
             emailService.sendEmail(changeRequest.getOldValue(), subject, body);
         } else {
-            user.setDepartment(changeRequest.getOldValue());
+            Department department = departmentRepository.findByName(changeRequest.getOldValue());
+            user.setDepartment(department);
             userService.editSave(user);
         }
         changeRequest.setStatus("Rejected");

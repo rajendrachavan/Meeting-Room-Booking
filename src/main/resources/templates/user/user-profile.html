@@ -82,7 +82,7 @@
                     </tr>
                     <tr>
                         <th>Department</th>
-                        <td th:text="${user.department}">testdept</td>
+                        <td th:text="${user.Department.name}">testdept</td>
                         <td>
                             <form th:action="@{/user/changeDepartment}" method="get">
                                 <button class="button2" name="changeDepartment"

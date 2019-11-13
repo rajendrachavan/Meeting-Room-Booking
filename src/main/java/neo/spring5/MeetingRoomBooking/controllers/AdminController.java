@@ -2,9 +2,11 @@ package neo.spring5.MeetingRoomBooking.controllers;
 
 import lombok.val;
 import neo.spring5.MeetingRoomBooking.models.ChangeRequest;
+import neo.spring5.MeetingRoomBooking.models.Department;
 import neo.spring5.MeetingRoomBooking.models.Role;
 import neo.spring5.MeetingRoomBooking.models.User;
 import neo.spring5.MeetingRoomBooking.repositories.ChangeRequestRepository;
+import neo.spring5.MeetingRoomBooking.repositories.DepartmentRepository;
 import neo.spring5.MeetingRoomBooking.repositories.RoleRepository;
 import neo.spring5.MeetingRoomBooking.services.EmailService;
 import neo.spring5.MeetingRoomBooking.services.UserService;
@@ -41,6 +43,9 @@ public class AdminController {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private DepartmentRepository departmentRepository;
 
     @RequestMapping(value="/user-management/{page}", method = RequestMethod.GET)
     public ModelAndView userManagement(@PathVariable(value = "page") int page,
@@ -82,9 +87,12 @@ public class AdminController {
     @RequestMapping(value = "/updateUser/{id}", method = RequestMethod.PUT)
     public ModelAndView editUser(@PathVariable(value="id") Long id,
                                  @RequestParam(name = "role") Long role,
+                                 @RequestParam(name = "department") Long dept_id,
                                  @Valid @ModelAttribute("user") User user){
         ModelAndView modelAndView = new ModelAndView();
         User userDataDB = userService.findById(id).orElse(null);
+        Department department = departmentRepository.findById(dept_id).orElse(null);
+        user.setDepartment(department);
         user.setPassword(userDataDB.getPassword());
         userService.editSave(user);
         modelAndView.addObject("successMessage", "User has been Updated successfully");

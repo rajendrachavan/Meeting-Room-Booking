@@ -1,7 +1,10 @@
 package neo.spring5.MeetingRoomBooking.controllers;
 
 import javax.validation.Valid;
+
+import neo.spring5.MeetingRoomBooking.models.Department;
 import neo.spring5.MeetingRoomBooking.models.User;
+import neo.spring5.MeetingRoomBooking.repositories.DepartmentRepository;
 import neo.spring5.MeetingRoomBooking.repositories.RoleRepository;
 import neo.spring5.MeetingRoomBooking.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +24,9 @@ public class LoginController {
 	@Autowired
 	private RoleRepository roleRepository;
 
+	@Autowired
+	private DepartmentRepository departmentRepository;
+
 	@RequestMapping(value={"/", "/login"}, method = RequestMethod.GET)
 	public ModelAndView login(ModelAndView modelAndView){
 		modelAndView.setViewName("login");
@@ -37,12 +43,16 @@ public class LoginController {
 	}
 	
 	@RequestMapping(value = "/registration", method = RequestMethod.POST)
-	public ModelAndView createNewUser(@Valid User user, ModelAndView modelAndView) {
+	public ModelAndView createNewUser(@Valid User user,
+									  @RequestParam(name = "department") Long dept_id,
+									  ModelAndView modelAndView) {
 		User userExists = userService.findUserByEmail(user.getEmail());
 		if (userExists != null) {
 			modelAndView.addObject("errorMessage", "User Already Exists.");
 			modelAndView.setViewName("registration");
 		} else {
+			Department department = departmentRepository.findById(dept_id).orElse(null);
+			user.setDepartment(department);
 			userService.saveUser(user);
 			modelAndView.addObject("successMessage", "User has been registered successfully");
 			modelAndView.addObject("user", new User());

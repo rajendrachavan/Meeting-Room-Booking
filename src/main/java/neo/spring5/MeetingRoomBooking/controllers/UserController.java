@@ -3,6 +3,7 @@ package neo.spring5.MeetingRoomBooking.controllers;
 import neo.spring5.MeetingRoomBooking.models.ChangeRequest;
 import neo.spring5.MeetingRoomBooking.models.User;
 import neo.spring5.MeetingRoomBooking.repositories.ChangeRequestRepository;
+import neo.spring5.MeetingRoomBooking.repositories.DepartmentRepository;
 import neo.spring5.MeetingRoomBooking.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -22,6 +23,9 @@ public class UserController {
 
     @Autowired
     private ChangeRequestRepository changeRequestRepository;
+
+    @Autowired
+    private DepartmentRepository departmentRepository;
 
     @RequestMapping(value = "/user-profile")
     public ModelAndView userProfile(ModelAndView modelAndView){
@@ -49,12 +53,11 @@ public class UserController {
                                           @PathVariable("id") Long id,
                                           @Valid @ModelAttribute("user") User user){
         User userDB = userService.findById(id).orElse(null);
-        user.setEmail(userDB.getEmail());
-        user.setPassword(userDB.getPassword());
-        user.setDepartment(userDB.getDepartment());
-        user.setActive(userDB.getActive());
-        user.setRole(userDB.getRole());
-        userService.editSave(user);
+        userDB.setFirstName(user.getFirstName());
+        userDB.setLastName(user.getLastName());
+        userDB.setGender(user.getGender());
+        userDB.setMobileNo(user.getMobileNo());
+        userService.editSave(userDB);
         modelAndView.addObject("successMessage", "User Updated Successfully.");
         modelAndView.setViewName("redirect:/user/user-profile");
         return modelAndView;
@@ -98,7 +101,7 @@ public class UserController {
     public ModelAndView changeDepartment(ModelAndView modelAndView){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
-        modelAndView.addObject("previousDepartment",user.getDepartment());
+        modelAndView.addObject("previousDepartment",user.getDepartment().getName());
         modelAndView.addObject("temp", 2);
         modelAndView.setViewName("user/change-request");
         return modelAndView;
@@ -106,13 +109,13 @@ public class UserController {
 
     @RequestMapping(value = "/changeDepartment", method = RequestMethod.POST)
     public ModelAndView processChangeDepartment(ModelAndView modelAndView,
-                                           @RequestParam("department") String userDept){
+                                           @RequestParam("department") Long userDept){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
         ChangeRequest changeRequest = new ChangeRequest();
         changeRequest.setType("department");
-        changeRequest.setOldValue(user.getDepartment());
-        changeRequest.setNewValue(userDept);
+        changeRequest.setOldValue(user.getDepartment().getName());
+        changeRequest.setNewValue(departmentRepository.findById(userDept).orElse(null).getName());
         changeRequest.setUser(user);
         changeRequest.setStatus("Pending");
         changeRequestRepository.save(changeRequest);
