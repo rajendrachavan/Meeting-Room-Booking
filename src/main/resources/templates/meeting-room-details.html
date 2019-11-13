@@ -11,72 +11,102 @@
     <script	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
-<div th:switch="${role}">
-    <div th:case="ADMIN">
-        <nav class="navbar navbar-inverse">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <a class="navbar-brand" href="/homepage">Book A MeetingRoom</a>
-                </div>
-                <ul class="nav navbar-nav">
-                    <li class="active"><a href="/admin/user-management/1">Users</a></li>
-                    <li><a href="/meeting-room-details/1">Rooms</a></li>
-                    <li><a href="/admin/booking-requests/1">Bookings</a></li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a th:href="@{/logout}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
-                </ul>
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/homepage"><i class="fas fa-chevron-circle-left"></i></a>
+            <a class="navbar-brand" href="/homepage">Book A MeetingRoom</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li th:if="${role} == 'ADMIN'"><a href="/admin/user-management/1">Users</a></li>
+            <li th:if="${role} == 'USER' or ${role} == 'TL' or ${role} == 'PM'"><a href="/user/user-profile">User Profile</a></li>
+            <li class="active"><a href="/meeting-room-details/1">Rooms</a></li>
+            <li th:if="${role} == 'USER' or ${role} == 'TL' or ${role} == 'PM'"><a href="/user/booking-status/1">Bookings</a></li>
+            <li th:if="${role} == 'ADMIN'"><a href="/admin/booking-requests/1">Bookings</a></li>
+            <li th:if="${role} == 'ADMIN' or ${role} == 'PM' or ${role} == 'TL'"><a href="/change-requests">Change Requests</a></li>
+            <li th:if="${role} == 'PM' or ${role} == 'TL'"><a href="/user/profile-change-requests">Change Request Status</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a th:href="@{/logout}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="panel-group" style="margin-top:30px">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h4><span> Meeting Rooms</span></h4>
+            <span th:utext="${userName}"></span>
+            <div style="float:right;" th:if="${role} == 'ADMIN'">
+                <form th:action="@{/admin/add-room}" method="get">
+                    <button class="button2" name="add-room"
+                            type="Submit">Add</button>
+                </form>
             </div>
-        </nav>
-        <div class="container">
-            <div class="panel-group" style="margin-top:40px">
-                <div class="panel panel-primary">
-                    <div class="panel-heading">
-                        <h4><span th:utext="${meetingRoomDetails}"></span></h4>
-                        <span th:utext="${userName}"></span>
-                        <div style="float:right;">
-                            <form th:action="@{/admin/add-room}" method="get">
-                                <button class="button2" name="add-room"
-                                        type="Submit">Add</button>
-                            </form>
-                        </div>
-                    </div>
-                    <div class="panel-body">
-                        <table class="table table-hover">
-                            <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Location</th>
-                                <th>Facilities</th>
-                                <th>Status</th>
-                                <th colspan="2">Operations</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="meetingRoom: ${meetingRooms}">
-                                <td th:text="${meetingRoom.id}">1</td>
-                                <td th:text="${meetingRoom.name}">Test</td>
-                                <td th:text="${meetingRoom.location}">TestLocation</td>
-                                <td th:text="${meetingRoom.facilities}">[AC]</td>
-                                <td th:text="${meetingRoom.status}">Available</td>
-                                <td>
-                                    <a th:href="@{/admin/updateMeetingRoom/{id}(id=${meetingRoom.id})}"
-                                       class="btn btn-primary">Edit
-                                    </a>
-                                </td>
-                                <td>
-                                    <a th:href="@{/admin/deleteMeetingRoom/{id}(id=${meetingRoom.id})}"
-                                       class="btn btn-danger">Delete
-                                    </a>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <p class="text-center" th:utext="${successMessage}"></p>
-                </div>
+        </div>
+        <div class="panel-body">
+            <div th:if="${role} == 'USER' or ${role} == 'TL' or ${role} == 'PM'">
+                <form th:action="@{/filter-room-with-date}" th:method="POST">
+                    <table>
+                        <tr>
+                            <th>Date: </th>
+                            <td><input type="date" name="date" autofocus required>&nbsp;&nbsp;</td>
+                            <th>Start Time: </th>
+                            <td><input type="time" name="startTime" required>&nbsp;&nbsp;</td>
+                            <th>End Time: </th>
+                            <td><input type="time" name="endTime" required>&nbsp;&nbsp;</td>
+                            <td>
+                                &nbsp;&nbsp;
+                                <input class="button2" type="submit" value="Check Availability">
+                            </td>
+                        </tr>
+                    </table>
+                </form>
             </div>
+            <hr>
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th th:if="${role} == 'ADMIN'">ID</th>
+                    <th>Name</th>
+                    <th>Location</th>
+                    <th>Facilities</th>
+                    <th>Status</th>
+                    <th colspan="2">Operations</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="meetingRoom: ${meetingRooms}">
+                    <td th:if="${role} == 'ADMIN'" th:text="${meetingRoom.id}">1</td>
+                    <td th:text="${meetingRoom.name}">Test</td>
+                    <td th:text="${meetingRoom.location}">TestLocation</td>
+                    <td th:text="${meetingRoom.facilities}">[AC]</td>
+                    <td th:text="${meetingRoom.status}">Available</td>
+                    <td th:if="${role} == 'ADMIN'">
+                        <a th:href="@{/admin/updateMeetingRoom/{id}(id=${meetingRoom.id}}"
+                           class="btn btn-primary">Edit
+                        </a>
+                    </td>
+                    <td th:if="${role} == 'ADMIN'">
+                        <a th:href="@{/admin/deleteMeetingRoom/{id}(id=${meetingRoom.id})}"
+                           class="btn btn-danger">Delete
+                        </a>
+                    </td>
+                    <td th:if="${role} == 'USER' or ${role} == 'TL' or ${role} == 'PM'">
+                        <form th:if="${temp} == 1"
+                           th:action="@{'/bookRoom/'+${meetingRoom.id}+'/'+${date}+ '/'+${startTime}+ '/'+${endTime}}"
+                              method="post">
+                            <input type="submit" class="btn btn-primary" value="Book" />
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <p class="text-center" style="font-size: 20; color:#00BF6F;" th:utext="${successMessage}"></p>
+            <p class="text-center" style="font-size: 20; color:#FF1C19;" th:utext="${errorMessage}"></p>
         </div>
     </div>
     <div class="row" th:fragment="pagination">
@@ -92,56 +122,7 @@
         </div>
         <div class="col-md-2"></div>
     </div>
-    <div th:case="USER">
-        <div class="container">
-            <div class="panel-group" style="margin-top:40px">
-                <div class="panel panel-primary">
-                    <div class="panel-heading">
-                        <h4><span th:utext="${meetingRoomDetails}"></span></h4>
-                        <span th:utext="${userName}"></span>
-                        <div align="right">
-                            <form th:action="@{/logout}" method="get">
-                                <button class="button2" name="logout"
-                                        type="Submit">Logout</button>
-                            </form>
-                        </div>
-                    </div>
-                    <div class="panel-body">
-                        <table class="table table-hover">
-                            <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Location</th>
-                                <th>Facilities</th>
-                                <th>Status</th>
-                                <th colspan="2">Operations</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="meetingRoom: ${meetingRooms}">
-                                <td th:text="${meetingRoom.name}">Test</td>
-                                <td th:text="${meetingRoom.location}">TestLocation</td>
-                                <td th:text="${meetingRoom.facilities}">[AC]</td>
-                                <td th:text="${meetingRoom.status}">Available</td>
-                                <td>
-                                    <a th:href="@{/bookRoom/{id}(id=${meetingRoom.id})}"
-                                       class="btn btn-primary">Book
-                                    </a>
-                                </td>
-                                <td>
-                                    <a th:href="@{/cancelRequest/{id}(id=${meetingRoom.id})}"
-                                       class="btn btn-danger">Cancel
-                                    </a>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <p class="text-center" th:utext="${successMessage}"></p>
-                </div>
-            </div>
-        </div>
-    </div>
+</div>
 </div>
 </body>
 </html>

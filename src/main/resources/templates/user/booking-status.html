@@ -12,18 +12,32 @@
 </head>
 
 <body>
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/homepage">
+                <i class="fas fa-chevron-circle-left"></i>
+            </a>
+            <a class="navbar-brand" href="/homepage">Book A MeetingRoom</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li><a href="/user/user-profile">User Profile</a></li>
+            <li><a href="/meeting-room-details/1">Rooms</a></li>
+            <li class="active"><a href="/user/booking-status/1">Bookings</a></li>
+            <li th:if="${role} == 'PM' or ${role} == 'TL'"><a href="/change-requests">Change Requests</a></li>
+            <li><a href="/user/profile-change-requests">Change Request Status</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a th:href="@{/logout}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+        </ul>
+    </div>
+</nav>
 <div class="container">
     <div class="panel-group" style="margin-top:40px">
         <div class="panel panel-primary">
             <div class="panel-heading">
                 <h4>User Console</h4>
                 <span th:utext="${userName}"></span>
-                <div style="float:right;">
-                    <form th:action="@{/logout}" method="get">
-                        <button class="button2" name="logout"
-                                type="Submit">Logout</button>
-                    </form>
-                </div>
                 <h5>Booking Requests</h5>
             </div>
             <div class="panel-body">
@@ -33,7 +47,6 @@
                         <th>Meeting Room Name</th>
                         <th>Date</th>
                         <th>Status</th>
-                        <th></th>
                         <th>Operations</th>
                     </tr>
                     </thead>
@@ -42,7 +55,7 @@
                         <td th:text="${booking.MeetingRoom.name}">Test</td>
                         <td th:text="${booking.date}">31-10-2019</td>
                         <td th:text="${booking.status}">confirm</td>
-                        <td align="center" aria-disabled="true">
+                        <td class="centered">
                             <a th:href="@{/deleteRequest/{id}(id=${booking.id})}"
                                class="btn btn-danger">Delete
                             </a>
@@ -51,8 +64,24 @@
                     </tbody>
                 </table>
             </div>
-            <p class="text-center" th:utext="${successMessage}"></p>
+            <div>
+                <p class="text-center" style="font-size: 20; color:#00BF6F;" th:utext="${successMessage}"></p>
+                <p class="text-center" style="font-size: 20; color:#FF1C19;" th:utext="${errorMessage}"></p>
+            </div>
         </div>
+    </div>
+    <div class="row" th:fragment="pagination">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <nav aria-label="Pagination">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" th:each="pageNumber : ${pageNumbers}" >
+                        <a class="page-link" th:href="@{|/user/booking-status/${pageNumber}|}" th:text=${pageNumber}>1</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="col-md-2"></div>
     </div>
 </div>
 </body>

@@ -1,9 +1,14 @@
 package neo.spring5.MeetingRoomBooking.controllers;
 
 import lombok.val;
+import neo.spring5.MeetingRoomBooking.models.ChangeRequest;
+import neo.spring5.MeetingRoomBooking.models.Department;
 import neo.spring5.MeetingRoomBooking.models.Role;
 import neo.spring5.MeetingRoomBooking.models.User;
+import neo.spring5.MeetingRoomBooking.repositories.ChangeRequestRepository;
+import neo.spring5.MeetingRoomBooking.repositories.DepartmentRepository;
 import neo.spring5.MeetingRoomBooking.repositories.RoleRepository;
+import neo.spring5.MeetingRoomBooking.services.EmailService;
 import neo.spring5.MeetingRoomBooking.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -33,13 +38,22 @@ public class AdminController {
     @Autowired
     private RoleRepository roleRepository;
 
+    @Autowired
+    private ChangeRequestRepository changeRequestRepository;
+
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private DepartmentRepository departmentRepository;
+
     @RequestMapping(value="/user-management/{page}", method = RequestMethod.GET)
     public ModelAndView userManagement(@PathVariable(value = "page") int page,
                                        @RequestParam(defaultValue = "id") String sortBy){
         ModelAndView modelAndView = new ModelAndView();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
-        PageRequest pageable = PageRequest.of(page - 1, 3, Sort.Direction.DESC, sortBy);
+        PageRequest pageable = PageRequest.of(page - 1, 5, Sort.Direction.DESC, sortBy);
         Page<User> userPage = userService.getPaginatedUsers(pageable);
         int totalPages = userPage.getTotalPages();
         if(totalPages > 0) {
@@ -47,8 +61,8 @@ public class AdminController {
             modelAndView.addObject("pageNumbers", pageNumbers);
         }
         modelAndView.addObject("activeUserList", true);
+        modelAndView.addObject("userManagement","User Management");
         modelAndView.addObject("users", userPage.getContent());
-
         modelAndView.addObject("userName", "Welcome " + user.getFirstName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
         modelAndView.setViewName("admin/user-management");
         return modelAndView;
@@ -73,23 +87,17 @@ public class AdminController {
     @RequestMapping(value = "/updateUser/{id}", method = RequestMethod.PUT)
     public ModelAndView editUser(@PathVariable(value="id") Long id,
                                  @RequestParam(name = "role") Long role,
+                                 @RequestParam(name = "department") Long dept_id,
                                  @Valid @ModelAttribute("user") User user){
         ModelAndView modelAndView = new ModelAndView();
         User userDataDB = userService.findById(id).orElse(null);
-        Role role1 = roleRepository.findById(role).orElse(null);
-        user.setFirstName(user.getFirstName());
-        user.setLastName(user.getLastName());
-        user.setEmail(user.getEmail());
+        Department department = departmentRepository.findById(dept_id).orElse(null);
+        user.setDepartment(department);
         user.setPassword(userDataDB.getPassword());
-        user.setGender(user.getGender());
-        user.setMobileNo(user.getMobileNo());
-        user.setDepartment(user.getDepartment());
-        user.setActive(user.getActive());
-        user.setRole(role1);
         userService.editSave(user);
         modelAndView.addObject("successMessage", "User has been Updated successfully");
-        modelAndView.addObject("user", user);
-        modelAndView.setViewName("redirect:/admin/user-management");
+        //modelAndView.addObject("user", user);
+        modelAndView.setViewName("redirect:/admin/user-management/1");
         return modelAndView;
     }
 
@@ -98,7 +106,18 @@ public class AdminController {
         ModelAndView modelAndView = new ModelAndView();
         userService.deleteById(id);
         modelAndView.addObject("successMessage", "User Deleted Successfully.");
-        modelAndView.setViewName("redirect:/admin/user-management");
+        modelAndView.setViewName("redirect:/admin/user-management/1");
+        return modelAndView;
+    }
+
+    @RequestMapping(value="/registration", method = RequestMethod.GET)
+    public ModelAndView registration(ModelAndView modelAndView){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User userRole = userService.findUserByEmail(auth.getName());
+        User user = new User();
+        modelAndView.addObject("user", user);
+        modelAndView.addObject("role", userRole.getRole().getRole());
+        modelAndView.setViewName("registration");
         return modelAndView;
     }
 }

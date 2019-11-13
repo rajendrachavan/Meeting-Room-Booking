@@ -4,6 +4,8 @@ import neo.spring5.MeetingRoomBooking.models.MeetingRoom;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,4 +17,6 @@ public interface MeetingRoomService {
     void deleteById(Long id);
     MeetingRoom findMeetingRoomByName(String name);
     Page<MeetingRoom> getPaginatedMeetingRooms(Pageable pageable);
+
+    List<MeetingRoom> filterByDateAndTime(LocalDate date, LocalTime startTime, LocalTime endTime);
 }

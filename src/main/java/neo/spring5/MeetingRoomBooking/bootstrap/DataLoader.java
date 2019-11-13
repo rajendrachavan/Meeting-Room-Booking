@@ -18,42 +18,18 @@ import java.util.Set;
 //@Component
 public class DataLoader implements CommandLineRunner {
 
-    private final MeetingRoomService meetingRoomService;
     private final UserService userService;
-    private final BookingService bookingService;
-    private final FacilitiesRepository facilitiesRepository;
 
-    public DataLoader(MeetingRoomService meetingRoomService, UserService userService, BookingService bookingService, FacilitiesRepository facilitiesRepository) {
-        this.meetingRoomService = meetingRoomService;
+    public DataLoader(UserService userService) {
         this.userService = userService;
-        this.bookingService = bookingService;
-        this.facilitiesRepository = facilitiesRepository;
     }
 
     @Override
     public void run(String... args) throws Exception {
 
-        LocalDate localDate= LocalDate.now();
-        Set<Facilities> facilitiesList = new HashSet<>();
-        Facilities facilities = facilitiesRepository.findFacilityById(1L);
-        facilitiesList.add(facilities);
-
-
-        MeetingRoom meetingRoom = new MeetingRoom();
-        meetingRoom.setLocation("Dadar");
-        meetingRoom.setName("Black Room");
-        meetingRoom.setStatus("Available");
-        meetingRoom.setFacilities(facilitiesList);
-
         User user = new User();
-        user.setFirstName("laxman");
-
-        BookingDetails bookingDetails = new BookingDetails();
-        bookingDetails.setDate(localDate);
-        bookingDetails.setStatus("Pending");
-        bookingDetails.setMeetingRoom(meetingRoom);
-        bookingDetails.setUser(user);
-        bookingService.save(bookingDetails);
+        user.setFirstName("test");
+        //user.se
 
         System.out.println("------------------Booking Details Added------------------");
 

@@ -1,6 +1,7 @@
 package neo.spring5.MeetingRoomBooking.services;
 
 import neo.spring5.MeetingRoomBooking.models.BookingDetails;
+import neo.spring5.MeetingRoomBooking.models.User;
 import neo.spring5.MeetingRoomBooking.repositories.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -42,4 +43,10 @@ public class BookingServiceImpl implements BookingService {
     public Page<BookingDetails> getPaginatedBookingDetails(Pageable pageable) {
         return bookingRepository.findAll(pageable);
     }
+
+    @Override
+    public Page<BookingDetails> getPaginatedBookingDetails(User user, Pageable pageable) {
+        return bookingRepository.findAllByUser(user, pageable);
+    }
+
 }

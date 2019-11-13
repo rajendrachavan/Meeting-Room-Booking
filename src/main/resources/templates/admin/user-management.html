@@ -15,12 +15,14 @@
 <nav class="navbar navbar-inverse">
 	<div class="container-fluid">
 		<div class="navbar-header">
+			<a class="navbar-brand" href="/homepage"><i class="fas fa-chevron-circle-left"></i></a>
 			<a class="navbar-brand" href="/homepage">Book A MeetingRoom</a>
 		</div>
 		<ul class="nav navbar-nav">
-		<li class="active"><a href="/admin/user-management/1">Users</a></li>
+			<li class="active"><a href="/admin/user-management/1">Users</a></li>
 			<li><a href="/meeting-room-details/1">Rooms</a></li>
 			<li><a href="/admin/booking-requests/1">Bookings</a></li>
+			<li><a href="/change-requests">Change Requests</a></li>
 		</ul>
 		<ul class="nav navbar-nav navbar-right">
 			<li><a th:href="@{/logout}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
@@ -31,11 +33,10 @@
 		<div class="panel-group" style="margin-top:40px">
 			<div class="panel panel-primary">
 				<div class="panel-heading">
-					<h4>Admin Console</h4>
-					<h5>User Management</h5>
+					<h4><span th:utext="${userManagement}">User-Management</span></h4>
 					<span th:utext="${userName}"></span>
 					<div style="float:right;">
-						<form th:action="@{/registration}" method="get">
+						<form th:action="@{/admin/registration}" method="get">
 							<button class="button2" name="registration"
 									type="Submit">Add</button>
 						</form>
@@ -65,7 +66,7 @@
 							<td th:text="${user.gender}">male</td>
 							<td th:text="${user.email}">test@example.com</td>
 							<td th:text="${user.mobileNo}">123456789</td>
-							<td th:text="${user.department}">testdept</td>
+							<td th:text="${user.Department.name}">testdept</td>
 							<td th:text="${user.active}">1</td>
 							<td th:text="${user.Role.role}">TestAdmin</td>
 							<td>
@@ -84,7 +85,10 @@
 						</tbody>
 					</table>
 				</div>
-				<p class="text-center" th:utext="${successMessage}"></p>
+				<div>
+					<p class="text-center" style="font-size: 20; color:#00BF6F;" th:utext="${successMessage}"></p>
+					<p class="text-center" style="font-size: 20; color:#FF1C19;" th:utext="${errorMessage}"></p>
+				</div>
 			</div>
 		</div>
 	</div>

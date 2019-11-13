@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.Transient;
 
+import java.util.List;
 import java.util.Set;
 
 
@@ -40,8 +41,8 @@ public class User {
 	@Column(name = "mobile_no")
 	private String mobileNo;
 
-	@Column(name = "department")
-	private String department;
+	@ManyToOne(cascade = CascadeType.PERSIST)
+	private Department department;
 
 	@Column(name = "active")
 	private int active;
@@ -49,23 +50,14 @@ public class User {
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	private Role role;
 
-	@OneToMany(mappedBy = "user")
-	private Set<BookingDetails> bookingDetails;
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	private List<BookingDetails> bookingDetails;
 
-	@Override
-	public String toString() {
-		return "User{" +
-				"id=" + id +
-				", email='" + email + '\'' +
-				", password='" + password + '\'' +
-				", firstName='" + firstName + '\'' +
-				", lastName='" + lastName + '\'' +
-				", gender='" + gender + '\'' +
-				", mobileNo='" + mobileNo + '\'' +
-				", department='" + department + '\'' +
-				", active=" + active +
-				", role=" + role +
-				", bookingDetails=" + bookingDetails +
-				'}';
-	}
+
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	private List<ChangeRequest> changeRequests;
+
+	@ManyToMany
+	private List<User> subordinates;
+
 }

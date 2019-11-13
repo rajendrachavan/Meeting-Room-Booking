@@ -1,5 +1,6 @@
 package neo.spring5.MeetingRoomBooking.controllers;
 
+import neo.spring5.MeetingRoomBooking.models.BookingDetails;
 import neo.spring5.MeetingRoomBooking.models.Facilities;
 import neo.spring5.MeetingRoomBooking.models.MeetingRoom;
 import neo.spring5.MeetingRoomBooking.models.User;
@@ -10,13 +11,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,6 +41,8 @@ public class MeetingRoomController {
     @Autowired
     private FacilitiesRepository facilitiesRepository;
 
+    //----------------------------= COMMON =------------------------------------
+
     @RequestMapping("/meeting-room-details/{page}")
     public ModelAndView meetingRoom(@PathVariable(value = "page") int page,
                                     @RequestParam(defaultValue = "id") String sortBy){
@@ -52,11 +60,38 @@ public class MeetingRoomController {
             List<Integer> pageNumbers = IntStream.rangeClosed(1,totalPages).boxed().collect(Collectors.toList());
             modelAndView.addObject("pageNumbers", pageNumbers);
         }
+        modelAndView.addObject("role", user.getRole().getRole());
         modelAndView.addObject("activeRoomsList", true);
         modelAndView.addObject("meetingRooms", meetingRoomPage.getContent());
         modelAndView.setViewName("meeting-room-details");
         return modelAndView;
     }
+
+    @RequestMapping("/filter-room-with-date")
+    public ModelAndView filterRoom(ModelAndView modelAndView,
+                                   @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+                                   @RequestParam @DateTimeFormat(pattern = "HH:MM") LocalTime startTime,
+                                   @RequestParam @DateTimeFormat(pattern = "HH:MM") LocalTime endTime){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByEmail(auth.getName());
+        modelAndView.addObject("role", user.getRole().getRole());
+        modelAndView.addObject("userName", "Welcome " + user.getFirstName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
+        LocalDate today = LocalDate.now();
+        if(date.isBefore(today)){
+            modelAndView.addObject("errorMessage", "Enter a valid Date.");
+            modelAndView.setViewName("/meeting-room-details");
+            return modelAndView;
+        } else {
+            modelAndView.addObject("date", date);
+            modelAndView.addObject("startTime", startTime);
+            modelAndView.addObject("endTime", endTime);
+            modelAndView.addObject("temp", 1);
+            modelAndView.addObject("meetingRooms", meetingRoomService.filterByDateAndTime(date, startTime, endTime));
+            modelAndView.setViewName("/meeting-room-details");
+            return modelAndView;
+        }
+    }
+    //--------------------------------= ADMIN =---------------------------------------------
 
     @RequestMapping(value="/admin/add-room", method = RequestMethod.GET)
     public ModelAndView addRoom(){
@@ -78,15 +113,15 @@ public class MeetingRoomController {
             modelAndView.setViewName("admin/add-room");
         } else {
             if(id != null){
-                Set<Facilities> facilitiesSet = new HashSet<>();
+                List<Facilities> facilitiesList = new ArrayList<>();
                 Facilities facility;
                 for (Long i : id){
                     facility = facilitiesRepository.findFacilityById(i);
                     if(facility != null){
-                        facilitiesSet.add(facility);
+                        facilitiesList.add(facility);
                     }
                 }
-                meetingRoom.setFacilities(facilitiesSet);
+                meetingRoom.setFacilities(facilitiesList);
             }
             meetingRoomService.save(meetingRoom);
             modelAndView.addObject("successMessage", "Room has been added successfully");
@@ -114,17 +149,15 @@ public class MeetingRoomController {
     }
 
     @RequestMapping(value = "/admin/updateMeetingRoom/{id}", method = RequestMethod.PUT)
-    public ModelAndView editUser(@PathVariable(value="id") Long id,
+        public ModelAndView editUser(@PathVariable(value="id") Long id,
                                  @Valid @ModelAttribute("meetingRoom") MeetingRoom meetingRoomData){
         ModelAndView modelAndView = new ModelAndView();
-        meetingRoomData.setName(meetingRoomData.getName());
-        meetingRoomData.setLocation(meetingRoomData.getLocation());
-        meetingRoomData.setFacilities(meetingRoomData.getFacilities());
-        meetingRoomData.setStatus(meetingRoomData.getStatus());
+        MeetingRoom meetingRoom = meetingRoomService.findById(id).orElse(null);
+        meetingRoomData.setStatus(meetingRoom.getStatus());
         meetingRoomService.save(meetingRoomData);
         modelAndView.addObject("successMessage", "MeetingRoom has been Updated successfully");
         modelAndView.addObject("meetingRoom", meetingRoomData);
-        modelAndView.setViewName("redirect:/meeting-room-details");
+        modelAndView.setViewName("redirect:/meeting-room-details/1");
         return modelAndView;
     }
 
@@ -133,7 +166,7 @@ public class MeetingRoomController {
         ModelAndView modelAndView = new ModelAndView();
         meetingRoomService.deleteById(id);
         modelAndView.addObject("successMessage", "MeetingRoom Deleted Successfully.");
-        modelAndView.setViewName("redirect:/meeting-room-details");
+        modelAndView.setViewName("redirect:/meeting-room-details/1");
         return modelAndView;
     }
 }
