@@ -94,6 +94,7 @@ public class ChangeRequestController {
             String body = "Your Request for Change in Email Address is Rejected!\n";
             emailService.sendEmail(changeRequest.getOldValue(), subject, body);
         } else {
+
             Department department = departmentRepository.findByName(changeRequest.getOldValue());
             user.setDepartment(department);
             userService.editSave(user);
