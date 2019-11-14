@@ -45,6 +45,8 @@
                         <th>ID</th>
                         <th>Meeting Room Name</th>
                         <th>Date</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
                         <th>Status</th>
                         <th>Booked By</th>
                         <th colspan="2">Operations</th>
@@ -55,6 +57,8 @@
                         <td th:text="${booking.id}">1</td>
                         <td th:text="${booking.MeetingRoom.name}">Test</td>
                         <td th:text="${booking.date}">Class</td>
+                        <td th:text="${booking.startTime}">Class</td>
+                        <td th:text="${booking.endTime}">Class</td>
                         <td th:text="${booking.status}">male</td>
                         <td th:text="${booking.User.firstName}">test@example.com</td>
                         <td th:if="${booking.status} == 'Pending'">

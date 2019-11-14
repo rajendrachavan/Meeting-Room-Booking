@@ -153,7 +153,6 @@ public class MeetingRoomController {
                                  @Valid @ModelAttribute("meetingRoom") MeetingRoom meetingRoomData){
         ModelAndView modelAndView = new ModelAndView();
         MeetingRoom meetingRoom = meetingRoomService.findById(id).orElse(null);
-        meetingRoomData.setStatus(meetingRoom.getStatus());
         meetingRoomService.save(meetingRoomData);
         modelAndView.addObject("successMessage", "MeetingRoom has been Updated successfully");
         modelAndView.addObject("meetingRoom", meetingRoomData);

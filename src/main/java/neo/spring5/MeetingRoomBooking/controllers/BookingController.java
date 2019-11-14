@@ -70,7 +70,7 @@ public class BookingController {
         else{
             bookingDetails.setStatus("Confirmed");
             MeetingRoom meetingRoom = bookingDetails.getMeetingRoom();
-            meetingRoom.setStatus("Not Available");
+
             meetingRoomService.save(meetingRoom);
             bookingDetails.setDate(bookingDetails.getDate());
             bookingDetails.setMeetingRoom(bookingDetails.getMeetingRoom());
@@ -93,7 +93,6 @@ public class BookingController {
         else{
             bookingDetails.setStatus("Rejected");
             MeetingRoom meetingRoom = bookingDetails.getMeetingRoom();
-            meetingRoom.setStatus("Available");
             meetingRoomService.save(meetingRoom);
             bookingDetails.setDate(bookingDetails.getDate());
             bookingDetails.setMeetingRoom(bookingDetails.getMeetingRoom());

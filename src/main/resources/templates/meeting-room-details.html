@@ -72,7 +72,7 @@
                     <th>Name</th>
                     <th>Location</th>
                     <th>Facilities</th>
-                    <th>Status</th>
+<!--                    <th>Status</th>-->
                     <th colspan="2">Operations</th>
                 </tr>
                 </thead>
@@ -82,7 +82,7 @@
                     <td th:text="${meetingRoom.name}">Test</td>
                     <td th:text="${meetingRoom.location}">TestLocation</td>
                     <td th:text="${meetingRoom.facilities}">[AC]</td>
-                    <td th:text="${meetingRoom.status}">Available</td>
+<!--                    <td th:text="${meetingRoom.status}">Available</td>-->
                     <td th:if="${role} == 'ADMIN'">
                         <a th:href="@{/admin/updateMeetingRoom/{id}(id=${meetingRoom.id}}"
                            class="btn btn-primary">Edit
