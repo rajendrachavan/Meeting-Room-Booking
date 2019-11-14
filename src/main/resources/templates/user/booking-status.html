@@ -41,34 +41,15 @@
     </div>
     <div class="panel-group" style="margin-top:40px">
         <div class="panel panel-primary">
-            <div class="panel-heading" style="height:120px">
-                <h4>User Console</h4>
+            <div class="panel-heading">
                 <span th:utext="${userName}"></span>
-                <h5>Booking Requests</h5>
+                <h4>Booking Requests</h4>
                 <div th:if="${temp} == 1">
-                    <div style="float:left;">
-                        <form th:action="@{/user/booking-status/1}" method="">
-                            <button class="btn btn-danger" name="confirm"
-                                    type="Submit">All</button>
-                        </form>
-                    </div>
-                    <div style="float:left;">
-                        <form th:action="@{/user/booking-status/pending}" method="">
-                            <button class="btn btn-danger" name="confirm"
-                                    type="Submit">Pending</button>
-                        </form>
-                    </div>
-                    <div style="float:left;">
-                        <form th:action="@{/user/booking-status/confirmed}" method="">
-                            <button class="btn btn-danger" name="confirm"
-                                    type="Submit">Confirmed</button>
-                        </form>
-                    </div>
-                    <div style="float:left;">
-                        <form th:action="@{/user/booking-status/rejected}" method="">
-                            <button class="btn btn-danger" name="confirm"
-                                    type="Submit">Rejected</button>
-                        </form>
+                    <div class="btn-group btn-group">
+                        <a th:href="@{/user/booking-status/1}" class="btn btn-default">All</a>
+                        <a th:href="@{/user/booking-status/pending}" class="btn btn-default">Pending</a>
+                        <a th:href="@{/user/booking-status/confirmed}" class="btn btn-default">Confirmed</a>
+                        <a th:href="@{/user/booking-status/rejected}" class="btn btn-default">Rejected</a>
                     </div>
                 </div>
             </div>
