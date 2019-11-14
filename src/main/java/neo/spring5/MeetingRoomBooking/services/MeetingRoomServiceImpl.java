@@ -73,7 +73,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
                             if(startTime.isBefore(bookingDetail.getEndTime())){
                                 flag = false;
                                 break;
-                            }
+                            }else { flag = true; break;}
                         }
                     } else
                         flag = true;

@@ -18,8 +18,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Null;
@@ -102,7 +104,8 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/delete/{id}")
-    public ModelAndView delete(@PathVariable Long id){
+    public ModelAndView delete(@PathVariable Long id,
+                               RedirectAttributes redirectAttributes){
         ModelAndView modelAndView = new ModelAndView();
         userService.deleteById(id);
         modelAndView.addObject("successMessage", "User Deleted Successfully.");

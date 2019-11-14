@@ -49,4 +49,14 @@ public class BookingServiceImpl implements BookingService {
         return bookingRepository.findAllByUser(user, pageable);
     }
 
+    @Override
+    public List<BookingDetails> findAllByStatus(String status) {
+        return bookingRepository.findAllByStatus(status);
+    }
+
+    @Override
+    public List<BookingDetails> findAllByUser(User user) {
+        return bookingRepository.findAllByUser(user);
+    }
+
 }
