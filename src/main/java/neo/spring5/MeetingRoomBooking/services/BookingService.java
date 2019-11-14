@@ -16,4 +16,6 @@ public interface BookingService {
     void deleteById(Long id);
     Page<BookingDetails> getPaginatedBookingDetails(Pageable pageable);
     Page<BookingDetails> getPaginatedBookingDetails(User user, Pageable pageable);
+    List<BookingDetails> findAllByStatus(String status);
+    List<BookingDetails> findAllByUser(User user);
 }

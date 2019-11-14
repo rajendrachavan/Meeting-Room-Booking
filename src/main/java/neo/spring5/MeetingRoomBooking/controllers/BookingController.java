@@ -15,12 +15,14 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -58,6 +60,27 @@ public class BookingController {
         modelAndView.setViewName("admin/booking-requests");
         return modelAndView;
     }
+
+    //======================Filter with room status====================================================
+
+    @RequestMapping("/admin/booking-requests/pending")
+    public String roomAllocationPending(Model model){
+        model.addAttribute("bookingDetails", bookingService.findAllByStatus("Pending"));
+        return "admin/booking-requests";
+    }
+
+    @RequestMapping("/admin/booking-requests/confirmed")
+    public String roomAllocationConfirmed(Model model){
+        model.addAttribute("bookingDetails", bookingService.findAllByStatus("Confirmed"));
+        return "admin/booking-requests";
+    }
+
+    @RequestMapping("/admin/booking-requests/rejected")
+    public String roomAllocationCancelled(Model model){
+        model.addAttribute("bookingDetails", bookingService.findAllByStatus("Rejected"));
+        return "admin/booking-requests";
+    }
+    //===============================================================================================
 
     @PostMapping(value = "/admin/confirmRequest/{id}")
     public ModelAndView confirmRequest(@PathVariable(value = "id") Long id){
@@ -128,6 +151,72 @@ public class BookingController {
         modelAndView.setViewName("user/booking-status");
         return modelAndView;
     }
+
+    //======================Filter with room status====================================================
+
+    @RequestMapping("/user/booking-status/pending")
+    public String pending(Model model){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByEmail(auth.getName());
+        List<BookingDetails> bookingDetails = new ArrayList<>();
+        for (BookingDetails bookingDetail: bookingService.findAllByUser(user)) {
+            if(bookingDetail.getStatus().equals("Pending")){
+                bookingDetails.add(bookingDetail);
+            }
+        }
+        model.addAttribute("bookingDetails", bookingDetails);
+        return "user/booking-status";
+    }
+
+    @RequestMapping("/user/booking-status/confirmed")
+    public String confirmed(Model model){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByEmail(auth.getName());
+        List<BookingDetails> bookingDetails = new ArrayList<>();
+        for (BookingDetails bookingDetail: bookingService.findAllByUser(user)) {
+            if(bookingDetail.getStatus().equals("Confirmed")){
+                bookingDetails.add(bookingDetail);
+            }
+        }
+        model.addAttribute("bookingDetails", bookingDetails);
+        return "user/booking-status";
+    }
+
+    @RequestMapping("/user/booking-status/rejected")
+    public String rejected(Model model){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByEmail(auth.getName());
+        List<BookingDetails> bookingDetails = new ArrayList<>();
+        for (BookingDetails bookingDetail: bookingService.findAllByUser(user)) {
+            if(bookingDetail.getStatus().equals("Rejected")){
+                bookingDetails.add(bookingDetail);
+            }
+        }
+        model.addAttribute("bookingDetails", bookingDetails);
+        return "user/booking-status";
+    }
+    //==================================================================================================
+
+    //============================Booking History===============================================
+
+    @RequestMapping(value = "/booking-history", method = RequestMethod.GET)
+    public ModelAndView bookingHistory(){
+        ModelAndView modelAndView = new ModelAndView();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByEmail(auth.getName());
+        List<BookingDetails> bookingDetails = new ArrayList<>();
+        LocalDate today = LocalDate.now();
+        for (BookingDetails bookingDetail: user.getBookingDetails()) {
+            if(bookingDetail.getDate().isBefore(today)){
+                bookingDetails.add(bookingDetail);
+            }
+        }
+        modelAndView.addObject("temp", "0");
+        modelAndView.addObject("bookingDetails", bookingDetails);
+        modelAndView.setViewName("user/booking-status");
+        return modelAndView;
+    }
+    //============================================================================================
 
     @PostMapping("/bookRoom/{id}/{date}/{startTime}/{endTime}")
     public ModelAndView bookRoom(@PathVariable(value="id") Long id,
