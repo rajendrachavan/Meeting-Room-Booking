@@ -81,7 +81,12 @@ public class MeetingRoomController {
             modelAndView.addObject("errorMessage", "Enter a valid Date.");
             modelAndView.setViewName("/meeting-room-details");
             return modelAndView;
-        } else {
+        }else if(startTime.isAfter(endTime) || startTime.isBefore(LocalTime.now())){
+            modelAndView.addObject("errorMessage", "Invalid start or end time");
+            modelAndView.setViewName("/meeting-room-details");
+            return modelAndView;
+        }
+        else {
             modelAndView.addObject("date", date);
             modelAndView.addObject("startTime", startTime);
             modelAndView.addObject("endTime", endTime);

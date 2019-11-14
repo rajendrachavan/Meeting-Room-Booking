@@ -63,6 +63,10 @@
                         </tr>
                     </table>
                 </form>
+                <div>
+                    <p class="text-center" style="font-size: 20; color:#00BF6F;" th:utext="${successMessage}"></p>
+                    <p class="text-center" style="font-size: 20; color:#FF1C19;" th:utext="${errorMessage}"></p>
+                </div>
             </div>
             <hr>
             <table class="table table-hover">
@@ -103,10 +107,6 @@
                 </tr>
                 </tbody>
             </table>
-        </div>
-        <div>
-            <p class="text-center" style="font-size: 20; color:#00BF6F;" th:utext="${successMessage}"></p>
-            <p class="text-center" style="font-size: 20; color:#FF1C19;" th:utext="${errorMessage}"></p>
         </div>
     </div>
     <div class="row" th:fragment="pagination">
