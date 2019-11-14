@@ -218,7 +218,7 @@ public class BookingController {
         ModelAndView modelAndView = new ModelAndView();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
-        modelAndView.addObject("userName", "Welcome " + user.getFirstName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
+        //modelAndView.addObject("userName", "Welcome " + user.getFirstName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
 
         BookingDetails bookingDetails = new BookingDetails();
         MeetingRoom meetingRoom = meetingRoomService.findById(id).orElse(null);
