@@ -17,7 +17,6 @@ public class MeetingRoom {
     private Long id;
     private String name;
     private String location;
-    private String status;
 
     @ManyToMany
     private List<Facilities> facilities;

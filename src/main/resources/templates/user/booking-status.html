@@ -46,6 +46,8 @@
                     <tr>
                         <th>Meeting Room Name</th>
                         <th>Date</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
                         <th>Status</th>
                         <th>Operations</th>
                     </tr>
@@ -54,6 +56,8 @@
                     <tr th:each="booking: ${bookingDetails}">
                         <td th:text="${booking.MeetingRoom.name}">Test</td>
                         <td th:text="${booking.date}">31-10-2019</td>
+                        <td th:text="${booking.startTime}">Class</td>
+                        <td th:text="${booking.endTime}">Class</td>
                         <td th:text="${booking.status}">confirm</td>
                         <td class="centered">
                             <a th:href="@{/deleteRequest/{id}(id=${booking.id})}"

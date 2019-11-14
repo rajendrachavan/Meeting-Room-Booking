@@ -62,23 +62,23 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
             else {
                 for (BookingDetails bookingDetail : meetingRoom.getBookingDetails()) {
                     if (bookingDetail.getDate().isEqual(date) && bookingDetail.getStatus().equals("Confirmed")) {
-                        if (startTime.equals(bookingDetail.getStartTime()) && endTime.equals(bookingDetail.getEndTime())) {
+                        if (startTime.equals(bookingDetail.getStartTime()) || startTime.isBefore(bookingDetail.getStartTime())) {
+                            if(endTime.isAfter(bookingDetail.getStartTime())){
+                                flag = false; break;
+                            }else { flag = true; break;}
+                        } else if (startTime.isAfter(bookingDetail.getStartTime()) && endTime.isBefore(bookingDetail.getStartTime())) {
                             flag = false;
                             break;
-                        } else if (startTime.isBefore(bookingDetail.getStartTime()) && endTime.isBefore(bookingDetail.getStartTime())) {
-                            flag = true;
-                            break;
-                        } else if (startTime.isAfter(bookingDetail.getEndTime()) && endTime.isAfter(startTime)) {
-                            flag = true;
-                            break;
-                        } else {
-                            flag = false;
-                            break;
+                        } else if (startTime.equals(bookingDetail.getStartTime()) || startTime.isAfter(bookingDetail.getStartTime())) {
+                            if(startTime.isBefore(bookingDetail.getEndTime())){
+                                flag = false;
+                                break;
+                            }
                         }
                     } else
                         flag = true;
                 }
-                if (flag == true)
+                if (flag)
                     meetingRooms.add(meetingRoom);
             }
         }
