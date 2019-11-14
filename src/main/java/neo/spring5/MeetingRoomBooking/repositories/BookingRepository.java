@@ -13,7 +13,6 @@ import java.util.List;
 @Repository
 public interface BookingRepository extends JpaRepository<BookingDetails, Long> {
     List<BookingDetails> findAllByStatus(String status);
-    BookingDetails findByDate(LocalDate date);
     Page<BookingDetails> findAll(Pageable pageable);
     Page<BookingDetails> findAllByUser(User user, Pageable pageable);
     List<BookingDetails> findAllByUser(User user);

@@ -21,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -88,16 +89,10 @@ public class BookingController {
         BookingDetails bookingDetails = bookingService.findById(id).orElse(null);
         if(bookingDetails == null){
             modelAndView.addObject("successMessage", "BookingDetails Not Found.");
-            modelAndView.setViewName("redirect:/admin/booking-requests");
+            modelAndView.setViewName("redirect:/admin/booking-requests/1");
         }
         else{
             bookingDetails.setStatus("Confirmed");
-            MeetingRoom meetingRoom = bookingDetails.getMeetingRoom();
-
-            meetingRoomService.save(meetingRoom);
-            bookingDetails.setDate(bookingDetails.getDate());
-            bookingDetails.setMeetingRoom(bookingDetails.getMeetingRoom());
-            bookingDetails.setUser(bookingDetails.getUser());
             bookingService.save(bookingDetails);
         }
         modelAndView.addObject("successMessage", "BookingDetails Confirmed.");
@@ -115,11 +110,6 @@ public class BookingController {
         }
         else{
             bookingDetails.setStatus("Rejected");
-            MeetingRoom meetingRoom = bookingDetails.getMeetingRoom();
-            meetingRoomService.save(meetingRoom);
-            bookingDetails.setDate(bookingDetails.getDate());
-            bookingDetails.setMeetingRoom(bookingDetails.getMeetingRoom());
-            bookingDetails.setUser(bookingDetails.getUser());
             bookingService.save(bookingDetails);
         }
         modelAndView.addObject("successMessage", "BookingDetails Rejected.");
@@ -139,7 +129,6 @@ public class BookingController {
         modelAndView.addObject("bookingStatus","Booking status");
         PageRequest pageable = PageRequest.of(page - 1, 5, Sort.Direction.DESC, sortBy);
         Page<BookingDetails> bookingDetailsPage = bookingService.getPaginatedBookingDetails(user, pageable);
-
 
         int totalPages = bookingDetailsPage.getTotalPages();
         if(totalPages > 0) {
@@ -209,9 +198,9 @@ public class BookingController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
         List<BookingDetails> bookingDetails = new ArrayList<>();
-        LocalDate today = LocalDate.now();
+        LocalDateTime today = LocalDateTime.now();
         for (BookingDetails bookingDetail: user.getBookingDetails()) {
-            if(bookingDetail.getDate().isBefore(today)){
+            if(bookingDetail.getStartTime().isBefore(today)){
                 bookingDetails.add(bookingDetail);
             }
         }
@@ -222,11 +211,10 @@ public class BookingController {
     }
     //============================================================================================
 
-    @PostMapping("/bookRoom/{id}/{date}/{startTime}/{endTime}")
+    @PostMapping("/bookRoom/{id}/{startTime}/{endTime}")
     public ModelAndView bookRoom(@PathVariable(value="id") Long id,
-                                 @DateTimeFormat(pattern = "yyyy-MM-dd") @PathVariable("date") LocalDate date,
-                                 @DateTimeFormat(pattern = "HH:mm") @PathVariable("startTime") LocalTime startTime,
-                                 @DateTimeFormat(pattern = "HH:mm") @PathVariable("endTime") LocalTime endTime) throws Exception{
+                                 @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") @PathVariable("startTime") LocalDateTime startTime,
+                                 @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") @PathVariable("endTime") LocalDateTime endTime) throws Exception{
         ModelAndView modelAndView = new ModelAndView();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
@@ -237,7 +225,6 @@ public class BookingController {
         bookingDetails.setStatus("Pending");
         bookingDetails.setMeetingRoom(meetingRoom);
         bookingDetails.setUser(user);
-        bookingDetails.setDate(date);
         bookingDetails.setStartTime(startTime);
         bookingDetails.setEndTime(endTime);
         bookingService.save(bookingDetails);

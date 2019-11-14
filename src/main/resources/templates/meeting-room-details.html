@@ -50,12 +50,10 @@
                 <form th:action="@{/filter-room-with-date}" th:method="POST">
                     <table>
                         <tr>
-                            <th>Date: </th>
-                            <td><input type="date" name="date" autofocus required>&nbsp;&nbsp;</td>
                             <th>Start Time: </th>
-                            <td><input type="time" name="startTime" required>&nbsp;&nbsp;</td>
+                            <td><input type="datetime-local" name="startTime" required>&nbsp;&nbsp;</td>
                             <th>End Time: </th>
-                            <td><input type="time" name="endTime" required>&nbsp;&nbsp;</td>
+                            <td><input type="datetime-local" name="endTime" required>&nbsp;&nbsp;</td>
                             <td>
                                 &nbsp;&nbsp;
                                 <input class="button2" type="submit" value="Check Availability">
@@ -76,7 +74,6 @@
                     <th>Name</th>
                     <th>Location</th>
                     <th>Facilities</th>
-<!--                    <th>Status</th>-->
                     <th colspan="2">Operations</th>
                 </tr>
                 </thead>
@@ -86,7 +83,6 @@
                     <td th:text="${meetingRoom.name}">Test</td>
                     <td th:text="${meetingRoom.location}">TestLocation</td>
                     <td th:text="${meetingRoom.facilities}">[AC]</td>
-<!--                    <td th:text="${meetingRoom.status}">Available</td>-->
                     <td th:if="${role} == 'ADMIN'">
                         <a th:href="@{/admin/updateMeetingRoom/{id}(id=${meetingRoom.id}}"
                            class="btn btn-primary">Edit
@@ -99,7 +95,7 @@
                     </td>
                     <td th:if="${role} == 'USER' or ${role} == 'TL' or ${role} == 'PM'">
                         <form th:if="${temp} == 1"
-                           th:action="@{'/bookRoom/'+${meetingRoom.id}+'/'+${date}+ '/'+${startTime}+ '/'+${endTime}}"
+                           th:action="@{'/bookRoom/'+${meetingRoom.id}+ '/'+${startTime}+ '/'+${endTime}}"
                               method="post">
                             <input type="submit" class="btn btn-primary" value="Book" />
                         </form>
