@@ -33,7 +33,7 @@
     </div>
 </nav>
 <div class="container">
-    <div th:if="${temp} == '1'" style="float:right;">
+    <div th:if="${temp} == 1" style="float:right;">
         <form th:action="@{/booking-history}" method="get">
             <button class="button2" name="history"
                     type="Submit">Booking History</button>
@@ -45,7 +45,7 @@
                 <h4>User Console</h4>
                 <span th:utext="${userName}"></span>
                 <h5>Booking Requests</h5>
-                <div th:if="${temp} == '1'">
+                <div th:if="${temp} == 1">
                     <div style="float:left;">
                         <form th:action="@{/user/booking-status/1}" method="">
                             <button class="btn btn-danger" name="confirm"
@@ -81,7 +81,7 @@
                         <th>Start Time</th>
                         <th>End Time</th>
                         <th>Status</th>
-                        <th th:if="${temp} == '1'">Operations</th>
+                        <th th:if="${temp} == 1">Operations</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -91,7 +91,7 @@
                         <td th:text="${booking.startTime}">Class</td>
                         <td th:text="${booking.endTime}">Class</td>
                         <td th:text="${booking.status}">confirm</td>
-                        <td th:if="${temp} == '1'" class="centered">
+                        <td th:if="${temp} == 1" class="centered">
                             <a th:href="@{/deleteRequest/{id}(id=${booking.id})}"
                                class="btn btn-danger">Delete
                             </a>

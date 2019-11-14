@@ -146,6 +146,7 @@ public class BookingController {
             List<Integer> pageNumbers = IntStream.rangeClosed(1,totalPages).boxed().collect(Collectors.toList());
             modelAndView.addObject("pageNumbers", pageNumbers);
         }
+        modelAndView.addObject("temp", 1);
         modelAndView.addObject("activeBookingsList", true);
         modelAndView.addObject("bookingDetails", bookingDetailsPage.getContent());
         modelAndView.setViewName("user/booking-status");
@@ -164,6 +165,7 @@ public class BookingController {
                 bookingDetails.add(bookingDetail);
             }
         }
+        model.addAttribute("temp", 1);
         model.addAttribute("bookingDetails", bookingDetails);
         return "user/booking-status";
     }
@@ -178,6 +180,7 @@ public class BookingController {
                 bookingDetails.add(bookingDetail);
             }
         }
+        model.addAttribute("temp", 1);
         model.addAttribute("bookingDetails", bookingDetails);
         return "user/booking-status";
     }
@@ -192,6 +195,7 @@ public class BookingController {
                 bookingDetails.add(bookingDetail);
             }
         }
+        model.addAttribute("temp", 1);
         model.addAttribute("bookingDetails", bookingDetails);
         return "user/booking-status";
     }
@@ -211,7 +215,7 @@ public class BookingController {
                 bookingDetails.add(bookingDetail);
             }
         }
-        modelAndView.addObject("temp", "0");
+        modelAndView.addObject("temp", 0);
         modelAndView.addObject("bookingDetails", bookingDetails);
         modelAndView.setViewName("user/booking-status");
         return modelAndView;
