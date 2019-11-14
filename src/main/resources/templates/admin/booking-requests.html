@@ -69,7 +69,6 @@
                     <tr>
                         <th>ID</th>
                         <th>Meeting Room Name</th>
-                        <th>Date</th>
                         <th>Start Time</th>
                         <th>End Time</th>
                         <th>Status</th>
@@ -81,7 +80,6 @@
                     <tr th:each="booking: ${bookingDetails}">
                         <td th:text="${booking.id}">1</td>
                         <td th:text="${booking.MeetingRoom.name}">Test</td>
-                        <td th:text="${booking.date}">Class</td>
                         <td th:text="${booking.startTime}">Class</td>
                         <td th:text="${booking.endTime}">Class</td>
                         <td th:text="${booking.status}">male</td>

@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +54,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
     }
 
     @Override
-    public List<MeetingRoom> filterByDateAndTime(LocalDate date, LocalTime startTime, LocalTime endTime) {
+    public List<MeetingRoom> filterByDateAndTime(LocalDateTime startTime, LocalDateTime endTime) {
 
         List<MeetingRoom> meetingRooms = new ArrayList<>();
         for (MeetingRoom meetingRoom : meetingRoomRepository.findAll()) {
@@ -61,22 +62,14 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
             if (meetingRoom.getBookingDetails().isEmpty()) meetingRooms.add(meetingRoom);
             else {
                 for (BookingDetails bookingDetail : meetingRoom.getBookingDetails()) {
-                    if (bookingDetail.getDate().isEqual(date) && bookingDetail.getStatus().equals("Confirmed")) {
-                        if (startTime.equals(bookingDetail.getStartTime()) || startTime.isBefore(bookingDetail.getStartTime())) {
-                            if(endTime.isAfter(bookingDetail.getStartTime())){
-                                flag = false; break;
-                            }else { flag = true; break;}
-                        } else if (startTime.isAfter(bookingDetail.getStartTime()) && endTime.isBefore(bookingDetail.getStartTime())) {
-                            flag = false;
-                            break;
-                        } else if (startTime.equals(bookingDetail.getStartTime()) || startTime.isAfter(bookingDetail.getStartTime())) {
-                            if(startTime.isBefore(bookingDetail.getEndTime())){
-                                flag = false;
-                                break;
-                            }else { flag = true; break;}
-                        }
-                    } else
-                        flag = true;
+                    if (bookingDetail.getStatus().equals("Confirmed")) {
+                        if((startTime.isAfter(bookingDetail.getStartTime()) || startTime.equals(bookingDetail.getStartTime()))
+                        && startTime.isBefore(bookingDetail.getEndTime())){
+                            flag = false; break;
+                        }else if(startTime.isBefore(bookingDetail.getStartTime()) && endTime.isAfter(bookingDetail.getStartTime())){
+                            flag = false; break;
+                        }else { flag = true; break;}
+                    } else { flag = true; break;}
                 }
                 if (flag)
                     meetingRooms.add(meetingRoom);

@@ -6,6 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Getter
@@ -17,10 +18,10 @@ public class BookingDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate date;
-    private LocalTime startTime;
-    private LocalTime endTime;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    private LocalDateTime startTime;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    private LocalDateTime endTime;
     private String status;
 
     @ManyToOne(cascade = CascadeType.PERSIST)

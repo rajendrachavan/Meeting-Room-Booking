@@ -21,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -69,29 +70,27 @@ public class MeetingRoomController {
 
     @RequestMapping("/filter-room-with-date")
     public ModelAndView filterRoom(ModelAndView modelAndView,
-                                   @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
-                                   @RequestParam @DateTimeFormat(pattern = "HH:MM") LocalTime startTime,
-                                   @RequestParam @DateTimeFormat(pattern = "HH:MM") LocalTime endTime){
+                                   @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") @RequestParam("startTime") LocalDateTime startTime,
+                                   @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") @RequestParam("endTime") LocalDateTime endTime){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
         modelAndView.addObject("role", user.getRole().getRole());
         modelAndView.addObject("userName", "Welcome " + user.getFirstName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
-        LocalDate today = LocalDate.now();
-        if(date.isBefore(today)){
+        LocalDateTime today = LocalDateTime.now();
+        if(startTime.isBefore(today)){
             modelAndView.addObject("errorMessage", "Enter a valid Date.");
             modelAndView.setViewName("/meeting-room-details");
             return modelAndView;
-        }else if(startTime.isAfter(endTime) || startTime.isBefore(LocalTime.now())){
+        }else if(startTime.isAfter(endTime) || startTime.isBefore(LocalDateTime.now())){
             modelAndView.addObject("errorMessage", "Invalid start or end time");
             modelAndView.setViewName("/meeting-room-details");
             return modelAndView;
         }
         else {
-            modelAndView.addObject("date", date);
             modelAndView.addObject("startTime", startTime);
             modelAndView.addObject("endTime", endTime);
             modelAndView.addObject("temp", 1);
-            modelAndView.addObject("meetingRooms", meetingRoomService.filterByDateAndTime(date, startTime, endTime));
+            modelAndView.addObject("meetingRooms", meetingRoomService.filterByDateAndTime(startTime, endTime));
             modelAndView.setViewName("/meeting-room-details");
             return modelAndView;
         }
