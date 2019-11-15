@@ -30,7 +30,7 @@
 	</div>
 </nav>
 	<div class="container">
-		<div class="panel-group" style="margin-top:25px">
+		<div class="panel-group" style="margin:25px 0px 25px;">
 			<div class="panel panel-primary">
 				<div class="panel-heading">
 					<h4><span th:utext="${userManagement}">User-Management</span></h4>
@@ -53,7 +53,6 @@
 							<th>Email</th>
 							<th>Mobile No</th>
 							<th>Department</th>
-							<th>Status</th>
 							<th>Role</th>
 							<th colspan="2">Operations</th>
 						</tr>
@@ -67,7 +66,6 @@
 							<td th:text="${user.email}">test@example.com</td>
 							<td th:text="${user.mobileNo}">123456789</td>
 							<td th:text="${user.Department.name}">testdept</td>
-							<td th:text="${user.active}">1</td>
 							<td th:text="${user.Role.role}">TestAdmin</td>
 							<td>
 								<a th:href="@{/admin/update/{id}(id=${user.id})}"
