@@ -84,13 +84,13 @@
                     <td th:text="${meetingRoom.location}">TestLocation</td>
                     <td th:text="${meetingRoom.facilities}">[AC]</td>
                     <td th:if="${role} == 'ADMIN'">
-                        <a th:href="@{/admin/updateMeetingRoom/{id}(id=${meetingRoom.id}}"
+                        <a th:href="@{/admin/updateMeetingRoom/{id}(id=${meetingRoom.id})}"
                            class="btn btn-primary">Edit
                         </a>
                     </td>
                     <td th:if="${role} == 'ADMIN'">
                         <a th:href="@{/admin/deleteMeetingRoom/{id}(id=${meetingRoom.id})}"
-                           class="btn btn-danger">Delete
+                           class="btn btn-danger" onclick="return confirm('Are you sure you want to Delete this room?');">Delete
                         </a>
                     </td>
                     <td th:if="${role} == 'USER' or ${role} == 'TL' or ${role} == 'PM'">
