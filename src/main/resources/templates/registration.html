@@ -101,7 +101,7 @@
 					<p class="text-center" style="font-size: 20; color:#FF1C19;" th:utext="${errorMessage}"></p>
 				</div>
 			</form>
-			<form th:action="@{/login}" method="get" th:if="${role} == null">
+			<form th:action="@{/login}" method="get">
 				<br>
 				&nbsp Already a User? <button class="button2" type="submit">Sign in</button>
 			</form>

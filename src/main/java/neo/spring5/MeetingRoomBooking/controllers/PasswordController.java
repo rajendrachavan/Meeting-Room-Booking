@@ -88,7 +88,7 @@ public class PasswordController {
             user.setPassword(bCryptPasswordEncoder.encode(password));
             userService.editSave(user);
             modelAndView.addObject("successMessage", "You have successfully reset your password.  You may now login with new credentials.");
-            modelAndView.setViewName("reset-password");
+            modelAndView.setViewName("login");
         }
         return modelAndView;
     }

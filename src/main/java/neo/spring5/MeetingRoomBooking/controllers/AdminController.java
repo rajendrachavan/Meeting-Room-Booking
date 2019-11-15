@@ -120,7 +120,26 @@ public class AdminController {
         User user = new User();
         modelAndView.addObject("user", user);
         modelAndView.addObject("role", userRole.getRole().getRole());
-        modelAndView.setViewName("registration");
+        modelAndView.setViewName("admin/add-user");
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/registration", method = RequestMethod.POST)
+    public ModelAndView createNewUser(@Valid User user,
+                                      @RequestParam(name = "department") Long dept_id,
+                                      ModelAndView modelAndView) {
+        User userExists = userService.findUserByEmail(user.getEmail());
+        if (userExists != null) {
+            modelAndView.addObject("errorMessage", "User Already Exists.");
+            modelAndView.setViewName("registration");
+        } else {
+            Department department = departmentRepository.findById(dept_id).orElse(null);
+            user.setDepartment(department);
+            userService.saveUser(user);
+            modelAndView.addObject("successMessage", "User has been registered successfully");
+            modelAndView.addObject("user", new User());
+            modelAndView.setViewName("admin/add-user");
+        }
         return modelAndView;
     }
 }

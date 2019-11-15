@@ -3,9 +3,11 @@ package neo.spring5.MeetingRoomBooking.controllers;
 import javax.validation.Valid;
 
 import neo.spring5.MeetingRoomBooking.models.Department;
+import neo.spring5.MeetingRoomBooking.models.Token;
 import neo.spring5.MeetingRoomBooking.models.User;
 import neo.spring5.MeetingRoomBooking.repositories.DepartmentRepository;
 import neo.spring5.MeetingRoomBooking.repositories.RoleRepository;
+import neo.spring5.MeetingRoomBooking.repositories.TokenRepository;
 import neo.spring5.MeetingRoomBooking.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -26,6 +28,9 @@ public class LoginController {
 
 	@Autowired
 	private DepartmentRepository departmentRepository;
+
+	@Autowired
+	private TokenRepository tokenRepository;
 
 	@RequestMapping(value={"/", "/login"}, method = RequestMethod.GET)
 	public ModelAndView login(ModelAndView modelAndView){
@@ -57,7 +62,6 @@ public class LoginController {
 			modelAndView.addObject("successMessage", "User has been registered successfully");
 			modelAndView.addObject("user", new User());
 			modelAndView.setViewName("registration");
-			
 		}
 		return modelAndView;
 	}
@@ -78,5 +82,24 @@ public class LoginController {
 		modelAndView.addObject("userName", "Welcome " + user.getFirstName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
 		modelAndView.setViewName("homepage");
 		return modelAndView;
+	}
+
+	@RequestMapping(value = "/verifyEmail")
+	public ModelAndView verifyEmail(ModelAndView modelAndView,
+									@RequestParam("token") String token1){
+		Token token = tokenRepository.findByToken(token1);
+		User user = userService.findById(token.getUser().getId()).orElse(null);
+		if(user.equals(null)){
+			modelAndView.addObject("errorMessage", "Oops!  This is an invalid password reset link.");
+			modelAndView.setViewName("login");
+			return modelAndView;
+		} else {
+			user.setActive(1);
+			userService.editSave(user);
+			tokenRepository.delete(token);
+			modelAndView.addObject("successMessage", "Email Verified Successfully, you can now login with your credentials");
+			modelAndView.setViewName("login");
+			return modelAndView;
+		}
 	}
 }
