@@ -31,36 +31,15 @@
     </div>
 </nav>
 <div class="container">
-    <div class="panel-group" style="margin-top:40px">
+    <div class="panel-group" style="margin-top:25px">
         <div class="panel panel-primary">
-            <div class="panel-heading" style="height:120px">
+            <div class="panel-heading">
                 <h4>Booking Requests</h4>
-                <span th:utext="${userName}"></span>
-                <div>
-                    <div style="float:left;">
-                        <form th:action="@{/admin/booking-requests/1}" method="">
-                            <button class="btn btn-danger" name="confirm"
-                                    type="Submit">All</button>
-                        </form>
-                    </div>
-                    <div style="float:left;">
-                        <form th:action="@{/admin/booking-requests/pending}" method="">
-                            <button class="btn btn-danger" name="confirm"
-                                    type="Submit">Pending</button>
-                        </form>
-                    </div>
-                    <div style="float:left;">
-                        <form th:action="@{/admin/booking-requests/confirmed}" method="">
-                            <button class="btn btn-danger" name="confirm"
-                                    type="Submit">Confirmed</button>
-                        </form>
-                    </div>
-                    <div style="float:left;">
-                        <form th:action="@{/admin/booking-requests/rejected}" method="">
-                            <button class="btn btn-danger" name="confirm"
-                                    type="Submit">Rejected</button>
-                        </form>
-                    </div>
+                <div class="btn-group btn-group">
+                    <a th:href="@{/admin/booking-requests/1}" class="btn btn-default">All</a>
+                    <a th:href="@{/admin/booking-requests/pending}" class="btn btn-default">Pending</a>
+                    <a th:href="@{/admin/booking-requests/confirmed}" class="btn btn-default">Confirmed</a>
+                    <a th:href="@{/admin/booking-requests/rejected}" class="btn btn-default">Rejected</a>
                 </div>
             </div>
             <div class="panel-body">
