@@ -218,7 +218,8 @@ public class BookingController {
         ModelAndView modelAndView = new ModelAndView();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
-        //modelAndView.addObject("userName", "Welcome " + user.getFirstName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
+        modelAndView.addObject("userName", "Welcome " + user.getFirstName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
+        modelAndView.addObject("role", auth.getName());
 
         BookingDetails bookingDetails = new BookingDetails();
         MeetingRoom meetingRoom = meetingRoomService.findById(id).orElse(null);
@@ -228,7 +229,21 @@ public class BookingController {
         bookingDetails.setStartTime(startTime);
         bookingDetails.setEndTime(endTime);
         bookingService.save(bookingDetails);
+        modelAndView.addObject("bookingDetails", bookingDetails);
+        modelAndView.setViewName("user/bookRoom");
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/confirmBookRoom")
+    public ModelAndView confirmBookRoom(ModelAndView modelAndView){
         modelAndView.addObject("successMessage", "Room Booked successfully");
+        modelAndView.setViewName("redirect:/meeting-room-details/1");
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/cancelBookRoom/{id}")
+    public ModelAndView cancelBookRoom(ModelAndView modelAndView, @PathVariable("id") Long id){
+        bookingService.deleteById(id);
         modelAndView.setViewName("redirect:/meeting-room-details/1");
         return modelAndView;
     }
