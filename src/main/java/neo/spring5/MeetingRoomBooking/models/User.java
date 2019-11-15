@@ -57,7 +57,6 @@ public class User {
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private List<ChangeRequest> changeRequests;
 
-	@ManyToMany
-	private List<User> subordinates;
-
+	@ManyToOne
+	private User parent;
 }
