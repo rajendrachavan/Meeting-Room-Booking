@@ -80,12 +80,14 @@
                     </tr>
                     <tr th:if="${role} == 'USER'">
                         <th>Team Leader</th>
-                        <td><span th:text="${user.parent.firstName}"></span>&nbsp;<span th:text="${user.parent.lastName}"></span></td>
+                        <td th:if="${user.parent} == null"><span>Not Assigned.</span></td>
+                        <td th:if="${user.parent} != null"><span th:text="${user.parent.firstName}"></span>&nbsp;<span th:text="${user.parent.lastName}"></span></td>
                         <td> </td>
                     </tr>
                     <tr th:if="${role} == 'TL'">
                         <th>Project Manager</th>
-                        <td><span th:text="${user.parent.firstName}"></span>&nbsp;<span th:text="${user.parent.lastName}"></span></td>
+                        <td th:if="${user.parent} == null"><span>Not Assigned.</span></td>
+                        <td th:if="${user.parent} != null"><span th:text="${user.parent.firstName}"></span>&nbsp;<span th:text="${user.parent.lastName}"></span></td>
                         <td> </td>
                     </tr>
                     <tr>

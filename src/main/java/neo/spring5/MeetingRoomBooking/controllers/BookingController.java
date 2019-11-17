@@ -135,6 +135,7 @@ public class BookingController {
             List<Integer> pageNumbers = IntStream.rangeClosed(1,totalPages).boxed().collect(Collectors.toList());
             modelAndView.addObject("pageNumbers", pageNumbers);
         }
+        modelAndView.addObject("role", user.getRole().getRole());
         modelAndView.addObject("temp", 1);
         modelAndView.addObject("activeBookingsList", true);
         modelAndView.addObject("bookingDetails", bookingDetailsPage.getContent());
@@ -206,6 +207,7 @@ public class BookingController {
         }
         modelAndView.addObject("temp", 0);
         modelAndView.addObject("bookingDetails", bookingDetails);
+        modelAndView.addObject("role", user.getRole().getRole());
         modelAndView.setViewName("user/booking-status");
         return modelAndView;
     }
