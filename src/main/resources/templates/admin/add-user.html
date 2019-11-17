@@ -19,7 +19,13 @@
             <a class="navbar-brand" href="#">Book A MeetingRoom</a>
         </div>
         <ul class="nav navbar-nav">
-            <li class="active"><a href="/admin/user-management/1">Users</a></li>
+            <li class="dropdownNav active">
+                <a href="/admin/user-management/1">Users</a>
+                <div class="dropdownNav-content">
+                    <a class="btn btn-default" href="/change-requests">Change Requests</a>
+                    <a class="btn btn-default" href="#">Assign Roles</a>
+                </div>
+            </li>
             <li><a href="/meeting-room-details/1">Rooms</a></li>
             <li><a href="/admin/booking-requests/1">Bookings</a></li>
         </ul>

@@ -1,3 +1,4 @@
+/*===========Button Design=================*/
 .button{
     border: none;
     color: white;
@@ -36,3 +37,28 @@
 .centered {
     padding: 25px 25px 25px 25px;
 }
+
+/*====================NavBar Dropdown=================*/
+.dropdownNav {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdownNav-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdownNav-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdownNav-content a:hover {background-color: #ddd;}
+.dropdownNav:hover .dropdownNav-content {display: block;}
