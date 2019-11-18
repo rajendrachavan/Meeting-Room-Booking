@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -37,8 +38,7 @@ public class LoginController {
 		modelAndView.setViewName("login");
 		return modelAndView;
 	}
-	
-	
+
 	@RequestMapping(value="/registration", method = RequestMethod.GET)
 	public ModelAndView registration(ModelAndView modelAndView){
 		User user = new User();
@@ -48,9 +48,13 @@ public class LoginController {
 	}
 	
 	@RequestMapping(value = "/registration", method = RequestMethod.POST)
-	public ModelAndView createNewUser(@Valid User user,
+	public ModelAndView createNewUser(@Valid User user, BindingResult bindingResult,
 									  @RequestParam(name = "department") Long dept_id,
 									  ModelAndView modelAndView) {
+		if(bindingResult.hasErrors() || dept_id == null){
+			modelAndView.setViewName("registration");
+			return modelAndView;
+		}
 		User userExists = userService.findUserByEmail(user.getEmail());
 		if (userExists != null) {
 			modelAndView.addObject("errorMessage", "User Already Exists.");

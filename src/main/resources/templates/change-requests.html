@@ -76,10 +76,14 @@
                         <td th:text="${changeRequest.User.lastName}"></td>
                         <td th:text="${changeRequest.status}">Pending</td>
                         <td th:if="${changeRequest.status} == 'Pending'">
-                            <form th:action="@{/confirmChangeRequest/{id}(id=${changeRequest.id})}" method="post">
+<!--                            <form th:action="@{/confirmChangeRequest/{id}(id=${changeRequest.id})}" method="post">-->
+<!--                                <button class="btn btn-primary" name="confirm"-->
+<!--                                        type="Submit">Confirm</button>-->
+<!--                            </form>-->
+                            <a th:href="@{/confirmChangeRequest/{id}(id=${changeRequest.id})}">
                                 <button class="btn btn-primary" name="confirm"
-                                        type="Submit">Confirm</button>
-                            </form>
+                                        type="Submit" onclick="return confirm('Confirm change Request?');">Confirm</button>
+                            </a>
                         </td>
                         <td th:if="${changeRequest.status} == 'Pending' or ${changeRequest.status} == 'Confirmed'">
                             <form th:action="@{/rejectChangeRequest/{id}(id=${changeRequest.id})}" method="post">

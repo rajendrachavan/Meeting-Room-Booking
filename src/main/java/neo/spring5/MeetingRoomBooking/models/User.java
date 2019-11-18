@@ -39,6 +39,7 @@ public class User {
 	private String gender;
 
 	@Column(name = "mobile_no")
+    @Length(max = 10, min = 10, message = "*Invalid mobile number")
 	private String mobileNo;
 
 	@ManyToOne(cascade = CascadeType.PERSIST)
