@@ -14,6 +14,8 @@
 	<name>Meeting-Room-Booking</name>
 	<description>SpringBoot MeetingRoom Project</description>
 
+	<packaging>war</packaging>
+
 	<properties>
 		<java.version>1.8</java.version>
 	</properties>
@@ -66,23 +68,10 @@
 			<artifactId>mail</artifactId>
 			<version>1.4.7</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>org.junit.vintage</groupId>
-					<artifactId>junit-vintage-engine</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter</artifactId>
-			<version>RELEASE</version>
-			<scope>test</scope>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 

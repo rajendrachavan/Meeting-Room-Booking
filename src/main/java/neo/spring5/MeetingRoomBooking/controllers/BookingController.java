@@ -1,7 +1,6 @@
 package neo.spring5.MeetingRoomBooking.controllers;
 
 import neo.spring5.MeetingRoomBooking.models.BookingDetails;
-import neo.spring5.MeetingRoomBooking.models.Facilities;
 import neo.spring5.MeetingRoomBooking.models.MeetingRoom;
 import neo.spring5.MeetingRoomBooking.models.User;
 import neo.spring5.MeetingRoomBooking.services.BookingService;
@@ -18,11 +17,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.validation.Valid;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,9 +40,11 @@ public class BookingController {
     //------------------------------------= ADMIN =-------------------------------------------------------------
 
     @RequestMapping(value = "/admin/booking-requests/{page}")
-    public ModelAndView bookingRequests(@PathVariable(value = "page") int page,
-                                        @RequestParam(defaultValue = "id") String sortBy){
-        ModelAndView modelAndView = new ModelAndView();
+    public ModelAndView bookingRequests(ModelAndView modelAndView,
+                                        @PathVariable(value = "page") int page,
+                                        @RequestParam(defaultValue = "id") String sortBy,
+                                        @ModelAttribute("successMessage") String successMessage,
+                                        @ModelAttribute("errorMessage") String errorMessage){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
         PageRequest pageable = PageRequest.of(page - 1, 5, Sort.Direction.DESC, sortBy);
@@ -58,6 +57,8 @@ public class BookingController {
         modelAndView.addObject("role", user.getRole().getRole());
         modelAndView.addObject("activeBookingList", true);
         modelAndView.addObject("bookingDetails", bookingPage.getContent());
+        modelAndView.addObject("successMessage", successMessage);
+        modelAndView.addObject("errorMessage", errorMessage);
         modelAndView.setViewName("admin/booking-requests");
         return modelAndView;
     }
@@ -65,54 +66,60 @@ public class BookingController {
     //======================Filter with room status====================================================
 
     @RequestMapping("/admin/booking-requests/pending")
-    public String roomAllocationPending(Model model){
-        model.addAttribute("bookingDetails", bookingService.findAllByStatus("Pending"));
-        return "admin/booking-requests";
+    public ModelAndView roomAllocationPending(ModelAndView modelAndView){
+        modelAndView.addObject("bookingDetails", bookingService.findAllByStatus("Pending"));
+        modelAndView.setViewName("admin/booking-requests");
+        return modelAndView;
     }
 
     @RequestMapping("/admin/booking-requests/confirmed")
-    public String roomAllocationConfirmed(Model model){
-        model.addAttribute("bookingDetails", bookingService.findAllByStatus("Confirmed"));
-        return "admin/booking-requests";
+    public ModelAndView roomAllocationConfirmed(ModelAndView modelAndView){
+        modelAndView.addObject("bookingDetails", bookingService.findAllByStatus("Confirmed"));
+        modelAndView.setViewName("admin/booking-requests");
+        return modelAndView;
     }
 
     @RequestMapping("/admin/booking-requests/rejected")
-    public String roomAllocationCancelled(Model model){
-        model.addAttribute("bookingDetails", bookingService.findAllByStatus("Rejected"));
-        return "admin/booking-requests";
+    public ModelAndView roomAllocationCancelled(ModelAndView modelAndView){
+        modelAndView.addObject("bookingDetails", bookingService.findAllByStatus("Rejected"));
+        modelAndView.setViewName("admin/booking-requests");
+        return modelAndView;
     }
     //===============================================================================================
 
     @PostMapping(value = "/admin/confirmRequest/{id}")
-    public ModelAndView confirmRequest(@PathVariable(value = "id") Long id){
-        ModelAndView modelAndView = new ModelAndView();
+    public ModelAndView confirmRequest(ModelAndView modelAndView,
+                                       @PathVariable(value = "id") Long id,
+                                       RedirectAttributes redirectAttributes){
         BookingDetails bookingDetails = bookingService.findById(id).orElse(null);
         if(bookingDetails == null){
-            modelAndView.addObject("successMessage", "BookingDetails Not Found.");
+            redirectAttributes.addFlashAttribute("successMessage", "BookingDetails Not Found.");
             modelAndView.setViewName("redirect:/admin/booking-requests/1");
         }
         else{
             bookingDetails.setStatus("Confirmed");
             bookingService.save(bookingDetails);
         }
-        modelAndView.addObject("successMessage", "BookingDetails Confirmed.");
+        redirectAttributes.addFlashAttribute("successMessage", "BookingDetails Confirmed.");
         modelAndView.setViewName("redirect:/admin/booking-requests/1");
         return modelAndView;
     }
 
     @PostMapping(value = "/admin/rejectRequest/{id}")
-    public ModelAndView rejectRequest(@PathVariable(value = "id") Long id){
-        ModelAndView modelAndView = new ModelAndView();
+    public ModelAndView rejectRequest(ModelAndView modelAndView,
+                                      @PathVariable(value = "id") Long id,
+                                      RedirectAttributes redirectAttributes){
+
         BookingDetails bookingDetails = bookingService.findById(id).orElse(null);
         if(bookingDetails == null){
-            modelAndView.addObject("successMessage", "BookingDetails Not Found.");
+            redirectAttributes.addFlashAttribute("successMessage", "BookingDetails Not Found.");
             modelAndView.setViewName("redirect:/admin/booking-requests");
         }
         else{
             bookingDetails.setStatus("Rejected");
             bookingService.save(bookingDetails);
         }
-        modelAndView.addObject("successMessage", "BookingDetails Rejected.");
+        redirectAttributes.addFlashAttribute("successMessage", "BookingDetails Rejected.");
         modelAndView.setViewName("redirect:/admin/booking-requests/1");
         return modelAndView;
     }
@@ -121,7 +128,9 @@ public class BookingController {
 
     @RequestMapping("/user/booking-status/{page}")
     public ModelAndView bookingStatus(@PathVariable(value = "page") int page,
-                                      @RequestParam(defaultValue = "id") String sortBy){
+                                      @RequestParam(defaultValue = "id") String sortBy,
+                                      @ModelAttribute("successMessage") String successMessage,
+                                      @ModelAttribute("errorMessage") String errorMessage){
         ModelAndView modelAndView = new ModelAndView();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
@@ -139,6 +148,8 @@ public class BookingController {
         modelAndView.addObject("temp", 1);
         modelAndView.addObject("activeBookingsList", true);
         modelAndView.addObject("bookingDetails", bookingDetailsPage.getContent());
+        modelAndView.addObject("successMessage", successMessage);
+        modelAndView.addObject("errorMessage", errorMessage);
         modelAndView.setViewName("user/booking-status");
         return modelAndView;
     }
@@ -146,7 +157,7 @@ public class BookingController {
     //======================Filter with room status====================================================
 
     @RequestMapping("/user/booking-status/pending")
-    public String pending(Model model){
+    public ModelAndView pending(ModelAndView modelAndView){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
         List<BookingDetails> bookingDetails = new ArrayList<>();
@@ -155,13 +166,14 @@ public class BookingController {
                 bookingDetails.add(bookingDetail);
             }
         }
-        model.addAttribute("temp", 1);
-        model.addAttribute("bookingDetails", bookingDetails);
-        return "user/booking-status";
+        modelAndView.addObject("temp", 1);
+        modelAndView.addObject("bookingDetails", bookingDetails);
+        modelAndView.setViewName("user/booking-status");
+        return modelAndView;
     }
 
     @RequestMapping("/user/booking-status/confirmed")
-    public String confirmed(Model model){
+    public ModelAndView confirmed(ModelAndView modelAndView){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
         List<BookingDetails> bookingDetails = new ArrayList<>();
@@ -170,13 +182,14 @@ public class BookingController {
                 bookingDetails.add(bookingDetail);
             }
         }
-        model.addAttribute("temp", 1);
-        model.addAttribute("bookingDetails", bookingDetails);
-        return "user/booking-status";
+        modelAndView.addObject("temp", 1);
+        modelAndView.addObject("bookingDetails", bookingDetails);
+        modelAndView.setViewName("user/booking-status");
+        return modelAndView;
     }
 
     @RequestMapping("/user/booking-status/rejected")
-    public String rejected(Model model){
+    public ModelAndView rejected(ModelAndView modelAndView){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
         List<BookingDetails> bookingDetails = new ArrayList<>();
@@ -185,17 +198,18 @@ public class BookingController {
                 bookingDetails.add(bookingDetail);
             }
         }
-        model.addAttribute("temp", 1);
-        model.addAttribute("bookingDetails", bookingDetails);
-        return "user/booking-status";
+        modelAndView.addObject("temp", 1);
+        modelAndView.addObject("bookingDetails", bookingDetails);
+        modelAndView.setViewName("user/booking-status");
+        return modelAndView;
     }
     //==================================================================================================
 
     //============================Booking History===============================================
 
     @RequestMapping(value = "/booking-history", method = RequestMethod.GET)
-    public ModelAndView bookingHistory(){
-        ModelAndView modelAndView = new ModelAndView();
+    public ModelAndView bookingHistory(ModelAndView modelAndView){
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
         List<BookingDetails> bookingDetails = new ArrayList<>();
@@ -214,10 +228,10 @@ public class BookingController {
     //============================================================================================
 
     @PostMapping("/bookRoom/{id}/{startTime}/{endTime}")
-    public ModelAndView bookRoom(@PathVariable(value="id") Long id,
+    public ModelAndView bookRoom(ModelAndView modelAndView, @PathVariable(value="id") Long id,
                                  @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") @PathVariable("startTime") LocalDateTime startTime,
                                  @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") @PathVariable("endTime") LocalDateTime endTime) throws Exception{
-        ModelAndView modelAndView = new ModelAndView();
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
         modelAndView.addObject("userName", "Welcome " + user.getFirstName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
@@ -237,30 +251,35 @@ public class BookingController {
     }
 
     @RequestMapping(value = "/confirmBookRoom")
-    public ModelAndView confirmBookRoom(ModelAndView modelAndView){
-        modelAndView.addObject("successMessage", "Room Booked successfully");
+    public ModelAndView confirmBookRoom(ModelAndView modelAndView,
+                                        RedirectAttributes redirectAttributes){
+        redirectAttributes.addFlashAttribute("successMessage", "Room Booked successfully");
         modelAndView.setViewName("redirect:/meeting-room-details/1");
         return modelAndView;
     }
 
     @RequestMapping(value = "/cancelBookRoom/{id}")
-    public ModelAndView cancelBookRoom(ModelAndView modelAndView, @PathVariable("id") Long id){
+    public ModelAndView cancelBookRoom(ModelAndView modelAndView, @PathVariable("id") Long id,
+                                       RedirectAttributes redirectAttributes){
         bookingService.deleteById(id);
+        modelAndView.addObject("successMessage", "Request Deleted");
         modelAndView.setViewName("redirect:/meeting-room-details/1");
         return modelAndView;
     }
 
     @RequestMapping(value = "/deleteRequest/{id}")
-    public ModelAndView deleteRequest(@PathVariable(value="id") Long id){
-        ModelAndView modelAndView = new ModelAndView();
+    public ModelAndView deleteRequest(ModelAndView modelAndView,
+                                      @PathVariable(value="id") Long id,
+                                      RedirectAttributes redirectAttributes){
+
         BookingDetails bookingDetails = bookingService.findById(id).orElse(null);
         if(bookingDetails == null){
-            modelAndView.addObject("successMessage", "BookingDetails Not Found.");
+            redirectAttributes.addFlashAttribute("successMessage", "BookingDetails Not Found.");
             modelAndView.setViewName("redirect:/user/booking-status/1");
         }
         else{
             bookingService.deleteById(id);
-            modelAndView.addObject("successMessage", "BookingDetails Deleted Successfully.");
+            redirectAttributes.addFlashAttribute("successMessage", "BookingDetails Deleted Successfully.");
             modelAndView.setViewName("redirect:/user/booking-status/1");
         }
         return modelAndView;

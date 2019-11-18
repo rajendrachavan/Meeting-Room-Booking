@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Controller
-@RequestMapping("admin")
+@RequestMapping("/admin")
 public class AdminController {
 
     @Autowired
@@ -50,9 +50,12 @@ public class AdminController {
     private DepartmentRepository departmentRepository;
 
     @RequestMapping(value="/user-management/{page}", method = RequestMethod.GET)
-    public ModelAndView userManagement(@PathVariable(value = "page") int page,
-                                       @RequestParam(defaultValue = "id") String sortBy){
-        ModelAndView modelAndView = new ModelAndView();
+    public ModelAndView userManagement(ModelAndView modelAndView,
+                                       @PathVariable(value = "page") int page,
+                                       @RequestParam(defaultValue = "id") String sortBy,
+                                       @ModelAttribute("successMessage") String successMessage,
+                                       @ModelAttribute("errorMessage") String errorMessage){
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
         PageRequest pageable = PageRequest.of(page - 1, 5, Sort.Direction.DESC, sortBy);
@@ -66,13 +69,16 @@ public class AdminController {
         modelAndView.addObject("userManagement","User Management");
         modelAndView.addObject("users", userPage.getContent());
         modelAndView.addObject("userName", "Welcome " + user.getFirstName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
+        modelAndView.addObject("successMessage", successMessage);
+        modelAndView.addObject("errorMessage", errorMessage);
         modelAndView.setViewName("admin/user-management");
         return modelAndView;
     }
 
     @RequestMapping(value = "/update/{id}", method = RequestMethod.GET)
-    public ModelAndView updatepage(@PathVariable(value="id") Long id) throws Exception {
-        ModelAndView modelAndView = new ModelAndView();
+    public ModelAndView updatepage(ModelAndView modelAndView,
+                                   @PathVariable(value="id") Long id) throws Exception {
+
         User user1 = userService.findById(id).orElse(null);
         if(user1 == null){
             System.out.println("User Not Found");
@@ -87,28 +93,28 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/updateUser/{id}", method = RequestMethod.PUT)
-    public ModelAndView editUser(@PathVariable(value="id") Long id,
+    public ModelAndView editUser(ModelAndView modelAndView,
+                                 @PathVariable(value="id") Long id,
                                  @RequestParam(name = "role") Long role,
                                  @RequestParam(name = "department") Long dept_id,
-                                 @Valid @ModelAttribute("user") User user){
-        ModelAndView modelAndView = new ModelAndView();
+                                 @Valid @ModelAttribute("user") User user,
+                                 RedirectAttributes redirectAttributes){
         User userDataDB = userService.findById(id).orElse(null);
         Department department = departmentRepository.findById(dept_id).orElse(null);
         user.setDepartment(department);
         user.setPassword(userDataDB.getPassword());
         userService.editSave(user);
-        modelAndView.addObject("successMessage", "User has been Updated successfully");
-        //modelAndView.addObject("user", user);
+        redirectAttributes.addFlashAttribute("successMessage", "User has been Updated successfully");
         modelAndView.setViewName("redirect:/admin/user-management/1");
         return modelAndView;
     }
 
     @RequestMapping(value = "/delete/{id}")
-    public ModelAndView delete(@PathVariable Long id,
+    public ModelAndView delete(ModelAndView modelAndView,
+                               @PathVariable Long id,
                                RedirectAttributes redirectAttributes){
-        ModelAndView modelAndView = new ModelAndView();
         userService.deleteById(id);
-        modelAndView.addObject("successMessage", "User Deleted Successfully.");
+        redirectAttributes.addFlashAttribute("successMessage", "User Deleted Successfully.");
         modelAndView.setViewName("redirect:/admin/user-management/1");
         return modelAndView;
     }
