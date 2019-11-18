@@ -21,11 +21,20 @@
             <a class="navbar-brand" href="/homepage">Book A MeetingRoom</a>
         </div>
         <ul class="nav navbar-nav">
-            <li><a href="/user/user-profile">User Profile</a></li>
+            <li class="dropdownNav active">
+                <a href="/user/user-profile">My Profile</a>
+                <div class="dropdownNav-content">
+                    <a class="btn btn-default" href="/user/profile-change-requests">My Change Request Status</a>
+                    <a th:if="${role} == 'TL' or ${role} == 'PM'" class="btn btn-default" href="/change-requests">User Requests</a>
+                </div>
+            </li>
             <li><a href="/meeting-room-details/1">Rooms</a></li>
-            <li><a href="/user/booking-status/1">Bookings</a></li>
-            <li class="active" th:if="${role} == 'PM' or ${role} == 'TL'"><a href="/change-requests">Change Requests</a></li>
-            <li><a href="/user/profile-change-requests">Change Request Status</a></li>
+            <li class="dropdownNav">
+                <a href="/user/booking-status/1">Bookings</a>
+                <div class="dropdownNav-content">
+                    <a class="btn btn-default" href="/booking-history">Booking History</a>
+                </div>
+            </li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <li><a th:href="@{/logout}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
