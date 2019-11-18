@@ -51,7 +51,8 @@ public class LoginController {
 	public ModelAndView createNewUser(@Valid User user, BindingResult bindingResult,
 									  @RequestParam(name = "department") Long dept_id,
 									  ModelAndView modelAndView) {
-		if(bindingResult.hasErrors() || dept_id == null){
+		if(bindingResult.hasErrors()){
+			modelAndView.addObject("errorMessage", "*Invalid Mobile Number");
 			modelAndView.setViewName("registration");
 			return modelAndView;
 		}

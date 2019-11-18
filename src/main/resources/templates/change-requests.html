@@ -19,7 +19,7 @@
             <a class="navbar-brand" href="/homepage">Book A MeetingRoom</a>
         </div>
         <ul class="nav navbar-nav">
-            <li th:if="${role} == 'ADMIN'" class="dropdownNav">
+            <li th:if="${role} == 'ADMIN'" class="dropdownNav active">
                 <a href="/admin/user-management/1">Users</a>
                 <div class="dropdownNav-content">
                     <a class="btn btn-default" href="/change-requests">Change Requests</a>
@@ -61,7 +61,7 @@
                         <th>Type</th>
                         <th>Old </th>
                         <th>New </th>
-                        <th colspan="2">Requested By</th>
+                        <th>Requested By</th>
                         <th>Status</th>
                         <th colspan="2">Operations</th>
                     </tr>
@@ -72,18 +72,13 @@
                         <td th:text="${changeRequest.Type}">Test</td>
                         <td th:text="${changeRequest.oldValue}">Class</td>
                         <td th:text="${changeRequest.newValue}">Class</td>
-                        <td th:text="${changeRequest.User.firstName}"></td>
-                        <td th:text="${changeRequest.User.lastName}"></td>
+                        <td><span th:text="${changeRequest.User.firstName}"></span>&nbsp;<span th:text="${changeRequest.User.lastName}"></span></td>
                         <td th:text="${changeRequest.status}">Pending</td>
                         <td th:if="${changeRequest.status} == 'Pending'">
-<!--                            <form th:action="@{/confirmChangeRequest/{id}(id=${changeRequest.id})}" method="post">-->
-<!--                                <button class="btn btn-primary" name="confirm"-->
-<!--                                        type="Submit">Confirm</button>-->
-<!--                            </form>-->
-                            <a th:href="@{/confirmChangeRequest/{id}(id=${changeRequest.id})}">
+                            <form th:action="@{/confirmChangeRequest/{id}(id=${changeRequest.id})}" method="post">
                                 <button class="btn btn-primary" name="confirm"
-                                        type="Submit" onclick="return confirm('Confirm change Request?');">Confirm</button>
-                            </a>
+                                        type="Submit">Confirm</button>
+                            </form>
                         </td>
                         <td th:if="${changeRequest.status} == 'Pending' or ${changeRequest.status} == 'Confirmed'">
                             <form th:action="@{/rejectChangeRequest/{id}(id=${changeRequest.id})}" method="post">

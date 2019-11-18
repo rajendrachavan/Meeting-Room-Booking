@@ -67,7 +67,7 @@
                         <td th:text="${booking.startTime}">Class</td>
                         <td th:text="${booking.endTime}">Class</td>
                         <td th:text="${booking.status}">male</td>
-                        <td th:text="${booking.User.firstName}">test@example.com</td>
+                        <td><span th:text="${booking.User.firstName}"></span>&nbsp;<span th:text="${booking.User.lastName}"></span></td>
                         <td th:if="${booking.status} == 'Pending'">
                             <form th:action="@{/admin/confirmRequest/{id}(id=${booking.id})}" method="post">
                                 <button class="btn btn-primary" name="confirm"
