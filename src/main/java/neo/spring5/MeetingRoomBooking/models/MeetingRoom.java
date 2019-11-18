@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.*;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -19,7 +18,7 @@ public class MeetingRoom {
     private String location;
 
     @ManyToMany
-    private List<Facilities> facilities;
+    private List<Facility> facilities;
 
     @OneToMany(mappedBy = "meetingRoom")
     private List<BookingDetails> bookingDetails;

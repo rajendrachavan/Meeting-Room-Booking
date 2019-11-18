@@ -11,11 +11,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 
 @Controller
-@RequestMapping("user")
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
@@ -28,13 +29,17 @@ public class UserController {
     private DepartmentRepository departmentRepository;
 
     @RequestMapping(value = "/user-profile")
-    public ModelAndView userProfile(ModelAndView modelAndView){
+    public ModelAndView userProfile(ModelAndView modelAndView,
+                                    @ModelAttribute("successMessage") String successMessage,
+                                    @ModelAttribute("errorMessage") String errorMessage){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
         modelAndView.addObject("user", user);
         modelAndView.addObject("role", user.getRole().getRole());
         modelAndView.addObject("userProfile", "User Profile");
         modelAndView.addObject("userName", "Welcome " + user.getFirstName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
+        modelAndView.addObject("successMessage", successMessage);
+        modelAndView.addObject("errorMessage", errorMessage);
         modelAndView.setViewName("user/user-profile");
         return modelAndView;
     }
@@ -51,14 +56,15 @@ public class UserController {
     @RequestMapping(value = "/edit-user-profile/{id}", method = RequestMethod.PUT)
     public ModelAndView updateUserProfile(ModelAndView modelAndView,
                                           @PathVariable("id") Long id,
-                                          @Valid @ModelAttribute("user") User user){
+                                          @Valid @ModelAttribute("user") User user,
+                                          RedirectAttributes redirectAttributes){
         User userDB = userService.findById(id).orElse(null);
         userDB.setFirstName(user.getFirstName());
         userDB.setLastName(user.getLastName());
         userDB.setGender(user.getGender());
         userDB.setMobileNo(user.getMobileNo());
         userService.editSave(userDB);
-        modelAndView.addObject("successMessage", "User Updated Successfully.");
+        redirectAttributes.addFlashAttribute("successMessage", "User Updated Successfully.");
         modelAndView.setViewName("redirect:/user/user-profile");
         return modelAndView;
     }
@@ -82,7 +88,8 @@ public class UserController {
 
     @RequestMapping(value = "/changeEmail", method = RequestMethod.POST)
     public ModelAndView processChangeEmail(ModelAndView modelAndView,
-                                           @RequestParam("email") String userEmail){
+                                           @RequestParam("email") String userEmail,
+                                           RedirectAttributes redirectAttributes){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
         ChangeRequest changeRequest = new ChangeRequest();
@@ -92,7 +99,7 @@ public class UserController {
         changeRequest.setUser(user);
         changeRequest.setStatus("Pending");
         changeRequestRepository.save(changeRequest);
-        modelAndView.addObject("successMessage", "Change Email Request Successful");
+        redirectAttributes.addFlashAttribute("successMessage", "Change Email Request Successful");
         modelAndView.setViewName("redirect:/user/user-profile");
         return modelAndView;
     }
@@ -109,7 +116,8 @@ public class UserController {
 
     @RequestMapping(value = "/changeDepartment", method = RequestMethod.POST)
     public ModelAndView processChangeDepartment(ModelAndView modelAndView,
-                                           @RequestParam("department") Long userDept){
+                                                @RequestParam("department") Long userDept,
+                                                RedirectAttributes redirectAttributes){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
         ChangeRequest changeRequest = new ChangeRequest();
@@ -119,26 +127,31 @@ public class UserController {
         changeRequest.setUser(user);
         changeRequest.setStatus("Pending");
         changeRequestRepository.save(changeRequest);
-        modelAndView.addObject("successMessage", "Change Email Request Successful");
+        redirectAttributes.addFlashAttribute("successMessage", "Change Email Request Successful");
         modelAndView.setViewName("redirect:/user/user-profile");
         return modelAndView;
     }
 
     @RequestMapping(value = "/profile-change-requests")
-    public ModelAndView profileChangeRequestStatus(ModelAndView modelAndView){
+    public ModelAndView profileChangeRequestStatus(ModelAndView modelAndView,
+                                                   @ModelAttribute("successMessage") String successMessage,
+                                                   @ModelAttribute("errorMessage") String errorMessage){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
         modelAndView.addObject("role", user.getRole().getRole());
         modelAndView.addObject("requests", user.getChangeRequests());
+        modelAndView.addObject("successMessage", successMessage);
+        modelAndView.addObject("errorMessage", errorMessage);
         modelAndView.setViewName("user/profile-change-requests");
         return modelAndView;
     }
 
     @RequestMapping(value = "/cancelChangeRequest/{id}", method = RequestMethod.POST)
     public ModelAndView cancelChangeRequest(ModelAndView modelAndView,
-                                            @PathVariable("id") Long id){
+                                            @PathVariable("id") Long id,
+                                            RedirectAttributes redirectAttributes){
         changeRequestRepository.deleteById(id);
-        modelAndView.addObject("successMessage", "Request Cancelled.");
+        redirectAttributes.addFlashAttribute("successMessage", "Request Cancelled.");
         modelAndView.setViewName("user/profile-change-requests");
         return modelAndView;
     }

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @Controller
@@ -34,7 +35,11 @@ public class LoginController {
 	private TokenRepository tokenRepository;
 
 	@RequestMapping(value={"/", "/login"}, method = RequestMethod.GET)
-	public ModelAndView login(ModelAndView modelAndView){
+	public ModelAndView login(ModelAndView modelAndView,
+							  @ModelAttribute("successMessage") String successMessage,
+							  @ModelAttribute("errorMessage") String errorMessage){
+		modelAndView.addObject("successMessage", successMessage);
+		modelAndView.addObject("errorMessage", errorMessage);
 		modelAndView.setViewName("login");
 		return modelAndView;
 	}
@@ -48,9 +53,9 @@ public class LoginController {
 	}
 	
 	@RequestMapping(value = "/registration", method = RequestMethod.POST)
-	public ModelAndView createNewUser(@Valid User user, BindingResult bindingResult,
-									  @RequestParam(name = "department") Long dept_id,
-									  ModelAndView modelAndView) {
+	public ModelAndView createNewUser(ModelAndView modelAndView,
+									  @Valid User user, BindingResult bindingResult,
+									  @RequestParam(name = "department") Long dept_id) {
 		if(bindingResult.hasErrors()){
 			modelAndView.addObject("errorMessage", "*Invalid Mobile Number");
 			modelAndView.setViewName("registration");
@@ -91,18 +96,19 @@ public class LoginController {
 
 	@RequestMapping(value = "/verifyEmail")
 	public ModelAndView verifyEmail(ModelAndView modelAndView,
-									@RequestParam("token") String token1){
+									@RequestParam("token") String token1,
+									RedirectAttributes redirectAttributes){
 		Token token = tokenRepository.findByToken(token1);
 		User user = userService.findById(token.getUser().getId()).orElse(null);
 		if(user.equals(null)){
-			modelAndView.addObject("errorMessage", "Oops!  This is an invalid password reset link.");
+			redirectAttributes.addFlashAttribute("errorMessage", "Oops!  This is an invalid password reset link.");
 			modelAndView.setViewName("login");
 			return modelAndView;
 		} else {
 			user.setActive(1);
 			userService.editSave(user);
 			tokenRepository.delete(token);
-			modelAndView.addObject("successMessage", "Email Verified Successfully, you can now login with your credentials");
+			redirectAttributes.addFlashAttribute("successMessage", "Email Verified Successfully, you can now login with your credentials");
 			modelAndView.setViewName("login");
 			return modelAndView;
 		}

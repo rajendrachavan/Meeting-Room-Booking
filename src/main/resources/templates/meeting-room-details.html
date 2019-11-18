@@ -59,6 +59,12 @@
                             type="Submit">Add</button>
                 </form>
             </div>
+            <div style="float:right;" th:if="${role} == 'ADMIN'">
+                <form th:action="@{/admin/view-facilities}" method="get">
+                    &nbsp;&nbsp;<button class="button2" name="view-facilities"
+                            type="Submit">View facilities</button>
+                </form>
+            </div>
         </div>
         <div class="panel-body">
             <div th:if="${role} == 'USER' or ${role} == 'TL' or ${role} == 'PM'">
@@ -118,6 +124,10 @@
                 </tr>
                 </tbody>
             </table>
+            <div>
+                <p class="text-center" style="font-size: 20; color:#00BF6F;" th:utext="${successMessage}"></p>
+                <p class="text-center" style="font-size: 20; color:#FF1C19;" th:utext="${errorMessage}"></p>
+            </div>
         </div>
     </div>
     <div class="row" th:fragment="pagination">
