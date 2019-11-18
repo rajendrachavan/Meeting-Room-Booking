@@ -72,7 +72,7 @@
                         <td th:text="${booking.status}">confirm</td>
                         <td th:if="${temp} == 1" class="centered">
                             <a th:href="@{/deleteRequest/{id}(id=${booking.id})}"
-                               class="btn btn-danger">Delete
+                               class="btn btn-danger" onclick="return confirm('Delete Booking Request?');">Delete
                             </a>
                         </td>
                     </tr>
