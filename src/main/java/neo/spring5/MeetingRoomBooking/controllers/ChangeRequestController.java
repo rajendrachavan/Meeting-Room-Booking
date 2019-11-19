@@ -32,6 +32,7 @@ public class ChangeRequestController {
     @Autowired
     private DepartmentRepository departmentRepository;
 
+    //===========================Display Change Requests=========================================
     @RequestMapping(value="/change-requests", method = RequestMethod.GET)
     public ModelAndView changeRequests(ModelAndView modelAndView){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -55,6 +56,7 @@ public class ChangeRequestController {
         return modelAndView;
     }
 
+    //===========================Confirm Changes=========================================
     @RequestMapping(value="/confirmChangeRequest/{id}", method = RequestMethod.POST)
     public ModelAndView confirmChangeRequest(ModelAndView modelAndView,
                                              @PathVariable("id") Long id){
@@ -80,6 +82,7 @@ public class ChangeRequestController {
         return modelAndView;
     }
 
+    //===========================Reject Changes=========================================
     @RequestMapping(value="/rejectChangeRequest/{id}", method = RequestMethod.POST)
     public ModelAndView rejectChangeRequest(ModelAndView modelAndView,
                                             @PathVariable("id") Long id){
