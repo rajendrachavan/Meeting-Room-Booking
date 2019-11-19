@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService{
 		token.setUser(user);
 		tokenRepository.save(token);
 
-		String appUrl = "http://localhost:8080";
+		String appUrl = "http://10.0.60.51:8080";
 		String subject= "Email Verification";
 		String body = "Verify your email id, click the link below:\n" +"<a href='"+ appUrl
 				+ "/verifyEmail?token=" + token.getToken()+"'>Click here</a>";

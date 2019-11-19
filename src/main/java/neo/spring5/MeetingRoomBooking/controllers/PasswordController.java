@@ -9,7 +9,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.mail.MessagingException;
 import java.util.UUID;
@@ -50,7 +49,7 @@ public class PasswordController {
             token.setUser(user);
             tokenRepository.save(token);
 
-            String appUrl = "http://localhost:8080";
+            String appUrl = "http://10.0.60.51:8080";
             String subject= "Password Reset Request";
             String body = "To reset your password, click the link below:\n" +"<a href='"+ appUrl
                     + "/reset-password?token=" + token.getToken()+"'>Reset link</a>";
@@ -77,19 +76,18 @@ public class PasswordController {
     @RequestMapping(value = "/reset-password/{resetToken}", method = RequestMethod.POST)
     public ModelAndView setNewPassword(ModelAndView modelAndView,
                                        @PathVariable("resetToken") String token,
-                                       @RequestParam("password") String password,
-                                       RedirectAttributes redirectAttributes){
+                                       @RequestParam("password") String password){
         Token token1 = tokenRepository.findByToken(token);
         User user = userService.findById(token1.getUser().getId()).orElse(null);
         if(user == null){
-            redirectAttributes.addFlashAttribute("errorMessage", "Oops!  This is an invalid password reset link.");
+            modelAndView.addObject("errorMessage", "Oops!  This is an invalid password reset link.");
             modelAndView.setViewName("reset-password");
         } else{
             token1.setToken(UUID.randomUUID().toString());
             tokenRepository.save(token1);
             user.setPassword(bCryptPasswordEncoder.encode(password));
             userService.editSave(user);
-            redirectAttributes.addFlashAttribute("successMessage", "You have successfully reset your password.  You may now login with new credentials.");
+            modelAndView.addObject("successMessage", "You have successfully reset your password.  You may now login with new credentials.");
             modelAndView.setViewName("login");
         }
         return modelAndView;

@@ -46,7 +46,8 @@
         <div class="panel panel-primary">
             <div class="panel-heading">
                 <span th:utext="${userName}"></span>
-                <h4>Booking Requests</h4>
+                <h4 th:if="${temp} == 0">Booking History</h4>
+                <h4 th:if="${temp} == 1">Booking Requests</h4>
                 <div th:if="${temp} == 1">
                     <div class="btn-group btn-group">
                         <a th:href="@{/user/booking-status/1}" class="btn btn-default">All</a>
