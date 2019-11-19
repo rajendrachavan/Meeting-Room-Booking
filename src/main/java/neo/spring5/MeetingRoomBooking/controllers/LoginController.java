@@ -69,7 +69,7 @@ public class LoginController {
 			Department department = departmentRepository.findById(dept_id).orElse(null);
 			user.setDepartment(department);
 			userService.saveUser(user);
-			modelAndView.addObject("successMessage", "User has been registered successfully");
+			modelAndView.addObject("successMessage", "User has been registered successfully, please verify email to login.");
 			modelAndView.addObject("user", new User());
 			modelAndView.setViewName("registration");
 		}
@@ -96,19 +96,18 @@ public class LoginController {
 
 	@RequestMapping(value = "/verifyEmail")
 	public ModelAndView verifyEmail(ModelAndView modelAndView,
-									@RequestParam("token") String token1,
-									RedirectAttributes redirectAttributes){
+									@RequestParam("token") String token1){
 		Token token = tokenRepository.findByToken(token1);
 		User user = userService.findById(token.getUser().getId()).orElse(null);
 		if(user.equals(null)){
-			redirectAttributes.addFlashAttribute("errorMessage", "Oops!  This is an invalid password reset link.");
+			modelAndView.addObject("errorMessage", "Oops!  This is an invalid password reset link.");
 			modelAndView.setViewName("login");
 			return modelAndView;
 		} else {
 			user.setActive(1);
 			userService.editSave(user);
 			tokenRepository.delete(token);
-			redirectAttributes.addFlashAttribute("successMessage", "Email Verified Successfully, you can now login with your credentials");
+			modelAndView.addObject("successMessage", "Email Verified Successfully, you can now login with your credentials");
 			modelAndView.setViewName("login");
 			return modelAndView;
 		}

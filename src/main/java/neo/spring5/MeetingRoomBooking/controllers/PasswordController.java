@@ -42,7 +42,7 @@ public class PasswordController {
     public ModelAndView forgotPasswordProcess(ModelAndView modelAndView,
                                        @RequestParam("email") String email) throws MessagingException {
         User user = userService.findUserByEmail(email);
-        if(user.equals(null)){
+        if(user == null){
             modelAndView.addObject("successMessage", "We didn't find an account for that email address.");
         } else{
             Token token = new Token();
@@ -65,7 +65,7 @@ public class PasswordController {
     public ModelAndView resetPassword(ModelAndView modelAndView, @RequestParam("token") String token){
         Token token1 = tokenRepository.findByToken(token);
         User user = userService.findById(token1.getUser().getId()).orElse(null);
-        if(user.equals(null)){
+        if(user == null){
             modelAndView.addObject("errorMessage", "Oops!  This is an invalid password reset link.");
         } else {
             modelAndView.addObject("resetToken", token1.getToken());
@@ -81,7 +81,7 @@ public class PasswordController {
                                        RedirectAttributes redirectAttributes){
         Token token1 = tokenRepository.findByToken(token);
         User user = userService.findById(token1.getUser().getId()).orElse(null);
-        if(user.equals(null)){
+        if(user == null){
             redirectAttributes.addFlashAttribute("errorMessage", "Oops!  This is an invalid password reset link.");
             modelAndView.setViewName("reset-password");
         } else{

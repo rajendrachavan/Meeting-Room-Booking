@@ -17,6 +17,6 @@ public class Token {
 
     private String token;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.PERSIST)
     private User user;
 }
