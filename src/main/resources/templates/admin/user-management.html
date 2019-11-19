@@ -34,19 +34,20 @@
 	</div>
 </nav>
 <div class="container">
-		<div class="panel-group" style="margin-top:25px">
-			<div class="panel panel-primary">
-				<div class="panel-heading">
-					<h4><span th:utext="${userManagement}">User-Management</span></h4>
-					<span th:utext="${userName}"></span>
-					<div style="float:right;">
-						<form th:action="@{/admin/registration}" method="get">
-							<button class="button2" name="registration"
-									type="Submit">Add</button>
-						</form>
-					</div>
+	<div class="panel-group" style="margin-top:25px">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h4><span th:utext="${userManagement}">User-Management</span></h4>
+				<span th:utext="${userName}"></span>
+				<div style="float:right;">
+					<form th:action="@{/admin/registration}" method="get">
+						<button class="button2" name="registration"
+								type="Submit">Add</button>
+					</form>
 				</div>
-				<div class="panel-body">
+			</div>
+			<div class="panel-body">
+				<div class="table-responsive">
 					<table class="table table-hover">
 						<thead>
 						<tr>
@@ -87,25 +88,26 @@
 						</tbody>
 					</table>
 				</div>
-				<div>
-					<p class="text-center" style="font-size: 20; color:#00BF6F;" th:utext="${successMessage}"></p>
-					<p class="text-center" style="font-size: 20; color:#FF1C19;" th:utext="${errorMessage}"></p>
-				</div>
+			</div>
+			<div>
+				<p class="text-center" style="font-size: 20; color:#00BF6F;" th:utext="${successMessage}"></p>
+				<p class="text-center" style="font-size: 20; color:#FF1C19;" th:utext="${errorMessage}"></p>
 			</div>
 		</div>
 	</div>
-<div class="row" th:fragment="pagination">
-	<div class="col-md-2"></div>
-	<div class="col-md-8">
-		<nav aria-label="Pagination">
-			<ul class="pagination justify-content-center">
-				<li class="page-item" th:each="pageNumber : ${pageNumbers}" >
-					<a class="page-link" th:href="@{|/admin/user-management/${pageNumber}|}" th:text=${pageNumber}>1</a>
-				</li>
-			</ul>
-		</nav>
+	<div class="row" th:fragment="pagination">
+		<div class="col-md-2"></div>
+		<div class="col-md-8">
+			<nav aria-label="Pagination">
+				<ul class="pagination justify-content-center">
+					<li class="page-item" th:each="pageNumber : ${pageNumbers}" >
+						<a class="page-link" th:href="@{|/admin/user-management/${pageNumber}|}" th:text=${pageNumber}>1</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+		<div class="col-md-2"></div>
 	</div>
-	<div class="col-md-2"></div>
 </div>
 </body>
 </html>

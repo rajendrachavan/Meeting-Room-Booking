@@ -91,19 +91,19 @@
             </div>
         </div>
     </div>
-</div>
-<div class="row" th:fragment="pagination">
-    <div class="col-md-2"></div>
-    <div class="col-md-8">
-        <nav aria-label="Pagination">
-            <ul class="pagination justify-content-center">
-                <li class="page-item" th:each="pageNumber : ${pageNumbers}" >
-                    <a class="page-link" th:href="@{|/admin/booking-requests/${pageNumber}|}" th:text=${pageNumber}>1</a>
-                </li>
-            </ul>
-        </nav>
+    <div class="row" th:fragment="pagination">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <nav aria-label="Pagination">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" th:each="pageNumber : ${pageNumbers}" >
+                        <a class="page-link" th:href="@{|/admin/booking-requests/${pageNumber}|}" th:text=${pageNumber}>1</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="col-md-2"></div>
     </div>
-    <div class="col-md-2"></div>
 </div>
 </body>
 </html>
