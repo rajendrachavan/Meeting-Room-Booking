@@ -65,8 +65,7 @@ public class BookingController {
         return modelAndView;
     }
 
-    //======================Filter with room status====================================================
-
+    //===========================Filter booking Requests with its status=======================================
     @RequestMapping("/admin/booking-requests/pending")
     public ModelAndView roomAllocationPending(ModelAndView modelAndView){
         if(bookingService.findAllByStatus("Pending").isEmpty()) modelAndView.addObject("noRecords", "No Records found!!!");
@@ -92,6 +91,7 @@ public class BookingController {
     }
     //===============================================================================================
 
+    //==================================confirm booking request==========================================
     @PostMapping(value = "/admin/confirmRequest/{id}")
     public ModelAndView confirmRequest(ModelAndView modelAndView,
                                        @PathVariable(value = "id") Long id,
@@ -110,6 +110,7 @@ public class BookingController {
         return modelAndView;
     }
 
+    //==================================reject booking request==========================================
     @PostMapping(value = "/admin/rejectRequest/{id}")
     public ModelAndView rejectRequest(ModelAndView modelAndView,
                                       @PathVariable(value = "id") Long id,
@@ -162,8 +163,7 @@ public class BookingController {
         return modelAndView;
     }
 
-    //======================Filter with room status====================================================
-
+    //======================Filter booking Requests with its status===================================
     @RequestMapping("/user/booking-status/pending")
     public ModelAndView pending(ModelAndView modelAndView){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -217,7 +217,6 @@ public class BookingController {
     //==================================================================================================
 
     //============================Booking History===============================================
-
     @RequestMapping(value = "/booking-history", method = RequestMethod.GET)
     public ModelAndView bookingHistory(ModelAndView modelAndView){
 
@@ -239,6 +238,7 @@ public class BookingController {
     }
     //============================================================================================
 
+    //============================Book a room===============================================
     @PostMapping("/bookRoom/{id}/{startTime}/{endTime}")
     public ModelAndView bookRoom(ModelAndView modelAndView, @PathVariable(value="id") Long id,
                                  @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") @PathVariable("startTime") LocalDateTime startTime,
@@ -262,6 +262,7 @@ public class BookingController {
         return modelAndView;
     }
 
+    //====================================Booking Confirmation=========================================
     @RequestMapping(value = "/confirmBookRoom")
     public ModelAndView confirmBookRoom(ModelAndView modelAndView,
                                         RedirectAttributes redirectAttributes){
@@ -279,6 +280,7 @@ public class BookingController {
         return modelAndView;
     }
 
+    //================================Cancel Booking===============================================
     @RequestMapping(value = "/deleteRequest/{id}")
     public ModelAndView deleteRequest(ModelAndView modelAndView,
                                       @PathVariable(value="id") Long id,

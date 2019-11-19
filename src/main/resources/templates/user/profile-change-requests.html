@@ -67,7 +67,7 @@
                         <td th:if="${changeRequest.status} == 'Pending'">
                             <form th:action="@{/user/cancelChangeRequest/{id}(id=${changeRequest.id})}" method="post">
                                 <button class="btn btn-danger" name="confirm"
-                                        type="Submit">Reject</button>
+                                        type="Submit">Cancel Request</button>
                             </form>
                         </td>
                     </tr>
