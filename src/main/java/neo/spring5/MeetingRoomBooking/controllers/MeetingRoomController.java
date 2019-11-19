@@ -81,12 +81,12 @@ public class MeetingRoomController {
         modelAndView.addObject("userName", "Welcome " + user.getFirstName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
         LocalDateTime today = LocalDateTime.now();
         if(startTime.isBefore(today)){
-            redirectAttributes.addFlashAttribute("errorMessage", "Enter a valid Date.");
-            modelAndView.setViewName("redirect:/meeting-room-details");
+            redirectAttributes.addFlashAttribute("errorDate", "Enter a valid Date.");
+            modelAndView.setViewName("redirect:/meeting-room-details/1");
             return modelAndView;
         }else if(startTime.isAfter(endTime) || startTime.isBefore(LocalDateTime.now())){
-            redirectAttributes.addFlashAttribute("errorMessage", "Invalid start or end time");
-            modelAndView.setViewName("redirect:/meeting-room-details");
+            redirectAttributes.addFlashAttribute("errorDate", "Invalid start or end time");
+            modelAndView.setViewName("redirect:/meeting-room-details/1");
             return modelAndView;
         }
         else {
