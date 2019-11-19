@@ -16,7 +16,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @Controller
@@ -69,7 +68,7 @@ public class LoginController {
 			Department department = departmentRepository.findById(dept_id).orElse(null);
 			user.setDepartment(department);
 			userService.saveUser(user);
-			modelAndView.addObject("successMessage", "User has been registered successfully, please verify email to login.");
+			modelAndView.addObject("successMessage", "User has been registered successfully, please check ' "+user.getEmail()+" ' to activate account' .");
 			modelAndView.addObject("user", new User());
 			modelAndView.setViewName("registration");
 		}
