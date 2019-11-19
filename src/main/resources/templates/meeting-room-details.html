@@ -99,8 +99,9 @@
                 </tr>
                 </thead>
                 <tbody>
+                <tr th:if="${noRecords}"><td colspan="5"><p class="text-center" style="font-size: 20; color:#FF1C19;" th:utext="${noRecords}">no records</p></td></tr>
                 <tr th:each="meetingRoom: ${meetingRooms}">
-                    <td th:if="${role} == 'ADMIN'" th:text="${meetingRoom.id}">1</td>
+                <td th:if="${role} == 'ADMIN'" th:text="${meetingRoom.id}">1</td>
                     <td th:text="${meetingRoom.name}">Test</td>
                     <td th:text="${meetingRoom.location}">TestLocation</td>
                     <td th:text="${meetingRoom.facilities}">[AC]</td>

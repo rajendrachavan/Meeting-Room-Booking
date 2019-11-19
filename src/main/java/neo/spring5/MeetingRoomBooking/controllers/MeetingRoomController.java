@@ -91,7 +91,10 @@ public class MeetingRoomController {
             modelAndView.addObject("startTime", startTime);
             modelAndView.addObject("endTime", endTime);
             modelAndView.addObject("temp", 1);
-            modelAndView.addObject("meetingRooms", meetingRoomService.filterByDateAndTime(startTime, endTime));
+            if(meetingRoomService.filterByDateAndTime(startTime, endTime).isEmpty())
+                modelAndView.addObject("noRecords", "Sorry, No Meeting Rooms are available in given time.");
+            else
+                modelAndView.addObject("meetingRooms", meetingRoomService.filterByDateAndTime(startTime, endTime));
             modelAndView.setViewName("/meeting-room-details");
             return modelAndView;
         }
