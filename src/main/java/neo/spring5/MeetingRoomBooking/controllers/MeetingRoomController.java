@@ -39,6 +39,7 @@ public class MeetingRoomController {
 
     //----------------------------= COMMON =------------------------------------
 
+    //==============================Display all Meeting Rooms with their details=============================
     @RequestMapping("/meeting-room-details/{page}")
     public ModelAndView meetingRoom(ModelAndView modelAndView,
                                     @PathVariable(value = "page") int page,
@@ -67,6 +68,7 @@ public class MeetingRoomController {
         return modelAndView;
     }
 
+    //===========================Check Meeting Room Availability===========================================
     @RequestMapping("/filter-room-with-date")
     public ModelAndView filterRoom(ModelAndView modelAndView,
                                    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") @RequestParam("startTime") LocalDateTime startTime,
@@ -91,13 +93,19 @@ public class MeetingRoomController {
             modelAndView.addObject("startTime", startTime);
             modelAndView.addObject("endTime", endTime);
             modelAndView.addObject("temp", 1);
-            modelAndView.addObject("meetingRooms", meetingRoomService.filterByDateAndTime(startTime, endTime));
+            if(meetingRoomService.filterByDateAndTime(startTime, endTime).isEmpty())
+                modelAndView.addObject("noRecords", "Sorry, No Meeting Rooms are available in given time.");
+            else
+                modelAndView.addObject("meetingRooms", meetingRoomService.filterByDateAndTime(startTime, endTime));
             modelAndView.setViewName("/meeting-room-details");
             return modelAndView;
         }
     }
+    //-------------------------------------------------------------------------------------------------
+
     //--------------------------------= ADMIN =---------------------------------------------
 
+    //==========================Meeting Rooms CRUD operations===========================================
     @RequestMapping(value="/admin/add-room", method = RequestMethod.GET)
     public ModelAndView addRoom(ModelAndView modelAndView,
                                 @ModelAttribute("successMessage") String successMessage,
@@ -177,4 +185,7 @@ public class MeetingRoomController {
         modelAndView.setViewName("redirect:/meeting-room-details/1");
         return modelAndView;
     }
+    //======================================================================================================
+
+    //-----------------------------------------------------------------------------------------------------
 }

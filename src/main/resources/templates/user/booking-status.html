@@ -68,6 +68,7 @@
                     </tr>
                     </thead>
                     <tbody>
+                    <tr th:if="${noRecords}"><td colspan="5"><p class="text-center" style="font-size: 20; color:#FF1C19;" th:utext="${noRecords}">no records</p></td></tr>
                     <tr th:each="booking: ${bookingDetails}">
                         <td th:text="${booking.MeetingRoom.name}">Test</td>
                         <td th:text="${booking.startTime}">Class</td>

@@ -53,6 +53,8 @@ public class BookingController {
         if(totalPages > 0) {
             List<Integer> pageNumbers = IntStream.rangeClosed(1,totalPages).boxed().collect(Collectors.toList());
             modelAndView.addObject("pageNumbers", pageNumbers);
+        }else {
+            modelAndView.addObject("noRecords", "No Records found!!!");
         }
         modelAndView.addObject("role", user.getRole().getRole());
         modelAndView.addObject("activeBookingList", true);
@@ -63,30 +65,33 @@ public class BookingController {
         return modelAndView;
     }
 
-    //======================Filter with room status====================================================
-
+    //===========================Filter booking Requests with its status=======================================
     @RequestMapping("/admin/booking-requests/pending")
     public ModelAndView roomAllocationPending(ModelAndView modelAndView){
-        modelAndView.addObject("bookingDetails", bookingService.findAllByStatus("Pending"));
+        if(bookingService.findAllByStatus("Pending").isEmpty()) modelAndView.addObject("noRecords", "No Records found!!!");
+        else modelAndView.addObject("bookingDetails", bookingService.findAllByStatus("Pending"));
         modelAndView.setViewName("admin/booking-requests");
         return modelAndView;
     }
 
     @RequestMapping("/admin/booking-requests/confirmed")
     public ModelAndView roomAllocationConfirmed(ModelAndView modelAndView){
-        modelAndView.addObject("bookingDetails", bookingService.findAllByStatus("Confirmed"));
+        if(bookingService.findAllByStatus("Confirmed").isEmpty()) modelAndView.addObject("noRecords", "No Records found!!!");
+        else modelAndView.addObject("bookingDetails", bookingService.findAllByStatus("Confirmed"));
         modelAndView.setViewName("admin/booking-requests");
         return modelAndView;
     }
 
     @RequestMapping("/admin/booking-requests/rejected")
     public ModelAndView roomAllocationCancelled(ModelAndView modelAndView){
-        modelAndView.addObject("bookingDetails", bookingService.findAllByStatus("Rejected"));
+        if(bookingService.findAllByStatus("Rejected").isEmpty()) modelAndView.addObject("noRecords", "No Records found!!!");
+        else modelAndView.addObject("bookingDetails", bookingService.findAllByStatus("Rejected"));
         modelAndView.setViewName("admin/booking-requests");
         return modelAndView;
     }
     //===============================================================================================
 
+    //==================================confirm booking request==========================================
     @PostMapping(value = "/admin/confirmRequest/{id}")
     public ModelAndView confirmRequest(ModelAndView modelAndView,
                                        @PathVariable(value = "id") Long id,
@@ -105,6 +110,7 @@ public class BookingController {
         return modelAndView;
     }
 
+    //==================================reject booking request==========================================
     @PostMapping(value = "/admin/rejectRequest/{id}")
     public ModelAndView rejectRequest(ModelAndView modelAndView,
                                       @PathVariable(value = "id") Long id,
@@ -144,6 +150,9 @@ public class BookingController {
             List<Integer> pageNumbers = IntStream.rangeClosed(1,totalPages).boxed().collect(Collectors.toList());
             modelAndView.addObject("pageNumbers", pageNumbers);
         }
+        else {
+            modelAndView.addObject("noRecords", "No Records found!!!");
+        }
         modelAndView.addObject("role", user.getRole().getRole());
         modelAndView.addObject("temp", 1);
         modelAndView.addObject("activeBookingsList", true);
@@ -154,8 +163,7 @@ public class BookingController {
         return modelAndView;
     }
 
-    //======================Filter with room status====================================================
-
+    //======================Filter booking Requests with its status===================================
     @RequestMapping("/user/booking-status/pending")
     public ModelAndView pending(ModelAndView modelAndView){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -167,7 +175,8 @@ public class BookingController {
             }
         }
         modelAndView.addObject("temp", 1);
-        modelAndView.addObject("bookingDetails", bookingDetails);
+        if(bookingDetails.isEmpty()) modelAndView.addObject("noRecords", "No Records found!!!");
+        else modelAndView.addObject("bookingDetails", bookingDetails);
         modelAndView.setViewName("user/booking-status");
         return modelAndView;
     }
@@ -183,7 +192,8 @@ public class BookingController {
             }
         }
         modelAndView.addObject("temp", 1);
-        modelAndView.addObject("bookingDetails", bookingDetails);
+        if(bookingDetails.isEmpty()) modelAndView.addObject("noRecords", "No Records found!!!");
+        else modelAndView.addObject("bookingDetails", bookingDetails);
         modelAndView.setViewName("user/booking-status");
         return modelAndView;
     }
@@ -199,14 +209,14 @@ public class BookingController {
             }
         }
         modelAndView.addObject("temp", 1);
-        modelAndView.addObject("bookingDetails", bookingDetails);
+        if(bookingDetails.isEmpty()) modelAndView.addObject("noRecords", "No Records found!!!");
+        else modelAndView.addObject("bookingDetails", bookingDetails);
         modelAndView.setViewName("user/booking-status");
         return modelAndView;
     }
     //==================================================================================================
 
     //============================Booking History===============================================
-
     @RequestMapping(value = "/booking-history", method = RequestMethod.GET)
     public ModelAndView bookingHistory(ModelAndView modelAndView){
 
@@ -220,13 +230,15 @@ public class BookingController {
             }
         }
         modelAndView.addObject("temp", 0);
-        modelAndView.addObject("bookingDetails", bookingDetails);
+        if(bookingDetails.isEmpty()) modelAndView.addObject("noRecords", "No Records found!!!");
+        else modelAndView.addObject("bookingDetails", bookingDetails);
         modelAndView.addObject("role", user.getRole().getRole());
         modelAndView.setViewName("user/booking-status");
         return modelAndView;
     }
     //============================================================================================
 
+    //============================Book a room===============================================
     @PostMapping("/bookRoom/{id}/{startTime}/{endTime}")
     public ModelAndView bookRoom(ModelAndView modelAndView, @PathVariable(value="id") Long id,
                                  @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") @PathVariable("startTime") LocalDateTime startTime,
@@ -250,6 +262,7 @@ public class BookingController {
         return modelAndView;
     }
 
+    //====================================Booking Confirmation=========================================
     @RequestMapping(value = "/confirmBookRoom")
     public ModelAndView confirmBookRoom(ModelAndView modelAndView,
                                         RedirectAttributes redirectAttributes){
@@ -267,6 +280,7 @@ public class BookingController {
         return modelAndView;
     }
 
+    //================================Cancel Booking===============================================
     @RequestMapping(value = "/deleteRequest/{id}")
     public ModelAndView deleteRequest(ModelAndView modelAndView,
                                       @PathVariable(value="id") Long id,

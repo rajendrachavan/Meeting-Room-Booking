@@ -49,6 +49,7 @@ public class AdminController {
     @Autowired
     private DepartmentRepository departmentRepository;
 
+    //================================display all users==============================================
     @RequestMapping(value="/user-management/{page}", method = RequestMethod.GET)
     public ModelAndView userManagement(ModelAndView modelAndView,
                                        @PathVariable(value = "page") int page,
@@ -75,6 +76,7 @@ public class AdminController {
         return modelAndView;
     }
 
+    //==================================update user=================================================
     @RequestMapping(value = "/update/{id}", method = RequestMethod.GET)
     public ModelAndView updatepage(ModelAndView modelAndView,
                                    @PathVariable(value="id") Long id) throws Exception {
@@ -92,6 +94,7 @@ public class AdminController {
         return modelAndView;
     }
 
+    //================================save updated user==============================================
     @RequestMapping(value = "/updateUser/{id}", method = RequestMethod.PUT)
     public ModelAndView editUser(ModelAndView modelAndView,
                                  @PathVariable(value="id") Long id,
@@ -109,6 +112,7 @@ public class AdminController {
         return modelAndView;
     }
 
+    //==================================delete user=================================================
     @RequestMapping(value = "/delete/{id}")
     public ModelAndView delete(ModelAndView modelAndView,
                                @PathVariable Long id,
@@ -119,6 +123,7 @@ public class AdminController {
         return modelAndView;
     }
 
+    //==================================register user=================================================
     @RequestMapping(value="/registration", method = RequestMethod.GET)
     public ModelAndView registration(ModelAndView modelAndView){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -130,6 +135,7 @@ public class AdminController {
         return modelAndView;
     }
 
+    //==================================save registered user============================================
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
     public ModelAndView createNewUser(@Valid User user,
                                       @RequestParam(name = "department") Long dept_id,
