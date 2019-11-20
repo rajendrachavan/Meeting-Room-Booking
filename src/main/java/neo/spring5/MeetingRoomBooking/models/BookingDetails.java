@@ -34,7 +34,7 @@ public class BookingDetails {
     private LocalDateTime endTime;
     private String status;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private MeetingRoom meetingRoom;
     @ManyToOne
     private User user;

@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -59,8 +60,10 @@ public class MeetingRoomController {
             List<Integer> pageNumbers = IntStream.rangeClosed(1,totalPages).boxed().collect(Collectors.toList());
             modelAndView.addObject("pageNumbers", pageNumbers);
         }
+        LocalDateTime Today = LocalDateTime.parse(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")));
+        modelAndView.addObject("startTime", Today);
+        modelAndView.addObject("endTime", Today);
         modelAndView.addObject("role", user.getRole().getRole());
-        modelAndView.addObject("activeRoomsList", true);
         modelAndView.addObject("successMessage", successMessage);
         modelAndView.addObject("errorMessage", errorMessage);
         modelAndView.addObject("meetingRooms", meetingRoomPage.getContent());
