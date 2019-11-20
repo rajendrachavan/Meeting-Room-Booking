@@ -18,7 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service("userService")
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserRepository userRepository;
@@ -81,6 +81,11 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public Page<User> getPaginatedUsers(Pageable pageable) {
 		return userRepository.findAll(pageable);
+	}
+
+	@Override
+	public List<User> findAllByRole(Role role) {
+		return userRepository.findAllByRole(role);
 	}
 
 }

@@ -25,6 +25,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Null;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -67,7 +68,6 @@ public class AdminController {
             modelAndView.addObject("pageNumbers", pageNumbers);
         }
         modelAndView.addObject("activeUserList", true);
-        modelAndView.addObject("userManagement","User Management");
         modelAndView.addObject("users", userPage.getContent());
         modelAndView.addObject("userName", "Welcome " + user.getFirstName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
         modelAndView.addObject("successMessage", successMessage);
@@ -152,6 +152,51 @@ public class AdminController {
             modelAndView.addObject("user", new User());
             modelAndView.setViewName("admin/add-user");
         }
+        return modelAndView;
+    }
+
+    //===========================Assign - users ==============================================
+    @RequestMapping("/assign-users")
+    public ModelAndView assignUser(ModelAndView modelAndView){
+        Role role = roleRepository.findByRole("USER").orElse(null);
+        //Role role1 = roleRepository.findByRole("TL").orElse(null);
+        List<User> users = new ArrayList<>();
+        List<User> parents = new ArrayList<>();
+        for ( User user : userService.findAllByRole(role)) {
+            if(user.getParent() == null) users.add(user);
+            for (User parent:user.getDepartment().getUsers()) {
+                if(parent.getRole().getRole().equals("TL") && !parents.contains(parent)) parents.add(parent);
+            }
+        }
+        modelAndView.addObject("users", users);
+        modelAndView.addObject("parents", parents);
+        modelAndView.setViewName("admin/assign-users");
+        return modelAndView;
+    }
+
+    @RequestMapping("/assign-users/TL")
+    public ModelAndView assignTL(ModelAndView modelAndView){
+        Role role = roleRepository.findByRole("TL").orElse(null);
+        Role role1 = roleRepository.findByRole("PM").orElse(null);
+        List<User> users = new ArrayList<>();
+        for ( User user : userService.findAllByRole(role)) {
+            if(user.getParent() == null) users.add(user);
+        }
+        modelAndView.addObject("users", users);
+        modelAndView.addObject("parents", userService.findAllByRole(role1));
+        modelAndView.setViewName("admin/assign-users");
+        return modelAndView;
+    }
+
+    @PostMapping("/assign-users/{id}")
+    public ModelAndView assignRoles(ModelAndView modelAndView,
+                                    @RequestParam("parent_id") Long parent_id,
+                                    @PathVariable("id") Long id){
+        User user = userService.findById(id).orElse(null);
+        user.setParent(userService.findById(parent_id).orElse(null));
+        userService.editSave(user);
+        modelAndView.addObject("successMessage", "Operation successful.");
+        modelAndView.setViewName("admin/assign-users");
         return modelAndView;
     }
 }
