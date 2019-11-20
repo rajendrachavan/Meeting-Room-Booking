@@ -69,31 +69,18 @@
         <div class="panel-body">
             <div th:if="${role} == 'USER' or ${role} == 'TL' or ${role} == 'PM'">
                 <table>
-                    <form th:if="${temp} != 1" th:action="@{/filter-room-with-date}" th:method="POST">
+                    <form th:action="@{/filter-room-with-date}" th:method="POST">
                         <tr>
                             <th>Start Time: </th>
-                            <td><input type="datetime-local" name="startTime" required>&nbsp;&nbsp;</td>
+                            <td><input type="datetime-local" name="startTime" th:value="${startTime}" required>&nbsp;&nbsp;</td>
                             <th>End Time: </th>
-                            <td><input type="datetime-local" name="endTime" required>&nbsp;&nbsp;</td>
+                            <td><input type="datetime-local" name="endTime" th:value="${endTime}" required>&nbsp;&nbsp;</td>
                             <td>
                                 &nbsp;&nbsp;
                                 <input class="button2" type="submit" value="Check Availability">
                             </td>
                         </tr>
                     </form>
-                    <tr th:if="${temp} == 1">
-                        <th>Start Time: </th>
-                        <td th:text="${startTime}"></td>
-                        <th>End Time: </th>
-                        <td th:text="${endTime}"></td>
-                        <td>
-                            &nbsp;&nbsp;
-                            <form th:action="@{/meeting-room-details/1}" method="">
-                                <button class="button2" name="Change Timing"
-                                        type="Submit">Change Timing</button>
-                            </form>
-                        </td>
-                    </tr>
                 </table>
                 <div>
                     <p class="text-center" style="font-size: 20; color:#FF1C19;" th:utext="${errorDate}"></p>

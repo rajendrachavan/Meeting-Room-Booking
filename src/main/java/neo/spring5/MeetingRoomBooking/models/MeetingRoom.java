@@ -20,6 +20,6 @@ public class MeetingRoom {
     @ManyToMany
     private List<Facility> facilities;
 
-    @OneToMany(mappedBy = "meetingRoom")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "meetingRoom")
     private List<BookingDetails> bookingDetails;
 }
