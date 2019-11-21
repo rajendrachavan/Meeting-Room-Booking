@@ -57,7 +57,7 @@
                 <div>
                     <label>Select Facilities:</label><br>
                     <table>
-                        <tr th:each="facility : ${facilities}">
+                        <tr th:each="facility : ${facilities}" th:field="*{facilities}">
                             <td>
                                 <input type="checkbox" name="facilities" th:value="${facility.id}" />
                                 <label th:text="${facility.facility}"></label>

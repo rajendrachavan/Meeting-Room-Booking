@@ -170,6 +170,7 @@ public class AdminController {
         }
         modelAndView.addObject("users", users);
         modelAndView.addObject("parents", parents);
+        modelAndView.addObject("temp",1);
         modelAndView.setViewName("admin/assign-users");
         return modelAndView;
     }
@@ -191,12 +192,13 @@ public class AdminController {
     @PostMapping("/assign-users/{id}")
     public ModelAndView assignRoles(ModelAndView modelAndView,
                                     @RequestParam("parent_id") Long parent_id,
-                                    @PathVariable("id") Long id){
+                                    @PathVariable("id") Long id,
+                                    RedirectAttributes redirectAttributes){
         User user = userService.findById(id).orElse(null);
         user.setParent(userService.findById(parent_id).orElse(null));
         userService.editSave(user);
-        modelAndView.addObject("successMessage", "Operation successful.");
-        modelAndView.setViewName("admin/assign-users");
+        redirectAttributes.addFlashAttribute("successMessage", "Operation successful.");
+        modelAndView.setViewName("redirect:/admin/assign-users");
         return modelAndView;
     }
 }
