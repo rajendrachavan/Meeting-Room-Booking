@@ -41,6 +41,8 @@
                 </div>
             </li>
             <li th:if="${role} == 'ADMIN'"><a href="/admin/booking-requests/1">Bookings</a></li>
+            <li th:if="${role} == 'USER' or ${role} == 'TL' or ${role} == 'PM'"><a href="/user/feedback">Feedback</a></li>
+            <li th:if="${role} == 'ADMIN'"><a href="/admin/feedback">Feedback</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <li><a th:href="@{/logout}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>

@@ -176,8 +176,8 @@ public class UserController {
         User user = userService.findUserByEmail(auth.getName());
         feedback.setUser(user);
         feedbackRepository.save(feedback);
-        modelAndView.addObject("successMessage", "Feedback Submitted.");
-        modelAndView.setViewName("user/feedback-form");
+        redirectAttributes.addFlashAttribute("successMessage", "Feedback Submitted.");
+        modelAndView.setViewName("redirect:/user/feedback-form");
         return modelAndView;
     }
 }

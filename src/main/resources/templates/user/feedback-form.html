@@ -15,12 +15,11 @@
         <nav class="navbar navbar-inverse">
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="/user/user-profile">
-                        <i class="fas fa-chevron-circle-left"></i></a>
+                    <a class="navbar-brand" href="/homepage"><i class="fas fa-chevron-circle-left"></i></a>
                     <a class="navbar-brand" href="/homepage">Book A MeetingRoom</a>
                 </div>
                 <ul class="nav navbar-nav">
-                    <li class="dropdownNav active">
+                    <li class="dropdownNav">
                         <a href="/user/user-profile">My Profile</a>
                         <div class="dropdownNav-content">
                             <a class="btn btn-default" href="/user/profile-change-requests">My Change Request Status</a>
@@ -34,6 +33,7 @@
                             <a class="btn btn-default" href="/booking-history">Booking History</a>
                         </div>
                     </li>
+                    <li class="active"><a href="/user/feedback">Feedback</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a th:href="@{/logout}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
@@ -49,8 +49,8 @@
                     <div class="panel-body">
                         <form th:action="@{/user/feedback}" method="post" th:object="${feedback}">
                             <div class="form-group">
-                                <textarea rows="4" cols="50" class="form-control" th:field="*{content}" placeholder="Enter Your Feedback here.......">
-                                </textarea>
+                                <textarea rows="4" cols="50" class="form-control" th:field="*{content}"
+                                          placeholder="Enter Your Feedback here......." required></textarea>
                             </div>
                             <div>
                                 <p class="text-center" style="font-size: 20; color:#00BF6F;" th:utext="${successMessage}"></p>
