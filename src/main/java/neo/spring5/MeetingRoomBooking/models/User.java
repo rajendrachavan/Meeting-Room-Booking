@@ -60,4 +60,7 @@ public class User {
 
 	@ManyToOne
 	private User parent;
+
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	private List<Feedback> feedback;
 }

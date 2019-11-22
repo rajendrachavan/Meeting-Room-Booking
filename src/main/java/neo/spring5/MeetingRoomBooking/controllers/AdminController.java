@@ -1,12 +1,12 @@
 package neo.spring5.MeetingRoomBooking.controllers;
 
-import lombok.val;
-import neo.spring5.MeetingRoomBooking.models.ChangeRequest;
 import neo.spring5.MeetingRoomBooking.models.Department;
+import neo.spring5.MeetingRoomBooking.models.Feedback;
 import neo.spring5.MeetingRoomBooking.models.Role;
 import neo.spring5.MeetingRoomBooking.models.User;
 import neo.spring5.MeetingRoomBooking.repositories.ChangeRequestRepository;
 import neo.spring5.MeetingRoomBooking.repositories.DepartmentRepository;
+import neo.spring5.MeetingRoomBooking.repositories.FeedbackRepository;
 import neo.spring5.MeetingRoomBooking.repositories.RoleRepository;
 import neo.spring5.MeetingRoomBooking.services.EmailService;
 import neo.spring5.MeetingRoomBooking.services.UserService;
@@ -16,18 +16,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Null;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -49,6 +45,9 @@ public class AdminController {
 
     @Autowired
     private DepartmentRepository departmentRepository;
+
+    @Autowired
+    private FeedbackRepository feedbackRepository;
 
     //================================display all users==============================================
     @RequestMapping(value="/user-management/{page}", method = RequestMethod.GET)
@@ -199,6 +198,25 @@ public class AdminController {
         userService.editSave(user);
         redirectAttributes.addFlashAttribute("successMessage", "Operation successful.");
         modelAndView.setViewName("redirect:/admin/assign-users");
+        return modelAndView;
+    }
+
+    @RequestMapping("/feedback")
+    public ModelAndView getAllFeedback(ModelAndView modelAndView){
+        modelAndView.addObject("feedbackAll", feedbackRepository.findAll());
+        modelAndView.setViewName("admin/feedback");
+        return modelAndView;
+    }
+
+    @RequestMapping("/emailFeedback/{id}")
+    public ModelAndView sendReply(ModelAndView modelAndView,
+                                  @RequestParam("email-content") String content,
+                                  @PathVariable("id") Long id){
+        Feedback feedback = feedbackRepository.findById(id).orElse(null);
+        String subject = "Reply to Feedback";
+        emailService.sendEmail(feedback.getUser().getEmail(), subject, content);
+        modelAndView.addObject("successMessage", "Feedback sent");
+        modelAndView.setViewName("redirect:/admin/feedback");
         return modelAndView;
     }
 }

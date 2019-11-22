@@ -1,9 +1,11 @@
 package neo.spring5.MeetingRoomBooking.controllers;
 
 import neo.spring5.MeetingRoomBooking.models.ChangeRequest;
+import neo.spring5.MeetingRoomBooking.models.Feedback;
 import neo.spring5.MeetingRoomBooking.models.User;
 import neo.spring5.MeetingRoomBooking.repositories.ChangeRequestRepository;
 import neo.spring5.MeetingRoomBooking.repositories.DepartmentRepository;
+import neo.spring5.MeetingRoomBooking.repositories.FeedbackRepository;
 import neo.spring5.MeetingRoomBooking.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -27,6 +29,9 @@ public class UserController {
 
     @Autowired
     private DepartmentRepository departmentRepository;
+
+    @Autowired
+    private FeedbackRepository feedbackRepository;
 
     @RequestMapping(value = "/user-profile")
     public ModelAndView userProfile(ModelAndView modelAndView,
@@ -153,6 +158,26 @@ public class UserController {
         changeRequestRepository.deleteById(id);
         redirectAttributes.addFlashAttribute("successMessage", "Request Cancelled.");
         modelAndView.setViewName("user/profile-change-requests");
+        return modelAndView;
+    }
+
+    @RequestMapping("/feedback")
+    public ModelAndView feedback(ModelAndView modelAndView){
+        modelAndView.addObject("feedback", new Feedback());
+        modelAndView.setViewName("user/feedback-form");
+        return modelAndView;
+    }
+
+    @PostMapping("/feedback")
+    public ModelAndView processFeedback(ModelAndView modelAndView,
+                                        Feedback feedback,
+                                        RedirectAttributes redirectAttributes){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByEmail(auth.getName());
+        feedback.setUser(user);
+        feedbackRepository.save(feedback);
+        modelAndView.addObject("successMessage", "Feedback Submitted.");
+        modelAndView.setViewName("user/feedback-form");
         return modelAndView;
     }
 }
