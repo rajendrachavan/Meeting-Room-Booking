@@ -177,7 +177,7 @@ public class UserController {
         feedback.setUser(user);
         feedbackRepository.save(feedback);
         redirectAttributes.addFlashAttribute("successMessage", "Feedback Submitted.");
-        modelAndView.setViewName("redirect:/user/feedback-form");
+        modelAndView.setViewName("redirect:/user/feedback");
         return modelAndView;
     }
 }

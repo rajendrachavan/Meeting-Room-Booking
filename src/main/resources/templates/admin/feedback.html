@@ -61,7 +61,7 @@
                             </td>
                             <td th:text="${feedback.content}">content</td>
                             <td>
-                                <form th:href="@{/admin/emailFeedback/{id}(id=${feedback.id})}">
+                                <form th:action="@{/admin/emailFeedback/{id}(id=${feedback.id})}">
                                     <textarea rows="4" cols="30" class="form-control" name="email-content"
                                               placeholder="Enter your response here..." required></textarea>
                                     <td><input class="btn btn-primary" type="submit" value="Send Reply"></td>
