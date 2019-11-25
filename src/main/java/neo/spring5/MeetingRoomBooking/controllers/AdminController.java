@@ -211,11 +211,12 @@ public class AdminController {
     @RequestMapping("/emailFeedback/{id}")
     public ModelAndView sendReply(ModelAndView modelAndView,
                                   @RequestParam("email-content") String content,
-                                  @PathVariable("id") Long id){
+                                  @PathVariable("id") Long id,
+                                  RedirectAttributes redirectAttributes){
         Feedback feedback = feedbackRepository.findById(id).orElse(null);
         String subject = "Reply to Feedback";
         emailService.sendEmail(feedback.getUser().getEmail(), subject, content);
-        modelAndView.addObject("successMessage", "Feedback sent");
+        redirectAttributes.addFlashAttribute("successMessage", "Feedback sent");
         modelAndView.setViewName("redirect:/admin/feedback");
         return modelAndView;
     }
