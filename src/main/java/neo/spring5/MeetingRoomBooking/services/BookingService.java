@@ -5,6 +5,8 @@ import neo.spring5.MeetingRoomBooking.models.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,4 +20,5 @@ public interface BookingService {
     Page<BookingDetails> getPaginatedBookingDetails(User user, Pageable pageable);
     List<BookingDetails> findAllByStatus(String status);
     List<BookingDetails> findAllByUser(User user);
+    List<BookingDetails> filterByMonth(YearMonth month);
 }

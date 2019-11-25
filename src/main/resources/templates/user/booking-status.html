@@ -58,6 +58,24 @@
                 </div>
             </div>
             <div class="panel-body">
+                <div th:if="${temp} == 0">
+                    <table>
+                        <form th:action="@{/filter-booking-history}" method="">
+                            <tr>
+                                <th>Month: </th>
+                                <td><input type="month" name="month" th:value="${month}" required>&nbsp;&nbsp;</td>
+                                <td>
+                                    &nbsp;&nbsp;
+                                    <input class="button2" type="submit" value="submit">
+                                </td>
+                            </tr>
+                        </form>
+                    </table>
+                    <div>
+                        <p class="text-center" style="font-size: 20; color:#FF1C19;" th:utext="${errorDate}"></p>
+                    </div>
+                    <hr>
+                </div>
                 <table class="table table-hover">
                     <thead>
                     <tr>
