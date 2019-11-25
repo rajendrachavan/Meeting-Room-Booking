@@ -64,10 +64,10 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDetails> filterByMonth(YearMonth month) {
+    public List<BookingDetails> filterByMonth(YearMonth month, User user) {
         Month month1 = month.getMonth();
         List<BookingDetails> bookingDetailsList = new ArrayList<>();
-        for (BookingDetails bookingDetails :bookingRepository.findAll()) {
+        for (BookingDetails bookingDetails :bookingRepository.findAllByUser(user)) {
             if(bookingDetails.getStartTime().getYear() == month.getYear()){
                 if(bookingDetails.getStartTime().getMonth() == (month1)){
                     bookingDetailsList.add(bookingDetails);

@@ -245,7 +245,9 @@ public class BookingController {
         User user = userService.findUserByEmail(auth.getName());
         modelAndView.addObject("temp", 0);
         modelAndView.addObject("role", user.getRole().getRole());
-        modelAndView.addObject("bookingDetails", bookingService.filterByMonth(month));
+        List<BookingDetails> bookingDetails = bookingService.filterByMonth(month, user);
+        if(bookingDetails.isEmpty()) modelAndView.addObject("noRecords", "No Records found!!!");
+        else modelAndView.addObject("bookingDetails", bookingDetails);
         modelAndView.setViewName("user/booking-status");
         return modelAndView;
     }
