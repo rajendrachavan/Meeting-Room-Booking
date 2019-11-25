@@ -81,8 +81,8 @@
             </div>
             <div class="form-group">
                 <label>Select Department:</label>
-                <select class="form-control" name="department">
-                    <option value="Null" disabled selected>Select</option>
+                <select class="form-control" name="department" th:field="*{department.id}">
+                    <option value="1" disabled selected>Select</option>
                     <option value="1">Java</option>
                     <option value="2">Android</option>
                     <option value="3">IOS</option>
@@ -101,8 +101,9 @@
             </div>
             <div class="form-group">
                 <div>
-                    <select class="form-control" id="role" name="role">
-                        <option value="2" selected>USER</option>
+                    <select class="form-control" id="role" name="role" th:field="*{role.id}">
+                        <option value="2" disabled selected>Select</option>
+                        <option value="2" >USER</option>
                         <option value="4">Project Manager</option>
                         <option value="3">Team Leader</option>
                         <option value="1">ADMIN</option>
