@@ -20,5 +20,5 @@ public interface BookingService {
     Page<BookingDetails> getPaginatedBookingDetails(User user, Pageable pageable);
     List<BookingDetails> findAllByStatus(String status);
     List<BookingDetails> findAllByUser(User user);
-    List<BookingDetails> filterByMonth(YearMonth month);
+    List<BookingDetails> filterByMonth(YearMonth month, User user);
 }
