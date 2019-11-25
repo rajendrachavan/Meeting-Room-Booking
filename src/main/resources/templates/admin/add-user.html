@@ -23,11 +23,12 @@
                 <a href="/admin/user-management/1">Users</a>
                 <div class="dropdownNav-content">
                     <a class="btn btn-default" href="/change-requests">Change Requests</a>
-                    <a class="btn btn-default" href="#">Assign Roles</a>
+                    <a class="btn btn-default" href="/admin/assign-users">Assign Users</a>
                 </div>
             </li>
             <li><a href="/meeting-room-details/1">Rooms</a></li>
             <li><a href="/admin/booking-requests/1">Bookings</a></li>
+            <li><a href="/admin/feedback">Feedback</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <li><a th:href="@{/logout}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
@@ -87,7 +88,7 @@
             </div>
             <div class="form-group">
                 <label>Select Department:</label>
-                <select class="form-control" name="department">
+                <select class="form-control" id="department" name="department">
                     <option value="Null" disabled selected>Select</option>
                     <option value="1">Java</option>
                     <option value="2">Android</option>

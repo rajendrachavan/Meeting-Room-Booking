@@ -22,11 +22,12 @@
 				<a href="/admin/user-management/1">Users</a>
 				<div class="dropdownNav-content">
 					<a class="btn btn-default" href="/change-requests">Change Requests</a>
-					<a class="btn btn-default" href="#">Assign Roles</a>
+					<a class="btn btn-default" href="/admin/assign-users">Assign Users</a>
 				</div>
 			</li>
 			<li><a href="/meeting-room-details/1">Rooms</a></li>
 			<li><a href="/admin/booking-requests/1">Bookings</a></li>
+			<li><a href="/admin/feedback">Feedback</a></li>
 		</ul>
 		<ul class="nav navbar-nav navbar-right">
 			<li><a th:href="@{/logout}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
@@ -37,7 +38,7 @@
 	<div class="panel-group" style="margin-top:25px">
 		<div class="panel panel-primary">
 			<div class="panel-heading">
-				<h4><span th:utext="${userManagement}">User-Management</span></h4>
+				<h4><span>User Management</span></h4>
 				<span th:utext="${userName}"></span>
 				<div style="float:right;">
 					<form th:action="@{/admin/registration}" method="get">
@@ -52,8 +53,7 @@
 						<thead>
 						<tr>
 							<th>ID</th>
-							<th>Firstname</th>
-							<th>Lastname</th>
+							<th>Name</th>
 							<th>Gender</th>
 							<th>Email</th>
 							<th>Mobile No</th>
@@ -65,8 +65,10 @@
 						<tbody>
 						<tr th:each="user: ${users}">
 							<td th:text="${user.id}">1</td>
-							<td th:text="${user.firstName}">Test</td>
-							<td th:text="${user.lastName}">Class45234623654763476735</td>
+							<td>
+								<span th:text="${user.firstName}">fname</span>&nbsp;
+								<span th:text="${user.lastName}">lname</span>
+							</td>
 							<td th:text="${user.gender}">male</td>
 							<td th:text="${user.email}">test@example.com</td>
 							<td th:text="${user.mobileNo}">123456789</td>

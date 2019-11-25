@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <title>Facilities</title>
+    <title>Admin Page</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/design.css}" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
@@ -13,7 +14,7 @@
 <nav class="navbar navbar-inverse">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="/meeting-room-details/1"><i class="fas fa-chevron-circle-left"></i></a>
+            <a class="navbar-brand" href="/homepage"><i class="fas fa-chevron-circle-left"></i></a>
             <a class="navbar-brand" href="/homepage">Book A MeetingRoom</a>
         </div>
         <ul class="nav navbar-nav">
@@ -24,9 +25,9 @@
                     <a class="btn btn-default" href="/admin/assign-users">Assign Users</a>
                 </div>
             </li>
-            <li class="active"><a href="/meeting-room-details/1">Rooms</a></li>
+            <li><a href="/meeting-room-details/1">Rooms</a></li>
             <li><a href="/admin/booking-requests/1">Bookings</a></li>
-            <li><a href="/admin/feedback">Feedback</a></li>
+            <li class="active"><a href="/admin/feedback">Feedback</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <li><a th:href="@{/logout}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
@@ -37,37 +38,39 @@
     <div class="panel-group" style="margin-top:25px">
         <div class="panel panel-primary">
             <div class="panel-heading">
-                <h4><span>Facilities</span></h4>
+                <h4><span>Feedback</span></h4>
                 <span th:utext="${userName}"></span>
-                <div style="float:right;">
-                </div>
             </div>
             <div class="panel-body">
-                <table class="table table-hover">
-                    <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Facility</th>
-                        <th>Operations</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="facility: ${facilities}">
-                        <td th:text="${facility.id}">1</td>
-                        <td th:text="${facility.facility}">Test</td>
-                        <td>
-                            <a th:href="@{/admin/deleteFacility/{id}(id=${facility.id})}" class="btn btn-danger"
-                               onclick="return confirm('Are you sure you want to Delete this facility?');">Delete</a>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div>
-                <form th:action="@{/admin/addFacility}" method="get">
-                    <td><input type="text" name="newFacility" placholder="Enter Facility"></td>
-                    <td><button class="button2" name="addFacilities" type="Submit">Add</button></td>
-                </form>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Feedback</th>
+                            <th>Operations</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="feedback: ${feedbackAll}">
+                            <td th:text="${feedback.id}">1</td>
+                            <td>
+                                <span th:text="${feedback.user.firstName}">fname</span>&nbsp;
+                                <span th:text="${feedback.user.lastName}">lname</span>
+                            </td>
+                            <td th:text="${feedback.content}">content</td>
+                            <td>
+                                <form th:action="@{/admin/emailFeedback/{id}(id=${feedback.id})}">
+                                    <textarea rows="4" cols="30" class="form-control" name="email-content"
+                                              placeholder="Enter your response here..." required></textarea>
+                                    <td><input class="btn btn-primary" type="submit" value="Send Reply"></td>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <div>
                 <p class="text-center" style="font-size: 20; color:#00BF6F;" th:utext="${successMessage}"></p>

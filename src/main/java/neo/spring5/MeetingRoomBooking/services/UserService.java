@@ -1,6 +1,7 @@
 package neo.spring5.MeetingRoomBooking.services;
 
 
+import neo.spring5.MeetingRoomBooking.models.Role;
 import neo.spring5.MeetingRoomBooking.models.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +18,6 @@ public interface UserService {
 	void deleteById(Long id);
 
 	void editSave(User user);
-
 	Page<User> getPaginatedUsers(Pageable pageable);
+	List<User> findAllByRole(Role role);
 }

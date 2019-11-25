@@ -66,7 +66,8 @@ public class ChangeRequestController {
         if(changeRequest.getType().equals("email")){
             user.setEmail(changeRequest.getNewValue());
             userService.editSave(user);
-            String appUrl = "http://localhost:8080";
+
+            String appUrl = "http://10.0.60.51:8080";
             String subject= "Email Change Request";
             String body = "Your Request for Change in Email Address is Confirmed!\n" +
                     "Your can now login with your new Email ID: "+changeRequest.getNewValue();
@@ -92,7 +93,7 @@ public class ChangeRequestController {
             user.setEmail(changeRequest.getOldValue());
             userService.editSave(user);
 
-            String appUrl = "http://localhost:8080";
+            String appUrl = "http://10.0.60.51:8080";
             String subject= "Email Change Request";
             String body = "Your Request for Change in Email Address is Rejected!\n";
             emailService.sendEmail(changeRequest.getOldValue(), subject, body);

@@ -22,7 +22,7 @@
                 <a href="/admin/user-management/1">Users</a>
                 <div class="dropdownNav-content">
                     <a class="btn btn-default" href="/change-requests">Change Requests</a>
-                    <a class="btn btn-default" href="#">Assign Roles</a>
+                    <a class="btn btn-default" href="/admin/assign-users">Assign Users</a>
                 </div>
             </li>
             <li th:if="${role} == 'USER' or ${role} == 'TL' or ${role} == 'PM'" class="dropdownNav">
@@ -40,6 +40,8 @@
                 </div>
             </li>
             <li th:if="${role} == 'ADMIN'"><a href="/admin/booking-requests/1">Bookings</a></li>
+            <li th:if="${role} == 'USER' or ${role} == 'TL' or ${role} == 'PM'"><a href="/user/feedback">Feedback</a></li>
+            <li th:if="${role} == 'ADMIN'"><a href="/admin/feedback">Feedback</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <li><a th:href="@{/logout}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
@@ -68,20 +70,20 @@
         </div>
         <div class="panel-body">
             <div th:if="${role} == 'USER' or ${role} == 'TL' or ${role} == 'PM'">
-                <form th:action="@{/filter-room-with-date}" th:method="POST">
-                    <table>
+                <table>
+                    <form th:action="@{/filter-room-with-date}" th:method="POST">
                         <tr>
                             <th>Start Time: </th>
-                            <td><input type="datetime-local" name="startTime" required>&nbsp;&nbsp;</td>
+                            <td><input type="datetime-local" name="startTime" th:value="${startTime}" required>&nbsp;&nbsp;</td>
                             <th>End Time: </th>
-                            <td><input type="datetime-local" name="endTime" required>&nbsp;&nbsp;</td>
+                            <td><input type="datetime-local" name="endTime" th:value="${endTime}" required>&nbsp;&nbsp;</td>
                             <td>
                                 &nbsp;&nbsp;
                                 <input class="button2" type="submit" value="Check Availability">
                             </td>
                         </tr>
-                    </table>
-                </form>
+                    </form>
+                </table>
                 <div>
                     <p class="text-center" style="font-size: 20; color:#FF1C19;" th:utext="${errorDate}"></p>
                 </div>

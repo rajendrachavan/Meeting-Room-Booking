@@ -14,12 +14,12 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -238,6 +238,18 @@ public class BookingController {
     }
     //============================================================================================
 
+    @RequestMapping("/filter-booking-history")
+    public ModelAndView filterBookings(ModelAndView modelAndView,
+                                       @RequestParam("month") YearMonth month){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByEmail(auth.getName());
+        modelAndView.addObject("temp", 0);
+        modelAndView.addObject("role", user.getRole().getRole());
+        modelAndView.addObject("bookingDetails", bookingService.filterByMonth(month));
+        modelAndView.setViewName("user/booking-status");
+        return modelAndView;
+    }
+
     //============================Book a room===============================================
     @PostMapping("/bookRoom/{id}/{startTime}/{endTime}")
     public ModelAndView bookRoom(ModelAndView modelAndView, @PathVariable(value="id") Long id,
@@ -271,6 +283,7 @@ public class BookingController {
         return modelAndView;
     }
 
+    //================================Cancel Booking===============================================
     @RequestMapping(value = "/cancelBookRoom/{id}")
     public ModelAndView cancelBookRoom(ModelAndView modelAndView, @PathVariable("id") Long id,
                                        RedirectAttributes redirectAttributes){
@@ -280,7 +293,6 @@ public class BookingController {
         return modelAndView;
     }
 
-    //================================Cancel Booking===============================================
     @RequestMapping(value = "/deleteRequest/{id}")
     public ModelAndView deleteRequest(ModelAndView modelAndView,
                                       @PathVariable(value="id") Long id,
