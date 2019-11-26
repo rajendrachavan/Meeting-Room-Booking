@@ -76,19 +76,25 @@ public class PasswordController {
     @RequestMapping(value = "/reset-password/{resetToken}", method = RequestMethod.POST)
     public ModelAndView setNewPassword(ModelAndView modelAndView,
                                        @PathVariable("resetToken") String token,
-                                       @RequestParam("password") String password){
+                                       @RequestParam("password") String password,
+                                       @RequestParam("ConfirmPassword") String ConfirmPassword){
         Token token1 = tokenRepository.findByToken(token);
         User user = userService.findById(token1.getUser().getId()).orElse(null);
         if(user == null){
             modelAndView.addObject("errorMessage", "Oops!  This is an invalid password reset link.");
             modelAndView.setViewName("reset-password");
         } else{
-            token1.setToken(UUID.randomUUID().toString());
-            tokenRepository.save(token1);
-            user.setPassword(bCryptPasswordEncoder.encode(password));
-            userService.editSave(user);
-            modelAndView.addObject("successMessage", "You have successfully reset your password.  You may now login with new credentials.");
-            modelAndView.setViewName("login");
+            if(!password.equals(ConfirmPassword)){
+                modelAndView.addObject("errorMessage", "Password doesn't match");
+                modelAndView.setViewName("reset-password");
+            } else {
+                token1.setToken(UUID.randomUUID().toString());
+                tokenRepository.save(token1);
+                user.setPassword(bCryptPasswordEncoder.encode(password));
+                userService.editSave(user);
+                modelAndView.addObject("successMessage", "You have successfully reset your password.  You may now login with new credentials.");
+                modelAndView.setViewName("login");
+            }
         }
         return modelAndView;
     }
