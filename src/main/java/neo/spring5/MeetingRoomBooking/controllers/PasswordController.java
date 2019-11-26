@@ -49,7 +49,8 @@ public class PasswordController {
             token.setUser(user);
             tokenRepository.save(token);
 
-            String appUrl = "http://10.0.60.51:8080";
+            //String appUrl = "http://10.0.60.51:8080";
+            String appUrl = "http://localhost:8080";
             String subject= "Password Reset Request";
             String body = "To reset your password, click the link below:\n" +"<a href='"+ appUrl
                     + "/reset-password?token=" + token.getToken()+"'>Reset link</a>";
@@ -84,16 +85,16 @@ public class PasswordController {
             modelAndView.addObject("errorMessage", "Oops!  This is an invalid password reset link.");
             modelAndView.setViewName("reset-password");
         } else{
-            if(!password.equals(ConfirmPassword)){
-                modelAndView.addObject("errorMessage", "Password doesn't match");
-                modelAndView.setViewName("reset-password");
-            } else {
+            if(password.equals(ConfirmPassword)){
                 token1.setToken(UUID.randomUUID().toString());
                 tokenRepository.save(token1);
                 user.setPassword(bCryptPasswordEncoder.encode(password));
                 userService.editSave(user);
                 modelAndView.addObject("successMessage", "You have successfully reset your password.  You may now login with new credentials.");
                 modelAndView.setViewName("login");
+            } else {
+                modelAndView.addObject("errorMessage", "Password doesn't match");
+                modelAndView.setViewName("reset-password");
             }
         }
         return modelAndView;
