@@ -76,13 +76,14 @@
                         <td th:text="${changeRequest.newValue}">Class</td>
                         <td><span th:text="${changeRequest.User.firstName}"></span>&nbsp;<span th:text="${changeRequest.User.lastName}"></span></td>
                         <td th:text="${changeRequest.status}">Pending</td>
-                        <td th:if="${changeRequest.status} == 'Pending'">
+                        <td th:if="${changeRequest.status == T(neo.spring5.MeetingRoomBooking.models.Status).Pending}">
                             <form th:action="@{/confirmChangeRequest/{id}(id=${changeRequest.id})}" method="post">
                                 <button class="btn btn-primary" name="confirm"
                                         type="Submit">Confirm</button>
                             </form>
                         </td>
-                        <td th:if="${changeRequest.status} == 'Pending' or ${changeRequest.status} == 'Confirmed'">
+                        <td th:if="${changeRequest.status == T(neo.spring5.MeetingRoomBooking.models.Status).Pending} or
+                         ${changeRequest.status == T(neo.spring5.MeetingRoomBooking.models.Status).Confirmed}">
                             <form th:action="@{/rejectChangeRequest/{id}(id=${changeRequest.id})}" method="post">
                                 <button class="btn btn-danger" name="confirm"
                                         type="Submit">Reject</button>

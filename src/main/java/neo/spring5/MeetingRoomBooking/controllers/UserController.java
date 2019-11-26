@@ -2,6 +2,7 @@ package neo.spring5.MeetingRoomBooking.controllers;
 
 import neo.spring5.MeetingRoomBooking.models.ChangeRequest;
 import neo.spring5.MeetingRoomBooking.models.Feedback;
+import neo.spring5.MeetingRoomBooking.models.Status;
 import neo.spring5.MeetingRoomBooking.models.User;
 import neo.spring5.MeetingRoomBooking.repositories.ChangeRequestRepository;
 import neo.spring5.MeetingRoomBooking.repositories.DepartmentRepository;
@@ -102,7 +103,7 @@ public class UserController {
         changeRequest.setOldValue(user.getEmail());
         changeRequest.setNewValue(userEmail);
         changeRequest.setUser(user);
-        changeRequest.setStatus("Pending");
+        changeRequest.setStatus(Status.Pending);
         changeRequestRepository.save(changeRequest);
         redirectAttributes.addFlashAttribute("successMessage", "Change Email Request Successful");
         modelAndView.setViewName("redirect:/user/user-profile");
@@ -130,7 +131,7 @@ public class UserController {
         changeRequest.setOldValue(user.getDepartment().getName());
         changeRequest.setNewValue(departmentRepository.findById(userDept).orElse(null).getName());
         changeRequest.setUser(user);
-        changeRequest.setStatus("Pending");
+        changeRequest.setStatus(Status.Pending);
         changeRequestRepository.save(changeRequest);
         redirectAttributes.addFlashAttribute("successMessage", "Change Email Request Successful");
         modelAndView.setViewName("redirect:/user/user-profile");

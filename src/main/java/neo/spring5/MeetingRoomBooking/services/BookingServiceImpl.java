@@ -1,6 +1,7 @@
 package neo.spring5.MeetingRoomBooking.services;
 
 import neo.spring5.MeetingRoomBooking.models.BookingDetails;
+import neo.spring5.MeetingRoomBooking.models.Status;
 import neo.spring5.MeetingRoomBooking.models.User;
 import neo.spring5.MeetingRoomBooking.repositories.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +55,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDetails> findAllByStatus(String status) {
+    public List<BookingDetails> findAllByStatus(Status status) {
         return bookingRepository.findAllByStatus(status);
     }
 

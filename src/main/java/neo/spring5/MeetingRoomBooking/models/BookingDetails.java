@@ -6,9 +6,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @Getter
 @Setter
@@ -32,7 +30,9 @@ public class BookingDetails {
     private LocalDateTime startTime;
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime endTime;
-    private String status;
+
+    @Enumerated(value = EnumType.STRING)
+    private Status status;
 
     @ManyToOne
     private MeetingRoom meetingRoom;

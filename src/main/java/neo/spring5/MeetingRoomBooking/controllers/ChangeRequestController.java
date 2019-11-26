@@ -1,9 +1,6 @@
 package neo.spring5.MeetingRoomBooking.controllers;
 
-import neo.spring5.MeetingRoomBooking.models.ChangeRequest;
-import neo.spring5.MeetingRoomBooking.models.Department;
-import neo.spring5.MeetingRoomBooking.models.Role;
-import neo.spring5.MeetingRoomBooking.models.User;
+import neo.spring5.MeetingRoomBooking.models.*;
 import neo.spring5.MeetingRoomBooking.repositories.ChangeRequestRepository;
 import neo.spring5.MeetingRoomBooking.repositories.DepartmentRepository;
 import neo.spring5.MeetingRoomBooking.repositories.RoleRepository;
@@ -76,7 +73,7 @@ public class ChangeRequestController {
             user.setDepartment(department);
             userService.editSave(user);
         }
-        changeRequest.setStatus("Confirmed");
+        changeRequest.setStatus(Status.Confirmed);
         changeRequestRepository.save(changeRequest);
         modelAndView.setViewName("redirect:/change-requests");
         return modelAndView;
@@ -101,7 +98,7 @@ public class ChangeRequestController {
             user.setDepartment(department);
             userService.editSave(user);
         }
-        changeRequest.setStatus("Rejected");
+        changeRequest.setStatus(Status.Rejected);
         changeRequestRepository.save(changeRequest);
         modelAndView.setViewName("redirect:/change-requests");
         return modelAndView;

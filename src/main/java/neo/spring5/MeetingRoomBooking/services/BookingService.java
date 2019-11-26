@@ -1,6 +1,7 @@
 package neo.spring5.MeetingRoomBooking.services;
 
 import neo.spring5.MeetingRoomBooking.models.BookingDetails;
+import neo.spring5.MeetingRoomBooking.models.Status;
 import neo.spring5.MeetingRoomBooking.models.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +19,7 @@ public interface BookingService {
     void deleteById(Long id);
     Page<BookingDetails> getPaginatedBookingDetails(Pageable pageable);
     Page<BookingDetails> getPaginatedBookingDetails(User user, Pageable pageable);
-    List<BookingDetails> findAllByStatus(String status);
+    List<BookingDetails> findAllByStatus(Status status);
     List<BookingDetails> findAllByUser(User user);
     List<BookingDetails> filterByMonth(YearMonth month, User user);
 }

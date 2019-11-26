@@ -2,6 +2,7 @@ package neo.spring5.MeetingRoomBooking.controllers;
 
 import neo.spring5.MeetingRoomBooking.models.BookingDetails;
 import neo.spring5.MeetingRoomBooking.models.MeetingRoom;
+import neo.spring5.MeetingRoomBooking.models.Status;
 import neo.spring5.MeetingRoomBooking.models.User;
 import neo.spring5.MeetingRoomBooking.services.BookingService;
 import neo.spring5.MeetingRoomBooking.services.MeetingRoomService;
@@ -68,24 +69,27 @@ public class BookingController {
     //===========================Filter booking Requests with its status=======================================
     @RequestMapping("/admin/booking-requests/pending")
     public ModelAndView roomAllocationPending(ModelAndView modelAndView){
-        if(bookingService.findAllByStatus("Pending").isEmpty()) modelAndView.addObject("noRecords", "No Records found!!!");
-        else modelAndView.addObject("bookingDetails", bookingService.findAllByStatus("Pending"));
+        if(bookingService.findAllByStatus(Status.Pending).isEmpty()) modelAndView.addObject("noRecords",
+                "No Records found!!!");
+        else modelAndView.addObject("bookingDetails", bookingService.findAllByStatus(Status.Pending));
         modelAndView.setViewName("admin/booking-requests");
         return modelAndView;
     }
 
     @RequestMapping("/admin/booking-requests/confirmed")
     public ModelAndView roomAllocationConfirmed(ModelAndView modelAndView){
-        if(bookingService.findAllByStatus("Confirmed").isEmpty()) modelAndView.addObject("noRecords", "No Records found!!!");
-        else modelAndView.addObject("bookingDetails", bookingService.findAllByStatus("Confirmed"));
+        if(bookingService.findAllByStatus(Status.Confirmed).isEmpty()) modelAndView.addObject("noRecords",
+                "No Records found!!!");
+        else modelAndView.addObject("bookingDetails", bookingService.findAllByStatus(Status.Confirmed));
         modelAndView.setViewName("admin/booking-requests");
         return modelAndView;
     }
 
     @RequestMapping("/admin/booking-requests/rejected")
     public ModelAndView roomAllocationCancelled(ModelAndView modelAndView){
-        if(bookingService.findAllByStatus("Rejected").isEmpty()) modelAndView.addObject("noRecords", "No Records found!!!");
-        else modelAndView.addObject("bookingDetails", bookingService.findAllByStatus("Rejected"));
+        if(bookingService.findAllByStatus(Status.Rejected).isEmpty()) modelAndView.addObject("noRecords",
+                "No Records found!!!");
+        else modelAndView.addObject("bookingDetails", bookingService.findAllByStatus(Status.Rejected));
         modelAndView.setViewName("admin/booking-requests");
         return modelAndView;
     }
@@ -102,7 +106,7 @@ public class BookingController {
             modelAndView.setViewName("redirect:/admin/booking-requests/1");
         }
         else{
-            bookingDetails.setStatus("Confirmed");
+            bookingDetails.setStatus(Status.Confirmed);
             bookingService.save(bookingDetails);
         }
         redirectAttributes.addFlashAttribute("successMessage", "BookingDetails Confirmed.");
@@ -122,7 +126,7 @@ public class BookingController {
             modelAndView.setViewName("redirect:/admin/booking-requests");
         }
         else{
-            bookingDetails.setStatus("Rejected");
+            bookingDetails.setStatus(Status.Rejected);
             bookingService.save(bookingDetails);
         }
         redirectAttributes.addFlashAttribute("successMessage", "BookingDetails Rejected.");
@@ -170,7 +174,7 @@ public class BookingController {
         User user = userService.findUserByEmail(auth.getName());
         List<BookingDetails> bookingDetails = new ArrayList<>();
         for (BookingDetails bookingDetail: bookingService.findAllByUser(user)) {
-            if(bookingDetail.getStatus().equals("Pending")){
+            if(bookingDetail.getStatus() == Status.Pending){
                 bookingDetails.add(bookingDetail);
             }
         }
@@ -187,7 +191,7 @@ public class BookingController {
         User user = userService.findUserByEmail(auth.getName());
         List<BookingDetails> bookingDetails = new ArrayList<>();
         for (BookingDetails bookingDetail: bookingService.findAllByUser(user)) {
-            if(bookingDetail.getStatus().equals("Confirmed")){
+            if(bookingDetail.getStatus() == Status.Confirmed){
                 bookingDetails.add(bookingDetail);
             }
         }
@@ -204,7 +208,7 @@ public class BookingController {
         User user = userService.findUserByEmail(auth.getName());
         List<BookingDetails> bookingDetails = new ArrayList<>();
         for (BookingDetails bookingDetail: bookingService.findAllByUser(user)) {
-            if(bookingDetail.getStatus().equals("Rejected")){
+            if(bookingDetail.getStatus() == Status.Rejected){
                 bookingDetails.add(bookingDetail);
             }
         }
@@ -265,7 +269,7 @@ public class BookingController {
 
         BookingDetails bookingDetails = new BookingDetails();
         MeetingRoom meetingRoom = meetingRoomService.findById(id).orElse(null);
-        bookingDetails.setStatus("Pending");
+        bookingDetails.setStatus(Status.Pending);
         bookingDetails.setMeetingRoom(meetingRoom);
         bookingDetails.setUser(user);
         bookingDetails.setStartTime(startTime);
