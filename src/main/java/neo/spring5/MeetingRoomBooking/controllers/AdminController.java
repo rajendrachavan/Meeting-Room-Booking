@@ -1,6 +1,5 @@
 package neo.spring5.MeetingRoomBooking.controllers;
 
-import neo.spring5.MeetingRoomBooking.models.Department;
 import neo.spring5.MeetingRoomBooking.models.Feedback;
 import neo.spring5.MeetingRoomBooking.models.Role;
 import neo.spring5.MeetingRoomBooking.models.User;
@@ -97,13 +96,9 @@ public class AdminController {
     @RequestMapping(value = "/updateUser/{id}", method = RequestMethod.PUT)
     public ModelAndView editUser(ModelAndView modelAndView,
                                  @PathVariable(value="id") Long id,
-                                 @RequestParam(name = "role") Long role,
-                                 @RequestParam(name = "department") Long dept_id,
                                  @Valid @ModelAttribute("user") User user,
                                  RedirectAttributes redirectAttributes){
         User userDataDB = userService.findById(id).orElse(null);
-        Department department = departmentRepository.findById(dept_id).orElse(null);
-        user.setDepartment(department);
         user.setPassword(userDataDB.getPassword());
         userService.editSave(user);
         redirectAttributes.addFlashAttribute("successMessage", "User has been Updated successfully");
@@ -137,15 +132,12 @@ public class AdminController {
     //==================================save registered user============================================
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
     public ModelAndView createNewUser(@Valid User user,
-                                      @RequestParam(name = "department") Long dept_id,
                                       ModelAndView modelAndView) {
         User userExists = userService.findUserByEmail(user.getEmail());
         if (userExists != null) {
             modelAndView.addObject("errorMessage", "User Already Exists.");
             modelAndView.setViewName("registration");
         } else {
-            Department department = departmentRepository.findById(dept_id).orElse(null);
-            user.setDepartment(department);
             userService.saveUser(user);
             modelAndView.addObject("successMessage", "User has been registered successfully");
             modelAndView.addObject("user", new User());
