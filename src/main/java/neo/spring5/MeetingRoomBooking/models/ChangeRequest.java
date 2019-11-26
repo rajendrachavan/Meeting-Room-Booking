@@ -16,7 +16,9 @@ public class ChangeRequest {
     private String Type;
     private String oldValue;
     private String newValue;
-    private String status;
+
+    @Enumerated(value = EnumType.STRING)
+    private Status status;
 
     @ManyToOne
     private User user;

@@ -70,13 +70,14 @@
                         <td th:text="${booking.endTime}">Class</td>
                         <td th:text="${booking.status}">male</td>
                         <td><span th:text="${booking.User.firstName}"></span>&nbsp;<span th:text="${booking.User.lastName}"></span></td>
-                        <td th:if="${booking.status} == 'Pending'">
+                        <td th:if="${booking.status == T(neo.spring5.MeetingRoomBooking.models.Status).Pending}">
                             <form th:action="@{/admin/confirmRequest/{id}(id=${booking.id})}" method="post">
                                 <button class="btn btn-primary" name="confirm"
                                         type="Submit">Confirm</button>
                             </form>
                         </td>
-                        <td th:if="${booking.status} == 'Pending' or ${booking.status} == 'Confirmed'">
+                        <td th:if="${booking.status == T(neo.spring5.MeetingRoomBooking.models.Status).Pending} or
+                        ${booking.status == T(neo.spring5.MeetingRoomBooking.models.Status).Confirmed}">
                             <form th:action="@{/admin/rejectRequest/{id}(id=${booking.id})}" method="post">
                                 <button class="btn btn-danger" name="confirm"
                                         type="Submit">Reject</button>
