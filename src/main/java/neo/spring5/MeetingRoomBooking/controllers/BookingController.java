@@ -1,9 +1,7 @@
 package neo.spring5.MeetingRoomBooking.controllers;
 
-import neo.spring5.MeetingRoomBooking.models.BookingDetails;
-import neo.spring5.MeetingRoomBooking.models.MeetingRoom;
-import neo.spring5.MeetingRoomBooking.models.Status;
-import neo.spring5.MeetingRoomBooking.models.User;
+import neo.spring5.MeetingRoomBooking.models.*;
+import neo.spring5.MeetingRoomBooking.repositories.NotificationRepository;
 import neo.spring5.MeetingRoomBooking.services.BookingService;
 import neo.spring5.MeetingRoomBooking.services.MeetingRoomService;
 import neo.spring5.MeetingRoomBooking.services.UserService;
@@ -37,6 +35,9 @@ public class BookingController {
 
     @Autowired
     private MeetingRoomService meetingRoomService;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     //------------------------------------= ADMIN =-------------------------------------------------------------
 
@@ -93,7 +94,6 @@ public class BookingController {
         modelAndView.setViewName("admin/booking-requests");
         return modelAndView;
     }
-    //===============================================================================================
 
     //==================================confirm booking request==========================================
     @PostMapping(value = "/admin/confirmRequest/{id}")
@@ -108,6 +108,10 @@ public class BookingController {
         else{
             bookingDetails.setStatus(Status.Confirmed);
             bookingService.save(bookingDetails);
+            String description = "Your Booking request for "+bookingDetails.getMeetingRoom().getName()
+                    +" on "+bookingDetails.getStartTime()+" is Confirmed";
+            Notification notification = new Notification(bookingDetails.getUser(), description, Type.BookingRequest, Status.Unread);
+            notificationRepository.save(notification);
         }
         redirectAttributes.addFlashAttribute("successMessage", "BookingDetails Confirmed.");
         modelAndView.setViewName("redirect:/admin/booking-requests/1");
@@ -128,12 +132,17 @@ public class BookingController {
         else{
             bookingDetails.setStatus(Status.Rejected);
             bookingService.save(bookingDetails);
+            String description = "Your Booking request for "+bookingDetails.getMeetingRoom().getName()
+                    +" on "+bookingDetails.getStartTime()+" is Rejected";
+            Notification notification = new Notification(bookingDetails.getUser(), description, Type.BookingRequest, Status.Unread);
+            notificationRepository.save(notification);
         }
         redirectAttributes.addFlashAttribute("successMessage", "BookingDetails Rejected.");
         modelAndView.setViewName("redirect:/admin/booking-requests/1");
         return modelAndView;
     }
 
+    //==========================================================================================================
     //-----------------------------------= USER =----------------------------------------------------------------
 
     @RequestMapping("/user/booking-status/{page}")
@@ -218,7 +227,6 @@ public class BookingController {
         modelAndView.setViewName("user/booking-status");
         return modelAndView;
     }
-    //==================================================================================================
 
     //============================Booking History===============================================
     @RequestMapping(value = "/booking-history", method = RequestMethod.GET)
@@ -240,8 +248,8 @@ public class BookingController {
         modelAndView.setViewName("user/booking-status");
         return modelAndView;
     }
-    //============================================================================================
 
+    //============================================================================================
     @RequestMapping("/filter-booking-history")
     public ModelAndView filterBookings(ModelAndView modelAndView,
                                        @RequestParam("month") YearMonth month){
@@ -275,6 +283,13 @@ public class BookingController {
         bookingDetails.setStartTime(startTime);
         bookingDetails.setEndTime(endTime);
         bookingService.save(bookingDetails);
+
+        String description = user.getFirstName()+" "+user.getLastName()
+                +" has requested "+bookingDetails.getMeetingRoom().getName()
+                +" on "+bookingDetails.getStartTime();
+        Notification notification = new Notification(user.getParent(), description, Type.BookingRequest, Status.Unread);
+        notificationRepository.save(notification);
+
         modelAndView.addObject("bookingDetails", bookingDetails);
         modelAndView.setViewName("user/bookRoom");
         return modelAndView;
@@ -284,7 +299,7 @@ public class BookingController {
     @RequestMapping(value = "/confirmBookRoom")
     public ModelAndView confirmBookRoom(ModelAndView modelAndView,
                                         RedirectAttributes redirectAttributes){
-        redirectAttributes.addFlashAttribute("successMessage", "Room Booked successfully");
+        redirectAttributes.addFlashAttribute("successMessage", "Booking Request Sent");
         modelAndView.setViewName("redirect:/meeting-room-details/1");
         return modelAndView;
     }
@@ -293,8 +308,18 @@ public class BookingController {
     @RequestMapping(value = "/cancelBookRoom/{id}")
     public ModelAndView cancelBookRoom(ModelAndView modelAndView, @PathVariable("id") Long id,
                                        RedirectAttributes redirectAttributes){
-        bookingService.deleteById(id);
-        modelAndView.addObject("successMessage", "Request Deleted");
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByEmail(auth.getName());
+        BookingDetails bookingDetails = bookingService.findById(id).orElse(null);
+
+        bookingService.deleteById(bookingDetails.getId());
+        String description = user.getFirstName()+" "+user.getLastName()
+                +" has requested "+bookingDetails.getMeetingRoom().getName()
+                +" on "+bookingDetails.getStartTime();
+        Notification notification = new Notification(user.getParent(), description, Type.BookingRequest, Status.Unread);
+        notificationRepository.save(notification);
+        modelAndView.addObject("successMessage", "Booking Request Deleted");
         modelAndView.setViewName("redirect:/meeting-room-details/1");
         return modelAndView;
     }

@@ -13,7 +13,9 @@ public class ChangeRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String Type;
+    
+    @Enumerated(value = EnumType.STRING)
+    private Type type;
     private String oldValue;
     private String newValue;
 

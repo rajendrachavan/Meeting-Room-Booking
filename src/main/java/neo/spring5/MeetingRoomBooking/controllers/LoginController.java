@@ -2,10 +2,9 @@ package neo.spring5.MeetingRoomBooking.controllers;
 
 import javax.validation.Valid;
 
-import neo.spring5.MeetingRoomBooking.models.Department;
-import neo.spring5.MeetingRoomBooking.models.Token;
-import neo.spring5.MeetingRoomBooking.models.User;
+import neo.spring5.MeetingRoomBooking.models.*;
 import neo.spring5.MeetingRoomBooking.repositories.DepartmentRepository;
+import neo.spring5.MeetingRoomBooking.repositories.NotificationRepository;
 import neo.spring5.MeetingRoomBooking.repositories.RoleRepository;
 import neo.spring5.MeetingRoomBooking.repositories.TokenRepository;
 import neo.spring5.MeetingRoomBooking.services.UserService;
@@ -23,15 +22,15 @@ public class LoginController {
 	
 	@Autowired
 	private UserService userService;
-
 	@Autowired
 	private RoleRepository roleRepository;
-
 	@Autowired
 	private DepartmentRepository departmentRepository;
-
 	@Autowired
 	private TokenRepository tokenRepository;
+	@Autowired
+	private NotificationRepository notificationRepository;
+
 
 	@RequestMapping(value={"/", "/login"}, method = RequestMethod.GET)
 	public ModelAndView login(ModelAndView modelAndView,
@@ -89,7 +88,31 @@ public class LoginController {
 		modelAndView.addObject("id", user.getId());
 		modelAndView.addObject("role", user.getRole().getRole());
 		modelAndView.addObject("userName", "Welcome " + user.getFirstName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
+		if(user.getNotifications().isEmpty()) modelAndView.addObject("noNotifications", "No Notifications");
+		else modelAndView.addObject("notifications", user.getNotifications());
 		modelAndView.setViewName("homepage");
+		return modelAndView;
+	}
+
+	@RequestMapping(value = "/read/{id}")
+	public ModelAndView changeNotificationStatus(ModelAndView modelAndView,
+												 @PathVariable("id") Long id){
+		Notification notification = notificationRepository.findById(id).orElse(null);
+		if(notification.getType().equals(Type.BookingRequest)) {
+			notification.setStatus(Status.Read);
+			notificationRepository.save(notification);
+			modelAndView.setViewName("redirect:/user/booking-status/1");
+		}
+		else if(notification.getType().equals(Type.Email_ChangeRequest)) {
+			notification.setStatus(Status.Read);
+			notificationRepository.save(notification);
+			modelAndView.setViewName("redirect:/user/user-profile");
+		}
+		else if(notification.getType().equals(Type.Department_ChangeRequest)) {
+			notification.setStatus(Status.Read);
+			notificationRepository.save(notification);
+			modelAndView.setViewName("redirect:/user/user-profile");
+		}
 		return modelAndView;
 	}
 

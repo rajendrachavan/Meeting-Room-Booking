@@ -3,6 +3,7 @@ package neo.spring5.MeetingRoomBooking.controllers;
 import neo.spring5.MeetingRoomBooking.models.*;
 import neo.spring5.MeetingRoomBooking.repositories.ChangeRequestRepository;
 import neo.spring5.MeetingRoomBooking.repositories.DepartmentRepository;
+import neo.spring5.MeetingRoomBooking.repositories.NotificationRepository;
 import neo.spring5.MeetingRoomBooking.repositories.RoleRepository;
 import neo.spring5.MeetingRoomBooking.services.EmailService;
 import neo.spring5.MeetingRoomBooking.services.UserService;
@@ -28,6 +29,8 @@ public class ChangeRequestController {
     private EmailService emailService;
     @Autowired
     private DepartmentRepository departmentRepository;
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     //===========================Display Change Requests=========================================
     @RequestMapping(value="/change-requests", method = RequestMethod.GET)
@@ -60,9 +63,13 @@ public class ChangeRequestController {
         ChangeRequest changeRequest = changeRequestRepository.findById(id).orElse(null);
         User user = userService.findById(changeRequest.getUser().getId()).orElse(null);
 
-        if(changeRequest.getType().equals("email")){
+        if(changeRequest.getType().equals(Type.Email_ChangeRequest)){
             user.setEmail(changeRequest.getNewValue());
             userService.editSave(user);
+
+            String description = "Your Request for Change in Email Address is Confirmed!";
+            Notification notification = new Notification(user, description, Type.Email_ChangeRequest, Status.Unread);
+            notificationRepository.save(notification);
 
             String subject= "Email Change Request";
             String body = "Your Request for Change in Email Address is Confirmed!\n" +
@@ -72,6 +79,10 @@ public class ChangeRequestController {
             Department department = departmentRepository.findByName(changeRequest.getNewValue());
             user.setDepartment(department);
             userService.editSave(user);
+
+            String description = "Your Request for Change in Department is Confirmed!";
+            Notification notification = new Notification(user, description, Type.Department_ChangeRequest, Status.Unread);
+            notificationRepository.save(notification);
         }
         changeRequest.setStatus(Status.Confirmed);
         changeRequestRepository.save(changeRequest);
@@ -85,18 +96,25 @@ public class ChangeRequestController {
                                             @PathVariable("id") Long id){
         ChangeRequest changeRequest = changeRequestRepository.findById(id).orElse(null);
         User user = userService.findById(changeRequest.getUser().getId()).orElse(null);
-        if(changeRequest.getType().equals("email")){
+        if(changeRequest.getType().equals(Type.Email_ChangeRequest)){
             user.setEmail(changeRequest.getOldValue());
             userService.editSave(user);
+
+            String description = "Your Request for Change in Email Address is Rejected!";
+            Notification notification = new Notification(user, description, Type.Email_ChangeRequest, Status.Unread);
+            notificationRepository.save(notification);
 
             String subject= "Email Change Request";
             String body = "Your Request for Change in Email Address is Rejected!\n";
             emailService.sendEmail(changeRequest.getOldValue(), subject, body);
         } else {
-
             Department department = departmentRepository.findByName(changeRequest.getOldValue());
             user.setDepartment(department);
             userService.editSave(user);
+
+            String description = "Your Request for Change in Department is Rejected!";
+            Notification notification = new Notification(user, description, Type.Department_ChangeRequest, Status.Unread);
+            notificationRepository.save(notification);
         }
         changeRequest.setStatus(Status.Rejected);
         changeRequestRepository.save(changeRequest);
