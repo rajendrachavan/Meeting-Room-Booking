@@ -71,7 +71,7 @@
                     <tbody>
                     <tr th:each="changeRequest: ${requests}">
                         <td th:text="${changeRequest.id}">1</td>
-                        <td th:text="${changeRequest.type.name()}">Test</td>
+                        <td th:text="${changeRequest.type}">Test</td>
                         <td th:text="${changeRequest.oldValue}">Class</td>
                         <td th:text="${changeRequest.newValue}">Class</td>
                         <td><span th:text="${changeRequest.User.firstName}"></span>&nbsp;<span th:text="${changeRequest.User.lastName}"></span></td>

@@ -56,7 +56,8 @@
                             <tr><td>Start Time</td><td th:text="${bookingDetail.startTime}">TestLocation</td></tr>
                             <tr><td>End Time</td><td th:text="${bookingDetail.endTime}">[AC]</td></tr>
                             <tr><td>
-                                    <a th:href="@{/confirmBookRoom}" onclick="return confirm('Confirm booking?');"
+                                    <a th:href="@{'/confirmBookRoom/' + ${bookingDetail.id}}"
+                                       onclick="return confirm('Confirm booking?');"
                                        class="btn btn-primary">confirm Booking
                                     </a>
                                 </td>

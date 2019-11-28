@@ -4,6 +4,7 @@ import neo.spring5.MeetingRoomBooking.models.*;
 import neo.spring5.MeetingRoomBooking.repositories.ChangeRequestRepository;
 import neo.spring5.MeetingRoomBooking.repositories.DepartmentRepository;
 import neo.spring5.MeetingRoomBooking.repositories.FeedbackRepository;
+import neo.spring5.MeetingRoomBooking.repositories.NotificationRepository;
 import neo.spring5.MeetingRoomBooking.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -30,6 +31,9 @@ public class UserController {
 
     @Autowired
     private FeedbackRepository feedbackRepository;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     @RequestMapping(value = "/user-profile")
     public ModelAndView userProfile(ModelAndView modelAndView,
@@ -102,7 +106,12 @@ public class UserController {
         changeRequest.setUser(user);
         changeRequest.setStatus(Status.Pending);
         changeRequestRepository.save(changeRequest);
-        redirectAttributes.addFlashAttribute("successMessage", "Change Email Request Successful");
+
+        String description = user.getFirstName()+" "+user.getLastName()+" has requested for change in email.";
+        Notification notification = new Notification(user.getParent(), description, Type.Email_ChangeRequest, Status.Unread);
+        notificationRepository.save(notification);
+
+        redirectAttributes.addFlashAttribute("successMessage", "Change Email Request sent");
         modelAndView.setViewName("redirect:/user/user-profile");
         return modelAndView;
     }
@@ -130,6 +139,11 @@ public class UserController {
         changeRequest.setUser(user);
         changeRequest.setStatus(Status.Pending);
         changeRequestRepository.save(changeRequest);
+
+        String description = user.getFirstName()+" "+user.getLastName()+" has requested for change in department.";
+        Notification notification = new Notification(user.getParent(), description, Type.Department_ChangeRequest, Status.Unread);
+        notificationRepository.save(notification);
+
         redirectAttributes.addFlashAttribute("successMessage", "Change Email Request Successful");
         modelAndView.setViewName("redirect:/user/user-profile");
         return modelAndView;

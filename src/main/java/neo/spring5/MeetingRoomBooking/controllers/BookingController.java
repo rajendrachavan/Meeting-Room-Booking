@@ -284,13 +284,7 @@ public class BookingController {
         bookingDetails.setStartTime(startTime);
         bookingDetails.setEndTime(endTime);
         bookingService.save(bookingDetails);
-
-        String description = user.getFirstName()+" "+user.getLastName()
-                +" has requested "+bookingDetails.getMeetingRoom().getName()
-                +" on "+bookingDetails.getStartTime();
-        Notification notification = new Notification(user.getParent(), description, Type.BookingRequest, Status.Unread);
-        notificationRepository.save(notification);
-
+      
         redirectAttributes.addFlashAttribute("successMessage", "Booking Request Sent");
         modelAndView.setViewName("redirect:/meeting-room-details/1");
         return modelAndView;
