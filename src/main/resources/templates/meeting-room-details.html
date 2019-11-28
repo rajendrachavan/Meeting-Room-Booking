@@ -116,13 +116,6 @@
                            class="btn btn-danger" onclick="return confirm('Are you sure you want to Delete this room?');">Delete
                         </a>
                     </td>
-                    <!--<td th:if="${role} == 'USER' or ${role} == 'TL' or ${role} == 'PM'">
-                        <form th:if="${temp} == 1"
-                           th:action="@{'/bookRoom/'+${meetingRoom.id}+ '/'+${startTime}+ '/'+${endTime}}"
-                              method="post">
-                            <input type="submit" class="btn btn-primary" value="Book" />
-                        </form>
-                    </td>-->
                     <td th:if="${role} == 'USER' or ${role} == 'TL' or ${role} == 'PM'">
                         <form th:if="${temp} == 1"
                               th:action="@{'/bookRoom/'+${meetingRoom.id}+ '/'+${startTime}+ '/'+${endTime}}"
