@@ -268,7 +268,8 @@ public class BookingController {
     @PostMapping("/bookRoom/{id}/{startTime}/{endTime}")
     public ModelAndView bookRoom(ModelAndView modelAndView, @PathVariable(value="id") Long id,
                                  @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") @PathVariable("startTime") LocalDateTime startTime,
-                                 @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") @PathVariable("endTime") LocalDateTime endTime) throws Exception{
+                                 @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") @PathVariable("endTime") LocalDateTime endTime,
+                                 RedirectAttributes redirectAttributes) throws Exception{
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
@@ -290,40 +291,12 @@ public class BookingController {
         Notification notification = new Notification(user.getParent(), description, Type.BookingRequest, Status.Unread);
         notificationRepository.save(notification);
 
-        modelAndView.addObject("bookingDetails", bookingDetails);
-        modelAndView.setViewName("user/bookRoom");
-        return modelAndView;
-    }
-
-    //====================================Booking Confirmation=========================================
-    @RequestMapping(value = "/confirmBookRoom")
-    public ModelAndView confirmBookRoom(ModelAndView modelAndView,
-                                        RedirectAttributes redirectAttributes){
         redirectAttributes.addFlashAttribute("successMessage", "Booking Request Sent");
         modelAndView.setViewName("redirect:/meeting-room-details/1");
         return modelAndView;
     }
 
     //================================Cancel Booking===============================================
-    @RequestMapping(value = "/cancelBookRoom/{id}")
-    public ModelAndView cancelBookRoom(ModelAndView modelAndView, @PathVariable("id") Long id,
-                                       RedirectAttributes redirectAttributes){
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.findUserByEmail(auth.getName());
-        BookingDetails bookingDetails = bookingService.findById(id).orElse(null);
-
-        bookingService.deleteById(bookingDetails.getId());
-        String description = user.getFirstName()+" "+user.getLastName()
-                +" has requested "+bookingDetails.getMeetingRoom().getName()
-                +" on "+bookingDetails.getStartTime();
-        Notification notification = new Notification(user.getParent(), description, Type.BookingRequest, Status.Unread);
-        notificationRepository.save(notification);
-        modelAndView.addObject("successMessage", "Booking Request Deleted");
-        modelAndView.setViewName("redirect:/meeting-room-details/1");
-        return modelAndView;
-    }
-
     @RequestMapping(value = "/deleteRequest/{id}")
     public ModelAndView deleteRequest(ModelAndView modelAndView,
                                       @PathVariable(value="id") Long id,
