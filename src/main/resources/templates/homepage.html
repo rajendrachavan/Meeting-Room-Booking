@@ -61,6 +61,33 @@
             </div>
         </div>
     </div>
+    <div class="panel-group" style="margin-top:40px">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h4>Notifications</h4>
+            </div>
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <tbody>
+                        <tr th:each="notification: ${notifications}">
+                            <td th:if="${notification.status == T(neo.spring5.MeetingRoomBooking.models.Status).Unread}"
+                                style="font-weight:bold">
+                                <a th:href="@{/read/{id}(id=${notification.id})}" th:text="${notification.description}">Unread &nbsp;<i class="fas fa-caret-right"></i></a>
+                            </td>
+                            <td th:unless="${notification.status == T(neo.spring5.MeetingRoomBooking.models.Status).Unread}">
+                                <a th:href="@{/read/{id}(id=${notification.id})}" th:text="${notification.description}">Read</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td th:text="${noNotifications}" style="text-center">No Notifications</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 </html>

@@ -62,3 +62,20 @@
 
 .dropdownNav-content a:hover {background-color: #ddd;}
 .dropdownNav:hover .dropdownNav-content {display: block;}
+
+/*==================Anchor tag==========================*/
+a:link {
+  text-decoration: none;
+}
+
+a:visited {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+a:active {
+  text-decoration: underline;
+}

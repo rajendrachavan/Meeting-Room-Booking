@@ -1,9 +1,6 @@
 package neo.spring5.MeetingRoomBooking.controllers;
 
-import neo.spring5.MeetingRoomBooking.models.ChangeRequest;
-import neo.spring5.MeetingRoomBooking.models.Feedback;
-import neo.spring5.MeetingRoomBooking.models.Status;
-import neo.spring5.MeetingRoomBooking.models.User;
+import neo.spring5.MeetingRoomBooking.models.*;
 import neo.spring5.MeetingRoomBooking.repositories.ChangeRequestRepository;
 import neo.spring5.MeetingRoomBooking.repositories.DepartmentRepository;
 import neo.spring5.MeetingRoomBooking.repositories.FeedbackRepository;
@@ -99,7 +96,7 @@ public class UserController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
         ChangeRequest changeRequest = new ChangeRequest();
-        changeRequest.setType("email");
+        changeRequest.setType(Type.Email_ChangeRequest);
         changeRequest.setOldValue(user.getEmail());
         changeRequest.setNewValue(userEmail);
         changeRequest.setUser(user);
@@ -127,7 +124,7 @@ public class UserController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
         ChangeRequest changeRequest = new ChangeRequest();
-        changeRequest.setType("department");
+        changeRequest.setType(Type.Department_ChangeRequest);
         changeRequest.setOldValue(user.getDepartment().getName());
         changeRequest.setNewValue(departmentRepository.findById(userDept).orElse(null).getName());
         changeRequest.setUser(user);
