@@ -1,7 +1,8 @@
-package neo.spring5.MeetingRoomBooking.services;
+package neo.spring5.MeetingRoomBooking.services.implementations;
 
 import neo.spring5.MeetingRoomBooking.models.Facility;
 import neo.spring5.MeetingRoomBooking.repositories.FacilityRepository;
+import neo.spring5.MeetingRoomBooking.services.FacilityService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

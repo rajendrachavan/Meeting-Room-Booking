@@ -1,10 +1,10 @@
 package neo.spring5.MeetingRoomBooking.controllers;
 
 import neo.spring5.MeetingRoomBooking.models.*;
-import neo.spring5.MeetingRoomBooking.repositories.ChangeRequestRepository;
 import neo.spring5.MeetingRoomBooking.repositories.DepartmentRepository;
 import neo.spring5.MeetingRoomBooking.repositories.FeedbackRepository;
-import neo.spring5.MeetingRoomBooking.repositories.NotificationRepository;
+import neo.spring5.MeetingRoomBooking.services.ChangeRequestService;
+import neo.spring5.MeetingRoomBooking.services.NotificationService;
 import neo.spring5.MeetingRoomBooking.services.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,19 +20,19 @@ import javax.validation.Valid;
 public class UserController {
 
     private final UserService userService;
-    private final ChangeRequestRepository changeRequestRepository;
+    private final ChangeRequestService changeRequestService;
     private final DepartmentRepository departmentRepository;
     private final FeedbackRepository feedbackRepository;
-    private final NotificationRepository notificationRepository;
+    private final NotificationService notificationService;
 
-    public UserController(UserService userService, ChangeRequestRepository changeRequestRepository,
+    public UserController(UserService userService, ChangeRequestService changeRequestService,
                           DepartmentRepository departmentRepository, FeedbackRepository feedbackRepository,
-                          NotificationRepository notificationRepository) {
+                          NotificationService notificationService) {
         this.userService = userService;
-        this.changeRequestRepository = changeRequestRepository;
+        this.changeRequestService = changeRequestService;
         this.departmentRepository = departmentRepository;
         this.feedbackRepository = feedbackRepository;
-        this.notificationRepository = notificationRepository;
+        this.notificationService = notificationService;
     }
 
     @RequestMapping(value = "/user-profile")
@@ -105,7 +105,7 @@ public class UserController {
         changeRequest.setNewValue(userEmail);
         changeRequest.setUser(user);
         changeRequest.setStatus(Status.Pending);
-        changeRequestRepository.save(changeRequest);
+        changeRequestService.save(changeRequest);
 
         String description = user.getFirstName()+" "+user.getLastName()+" has requested for change in email.";
         Notification notification = null;
@@ -113,7 +113,7 @@ public class UserController {
             notification = new Notification(userService.getAdmin(), description, Type.Email_ChangeRequests, Status.Unread);
         else
             notification = new Notification(user.getParent(), description, Type.Email_ChangeRequests, Status.Unread);
-        notificationRepository.save(notification);
+        notificationService.save(notification);
 
         redirectAttributes.addFlashAttribute("successMessage", "Change Email Request sent");
         modelAndView.setViewName("redirect:/user/user-profile");
@@ -142,7 +142,7 @@ public class UserController {
         changeRequest.setNewValue(departmentRepository.findById(userDept).orElse(null).getName());
         changeRequest.setUser(user);
         changeRequest.setStatus(Status.Pending);
-        changeRequestRepository.save(changeRequest);
+        changeRequestService.save(changeRequest);
 
         String description = user.getFirstName()+" "+user.getLastName()+" has requested for change in department.";
         Notification notification = null;
@@ -150,7 +150,7 @@ public class UserController {
             notification = new Notification(userService.getAdmin(), description, Type.Department_ChangeRequests, Status.Unread);
         else
             notification = new Notification(user.getParent(), description, Type.Department_ChangeRequests, Status.Unread);
-        notificationRepository.save(notification);
+        notificationService.save(notification);
 
         redirectAttributes.addFlashAttribute("successMessage", "Change Department Request Sent");
         modelAndView.setViewName("redirect:/user/user-profile");
@@ -175,7 +175,7 @@ public class UserController {
     public ModelAndView cancelChangeRequest(ModelAndView modelAndView,
                                             @PathVariable("id") Long id,
                                             RedirectAttributes redirectAttributes){
-        changeRequestRepository.deleteById(id);
+        changeRequestService.deleteById(id);
         redirectAttributes.addFlashAttribute("successMessage", "Request Cancelled.");
         modelAndView.setViewName("user/profile-change-requests");
         return modelAndView;

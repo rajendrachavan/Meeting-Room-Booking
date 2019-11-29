@@ -4,9 +4,9 @@ import javax.validation.Valid;
 
 import neo.spring5.MeetingRoomBooking.models.*;
 import neo.spring5.MeetingRoomBooking.repositories.DepartmentRepository;
-import neo.spring5.MeetingRoomBooking.repositories.NotificationRepository;
 import neo.spring5.MeetingRoomBooking.repositories.RoleRepository;
 import neo.spring5.MeetingRoomBooking.repositories.TokenRepository;
+import neo.spring5.MeetingRoomBooking.services.NotificationService;
 import neo.spring5.MeetingRoomBooking.services.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,16 +23,16 @@ public class LoginController {
 	private final RoleRepository roleRepository;
 	private final DepartmentRepository departmentRepository;
 	private final TokenRepository tokenRepository;
-	private final NotificationRepository notificationRepository;
+	private final NotificationService notificationService;
 
 	public LoginController(UserService userService, RoleRepository roleRepository,
 						   DepartmentRepository departmentRepository, TokenRepository tokenRepository,
-						   NotificationRepository notificationRepository) {
+						   NotificationService notificationService) {
 		this.userService = userService;
 		this.roleRepository = roleRepository;
 		this.departmentRepository = departmentRepository;
 		this.tokenRepository = tokenRepository;
-		this.notificationRepository = notificationRepository;
+		this.notificationService = notificationService;
 	}
 
 
@@ -106,7 +106,7 @@ public class LoginController {
 		User user = userService.findUserByEmail(auth.getName());
 		String role = user.getRole().getRole();
 
-		Notification notification = notificationRepository.findById(id).orElse(null);
+		Notification notification = notificationService.findById(id);
 
 		if(notification.getType().equals(Type.BookingRequest)) {
 			if(role.equals("ADMIN")) modelAndView.setViewName("redirect:/admin/booking-requests/1");
@@ -120,7 +120,7 @@ public class LoginController {
 		}
 
 		notification.setStatus(Status.Read);
-		notificationRepository.save(notification);
+		notificationService.save(notification);
 		return modelAndView;
 	}
 

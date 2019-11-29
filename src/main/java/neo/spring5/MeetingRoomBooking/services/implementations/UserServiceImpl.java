@@ -1,4 +1,4 @@
-package neo.spring5.MeetingRoomBooking.services;
+package neo.spring5.MeetingRoomBooking.services.implementations;
 
 import java.util.*;
 
@@ -8,29 +8,32 @@ import neo.spring5.MeetingRoomBooking.models.User;
 import neo.spring5.MeetingRoomBooking.repositories.RoleRepository;
 import neo.spring5.MeetingRoomBooking.repositories.TokenRepository;
 import neo.spring5.MeetingRoomBooking.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+import neo.spring5.MeetingRoomBooking.services.EmailService;
+import neo.spring5.MeetingRoomBooking.services.UserService;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service("userService")
 public class UserServiceImpl implements UserService {
 
-	@Autowired
-	private UserRepository userRepository;
-	@Autowired
-    private RoleRepository roleRepository;
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
-    @Autowired
-    private EmailService emailService;
-    @Autowired
-    private TokenRepository tokenRepository;
-	
+	private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final EmailService emailService;
+    private final TokenRepository tokenRepository;
+
+	public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository,
+						   BCryptPasswordEncoder bCryptPasswordEncoder, EmailService emailService,
+						   TokenRepository tokenRepository) {
+		this.userRepository = userRepository;
+		this.roleRepository = roleRepository;
+		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+		this.emailService = emailService;
+		this.tokenRepository = tokenRepository;
+	}
+
 	@Override
 	public User findUserByEmail(String email) {
 		return userRepository.findByEmail(email);

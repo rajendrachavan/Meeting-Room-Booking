@@ -1,11 +1,12 @@
 package neo.spring5.MeetingRoomBooking.controllers;
 
 import neo.spring5.MeetingRoomBooking.models.*;
-import neo.spring5.MeetingRoomBooking.repositories.ChangeRequestRepository;
 import neo.spring5.MeetingRoomBooking.repositories.DepartmentRepository;
 import neo.spring5.MeetingRoomBooking.repositories.NotificationRepository;
 import neo.spring5.MeetingRoomBooking.repositories.RoleRepository;
+import neo.spring5.MeetingRoomBooking.services.ChangeRequestService;
 import neo.spring5.MeetingRoomBooking.services.EmailService;
+import neo.spring5.MeetingRoomBooking.services.NotificationService;
 import neo.spring5.MeetingRoomBooking.services.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,22 +23,22 @@ import java.util.List;
 public class ChangeRequestController {
 
     private final UserService userService;
-    private final ChangeRequestRepository changeRequestRepository;
+    private final ChangeRequestService changeRequestService;
     private final RoleRepository roleRepository;
     private final EmailService emailService;
     private final DepartmentRepository departmentRepository;
-    private final NotificationRepository notificationRepository;
+    private final NotificationService notificationService;
 
-    public ChangeRequestController(UserService userService, ChangeRequestRepository changeRequestRepository,
+    public ChangeRequestController(UserService userService, ChangeRequestService changeRequestService,
                                    RoleRepository roleRepository, EmailService emailService,
                                    DepartmentRepository departmentRepository,
-                                   NotificationRepository notificationRepository) {
+                                   NotificationService notificationService) {
         this.userService = userService;
-        this.changeRequestRepository = changeRequestRepository;
+        this.changeRequestService = changeRequestService;
         this.roleRepository = roleRepository;
         this.emailService = emailService;
         this.departmentRepository = departmentRepository;
-        this.notificationRepository = notificationRepository;
+        this.notificationService = notificationService;
     }
 
     //===========================Display Change Requests=========================================
@@ -50,18 +51,18 @@ public class ChangeRequestController {
         switch (user.getRole().getRole()){
             case "ADMIN":
                 role = roleRepository.findByRole("PM").orElse(null);
-                for (ChangeRequest changeRequest: changeRequestRepository.findAll()) {
+                for (ChangeRequest changeRequest: changeRequestService.findAll()) {
                     if(changeRequest.getUser().getParent() == null) changeRequests.add(changeRequest);
                 }
-                changeRequests.addAll(changeRequestRepository.findAllByUserRole(role));
+                changeRequests.addAll(changeRequestService.findAllByUserRole(role));
                 break;
             case "PM":
                 role = roleRepository.findByRole("TL").orElse(null);
-                changeRequests.addAll(changeRequestRepository.findAllByUserRole(role));
+                changeRequests.addAll(changeRequestService.findAllByUserRole(role));
                 break;
             case "TL":
                 role = roleRepository.findByRole("USER").orElse(null);
-                changeRequests.addAll(changeRequestRepository.findAllByUserRole(role));
+                changeRequests.addAll(changeRequestService.findAllByUserRole(role));
                 break;
         }
 
@@ -75,7 +76,7 @@ public class ChangeRequestController {
     @RequestMapping(value="/confirmChangeRequest/{id}", method = RequestMethod.POST)
     public ModelAndView confirmChangeRequest(ModelAndView modelAndView,
                                              @PathVariable("id") Long id){
-        ChangeRequest changeRequest = changeRequestRepository.findById(id).orElse(null);
+        ChangeRequest changeRequest = changeRequestService.findById(id);
         User user = userService.findById(changeRequest.getUser().getId()).orElse(null);
 
         if(changeRequest.getType().equals(Type.Email_ChangeRequest)){
@@ -84,7 +85,7 @@ public class ChangeRequestController {
 
             String description = "Your Request for Change in Email Address is Confirmed!";
             Notification notification = new Notification(user, description, Type.Email_ChangeRequest, Status.Unread);
-            notificationRepository.save(notification);
+            notificationService.save(notification);
 
             String subject= "Email Change Request";
             String body = "Your Request for Change in Email Address is Confirmed!\n" +
@@ -97,10 +98,10 @@ public class ChangeRequestController {
 
             String description = "Your Request for Change in Department is Confirmed!";
             Notification notification = new Notification(user, description, Type.Department_ChangeRequest, Status.Unread);
-            notificationRepository.save(notification);
+            notificationService.save(notification);
         }
         changeRequest.setStatus(Status.Confirmed);
-        changeRequestRepository.save(changeRequest);
+        changeRequestService.save(changeRequest);
         modelAndView.setViewName("redirect:/change-requests");
         return modelAndView;
     }
@@ -109,7 +110,7 @@ public class ChangeRequestController {
     @RequestMapping(value="/rejectChangeRequest/{id}", method = RequestMethod.POST)
     public ModelAndView rejectChangeRequest(ModelAndView modelAndView,
                                             @PathVariable("id") Long id){
-        ChangeRequest changeRequest = changeRequestRepository.findById(id).orElse(null);
+        ChangeRequest changeRequest = changeRequestService.findById(id);
         User user = userService.findById(changeRequest.getUser().getId()).orElse(null);
         if(changeRequest.getType().equals(Type.Email_ChangeRequest)){
             user.setEmail(changeRequest.getOldValue());
@@ -117,7 +118,7 @@ public class ChangeRequestController {
 
             String description = "Your Request for Change in Email Address is Rejected!";
             Notification notification = new Notification(user, description, Type.Email_ChangeRequest, Status.Unread);
-            notificationRepository.save(notification);
+            notificationService.save(notification);
 
             String subject= "Email Change Request";
             String body = "Your Request for Change in Email Address is Rejected!\n";
@@ -129,10 +130,10 @@ public class ChangeRequestController {
 
             String description = "Your Request for Change in Department is Rejected!";
             Notification notification = new Notification(user, description, Type.Department_ChangeRequest, Status.Unread);
-            notificationRepository.save(notification);
+            notificationService.save(notification);
         }
         changeRequest.setStatus(Status.Rejected);
-        changeRequestRepository.save(changeRequest);
+        changeRequestService.save(changeRequest);
         modelAndView.setViewName("redirect:/change-requests");
         return modelAndView;
     }

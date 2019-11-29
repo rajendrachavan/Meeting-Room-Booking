@@ -1,5 +1,6 @@
-package neo.spring5.MeetingRoomBooking.services;
+package neo.spring5.MeetingRoomBooking.services.implementations;
 
+import neo.spring5.MeetingRoomBooking.services.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;

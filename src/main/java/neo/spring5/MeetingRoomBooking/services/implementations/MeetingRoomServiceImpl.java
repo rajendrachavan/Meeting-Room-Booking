@@ -1,16 +1,14 @@
-package neo.spring5.MeetingRoomBooking.services;
+package neo.spring5.MeetingRoomBooking.services.implementations;
 
 import neo.spring5.MeetingRoomBooking.models.BookingDetails;
 import neo.spring5.MeetingRoomBooking.models.MeetingRoom;
 import neo.spring5.MeetingRoomBooking.repositories.MeetingRoomRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import neo.spring5.MeetingRoomBooking.services.MeetingRoomService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,8 +16,11 @@ import java.util.Optional;
 @Service
 public class MeetingRoomServiceImpl implements MeetingRoomService {
 
-    @Autowired
-    private MeetingRoomRepository meetingRoomRepository;
+    private final MeetingRoomRepository meetingRoomRepository;
+
+    public MeetingRoomServiceImpl(MeetingRoomRepository meetingRoomRepository) {
+        this.meetingRoomRepository = meetingRoomRepository;
+    }
 
     @Override
     public void save(MeetingRoom meetingRoom) {
