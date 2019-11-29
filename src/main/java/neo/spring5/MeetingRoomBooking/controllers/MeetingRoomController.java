@@ -6,7 +6,6 @@ import neo.spring5.MeetingRoomBooking.models.User;
 import neo.spring5.MeetingRoomBooking.repositories.FacilityRepository;
 import neo.spring5.MeetingRoomBooking.services.MeetingRoomService;
 import neo.spring5.MeetingRoomBooking.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -29,14 +28,16 @@ import java.util.stream.IntStream;
 @Controller
 public class MeetingRoomController {
 
-    @Autowired
-    private MeetingRoomService meetingRoomService;
+    private final MeetingRoomService meetingRoomService;
+    private final UserService userService;
+    private final FacilityRepository facilityRepository;
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private FacilityRepository facilityRepository;
+    public MeetingRoomController(MeetingRoomService meetingRoomService, UserService userService,
+                                 FacilityRepository facilityRepository) {
+        this.meetingRoomService = meetingRoomService;
+        this.userService = userService;
+        this.facilityRepository = facilityRepository;
+    }
 
     //----------------------------= COMMON =------------------------------------
 

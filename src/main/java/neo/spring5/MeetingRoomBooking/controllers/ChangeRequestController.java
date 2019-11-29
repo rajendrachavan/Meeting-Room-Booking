@@ -7,7 +7,6 @@ import neo.spring5.MeetingRoomBooking.repositories.NotificationRepository;
 import neo.spring5.MeetingRoomBooking.repositories.RoleRepository;
 import neo.spring5.MeetingRoomBooking.services.EmailService;
 import neo.spring5.MeetingRoomBooking.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -22,18 +21,24 @@ import java.util.List;
 @Controller
 public class ChangeRequestController {
 
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private ChangeRequestRepository changeRequestRepository;
-    @Autowired
-    private RoleRepository roleRepository;
-    @Autowired
-    private EmailService emailService;
-    @Autowired
-    private DepartmentRepository departmentRepository;
-    @Autowired
-    private NotificationRepository notificationRepository;
+    private final UserService userService;
+    private final ChangeRequestRepository changeRequestRepository;
+    private final RoleRepository roleRepository;
+    private final EmailService emailService;
+    private final DepartmentRepository departmentRepository;
+    private final NotificationRepository notificationRepository;
+
+    public ChangeRequestController(UserService userService, ChangeRequestRepository changeRequestRepository,
+                                   RoleRepository roleRepository, EmailService emailService,
+                                   DepartmentRepository departmentRepository,
+                                   NotificationRepository notificationRepository) {
+        this.userService = userService;
+        this.changeRequestRepository = changeRequestRepository;
+        this.roleRepository = roleRepository;
+        this.emailService = emailService;
+        this.departmentRepository = departmentRepository;
+        this.notificationRepository = notificationRepository;
+    }
 
     //===========================Display Change Requests=========================================
     @RequestMapping(value="/change-requests", method = RequestMethod.GET)

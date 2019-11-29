@@ -8,7 +8,6 @@ import neo.spring5.MeetingRoomBooking.repositories.NotificationRepository;
 import neo.spring5.MeetingRoomBooking.repositories.RoleRepository;
 import neo.spring5.MeetingRoomBooking.repositories.TokenRepository;
 import neo.spring5.MeetingRoomBooking.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -20,16 +19,21 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class LoginController {
 	
-	@Autowired
-	private UserService userService;
-	@Autowired
-	private RoleRepository roleRepository;
-	@Autowired
-	private DepartmentRepository departmentRepository;
-	@Autowired
-	private TokenRepository tokenRepository;
-	@Autowired
-	private NotificationRepository notificationRepository;
+	private final UserService userService;
+	private final RoleRepository roleRepository;
+	private final DepartmentRepository departmentRepository;
+	private final TokenRepository tokenRepository;
+	private final NotificationRepository notificationRepository;
+
+	public LoginController(UserService userService, RoleRepository roleRepository,
+						   DepartmentRepository departmentRepository, TokenRepository tokenRepository,
+						   NotificationRepository notificationRepository) {
+		this.userService = userService;
+		this.roleRepository = roleRepository;
+		this.departmentRepository = departmentRepository;
+		this.tokenRepository = tokenRepository;
+		this.notificationRepository = notificationRepository;
+	}
 
 
 	@RequestMapping(value={"/", "/login"}, method = RequestMethod.GET)
