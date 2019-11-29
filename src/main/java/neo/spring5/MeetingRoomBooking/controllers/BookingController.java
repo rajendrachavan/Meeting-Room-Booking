@@ -110,7 +110,8 @@ public class BookingController {
             bookingService.save(bookingDetails);
             String description = "Your Booking request for "+bookingDetails.getMeetingRoom().getName()
                     +" on "+bookingDetails.getStartTime()+" is Confirmed";
-            Notification notification = new Notification(bookingDetails.getUser(), description, Type.BookingRequest, Status.Unread);
+            Notification notification = new Notification(bookingDetails.getUser(), description,
+                    Type.BookingRequest, Status.Unread, bookingDetails.getStartTime());
             notificationService.save(notification);
         }
         redirectAttributes.addFlashAttribute("successMessage", "BookingDetails Confirmed.");
@@ -134,7 +135,8 @@ public class BookingController {
             bookingService.save(bookingDetails);
             String description = "Your Booking request for "+bookingDetails.getMeetingRoom().getName()
                     +" on "+bookingDetails.getStartTime()+" is Rejected";
-            Notification notification = new Notification(bookingDetails.getUser(), description, Type.BookingRequest, Status.Unread);
+            Notification notification = new Notification(bookingDetails.getUser(), description,
+                    Type.BookingRequest, Status.Unread, bookingDetails.getStartTime());
             notificationService.save(notification);
         }
         redirectAttributes.addFlashAttribute("successMessage", "BookingDetails Rejected.");
@@ -288,7 +290,8 @@ public class BookingController {
         //sends notification to the admin
         String description = user.getFirstName()+" "+user.getLastName()+" has requested to book "+bookingDetails.getMeetingRoom().getName()
                 +" on "+bookingDetails.getStartTime();
-        Notification notification = new Notification(userService.getAdmin(), description, Type.BookingRequest, Status.Unread);
+        Notification notification = new Notification(userService.getAdmin(), description,
+                Type.BookingRequest, Status.Unread, bookingDetails.getStartTime());
         notificationService.save(notification);
       
         redirectAttributes.addFlashAttribute("successMessage", "Booking Request Sent");

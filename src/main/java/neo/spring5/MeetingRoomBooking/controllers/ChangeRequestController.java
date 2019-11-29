@@ -2,7 +2,6 @@ package neo.spring5.MeetingRoomBooking.controllers;
 
 import neo.spring5.MeetingRoomBooking.models.*;
 import neo.spring5.MeetingRoomBooking.repositories.DepartmentRepository;
-import neo.spring5.MeetingRoomBooking.repositories.NotificationRepository;
 import neo.spring5.MeetingRoomBooking.repositories.RoleRepository;
 import neo.spring5.MeetingRoomBooking.services.ChangeRequestService;
 import neo.spring5.MeetingRoomBooking.services.EmailService;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,7 +84,8 @@ public class ChangeRequestController {
             userService.editSave(user);
 
             String description = "Your Request for Change in Email Address is Confirmed!";
-            Notification notification = new Notification(user, description, Type.Email_ChangeRequest, Status.Unread);
+            Notification notification = new Notification(user, description,
+                    Type.Email_ChangeRequest, Status.Unread, LocalDateTime.now().plusDays(2));
             notificationService.save(notification);
 
             String subject= "Email Change Request";
@@ -97,7 +98,8 @@ public class ChangeRequestController {
             userService.editSave(user);
 
             String description = "Your Request for Change in Department is Confirmed!";
-            Notification notification = new Notification(user, description, Type.Department_ChangeRequest, Status.Unread);
+            Notification notification = new Notification(user, description,
+                    Type.Department_ChangeRequest, Status.Unread, LocalDateTime.now().plusDays(2));
             notificationService.save(notification);
         }
         changeRequest.setStatus(Status.Confirmed);
@@ -117,7 +119,8 @@ public class ChangeRequestController {
             userService.editSave(user);
 
             String description = "Your Request for Change in Email Address is Rejected!";
-            Notification notification = new Notification(user, description, Type.Email_ChangeRequest, Status.Unread);
+            Notification notification = new Notification(user, description,
+                    Type.Email_ChangeRequest, Status.Unread, LocalDateTime.now().plusDays(2));
             notificationService.save(notification);
 
             String subject= "Email Change Request";
@@ -129,7 +132,8 @@ public class ChangeRequestController {
             userService.editSave(user);
 
             String description = "Your Request for Change in Department is Rejected!";
-            Notification notification = new Notification(user, description, Type.Department_ChangeRequest, Status.Unread);
+            Notification notification = new Notification(user, description,
+                    Type.Department_ChangeRequest, Status.Unread, LocalDateTime.now().plusDays(2));
             notificationService.save(notification);
         }
         changeRequest.setStatus(Status.Rejected);

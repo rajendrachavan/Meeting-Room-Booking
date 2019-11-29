@@ -17,7 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 
 @Controller
-public class LoginController {
+public class IndexController {
 	
 	private final UserService userService;
 	private final RoleRepository roleRepository;
@@ -25,7 +25,7 @@ public class LoginController {
 	private final TokenRepository tokenRepository;
 	private final NotificationService notificationService;
 
-	public LoginController(UserService userService, RoleRepository roleRepository,
+	public IndexController(UserService userService, RoleRepository roleRepository,
 						   DepartmentRepository departmentRepository, TokenRepository tokenRepository,
 						   NotificationService notificationService) {
 		this.userService = userService;
@@ -92,6 +92,7 @@ public class LoginController {
 		modelAndView.addObject("id", user.getId());
 		modelAndView.addObject("role", user.getRole().getRole());
 		modelAndView.addObject("userName", "Welcome " + user.getFirstName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
+		notificationService.deleteExpiredNotifications();
 		if(user.getNotifications().isEmpty()) modelAndView.addObject("noNotifications", "No Notifications");
 		else modelAndView.addObject("notifications", user.getNotifications());
 		modelAndView.setViewName("homepage");

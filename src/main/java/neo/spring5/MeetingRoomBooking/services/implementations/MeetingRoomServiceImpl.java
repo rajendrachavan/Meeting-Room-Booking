@@ -2,6 +2,7 @@ package neo.spring5.MeetingRoomBooking.services.implementations;
 
 import neo.spring5.MeetingRoomBooking.models.BookingDetails;
 import neo.spring5.MeetingRoomBooking.models.MeetingRoom;
+import neo.spring5.MeetingRoomBooking.models.Status;
 import neo.spring5.MeetingRoomBooking.repositories.MeetingRoomRepository;
 import neo.spring5.MeetingRoomBooking.services.MeetingRoomService;
 import org.springframework.data.domain.Page;
@@ -63,7 +64,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
             if (meetingRoom.getBookingDetails().isEmpty()) meetingRooms.add(meetingRoom);
             else {
                 for (BookingDetails bookingDetail : meetingRoom.getBookingDetails()) {
-                    if (bookingDetail.getStatus().equals("Confirmed")) {
+                    if (bookingDetail.getStatus() == Status.Confirmed) {
                         if((startTime.isAfter(bookingDetail.getStartTime()) || startTime.equals(bookingDetail.getStartTime()))
                         && startTime.isBefore(bookingDetail.getEndTime())){
                             flag = false; break;

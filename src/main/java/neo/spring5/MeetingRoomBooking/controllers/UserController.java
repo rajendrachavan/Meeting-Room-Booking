@@ -14,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 
 @Controller
 @RequestMapping("/user")
@@ -110,9 +111,11 @@ public class UserController {
         String description = user.getFirstName()+" "+user.getLastName()+" has requested for change in email.";
         Notification notification = null;
         if(user.getParent() == null)
-            notification = new Notification(userService.getAdmin(), description, Type.Email_ChangeRequests, Status.Unread);
+            notification = new Notification(userService.getAdmin(), description,
+                    Type.Email_ChangeRequests, Status.Unread, LocalDateTime.now().plusDays(2));
         else
-            notification = new Notification(user.getParent(), description, Type.Email_ChangeRequests, Status.Unread);
+            notification = new Notification(user.getParent(), description,
+                    Type.Email_ChangeRequests, Status.Unread, LocalDateTime.now().plusDays(2));
         notificationService.save(notification);
 
         redirectAttributes.addFlashAttribute("successMessage", "Change Email Request sent");
@@ -147,9 +150,11 @@ public class UserController {
         String description = user.getFirstName()+" "+user.getLastName()+" has requested for change in department.";
         Notification notification = null;
         if(user.getParent() == null)
-            notification = new Notification(userService.getAdmin(), description, Type.Department_ChangeRequests, Status.Unread);
+            notification = new Notification(userService.getAdmin(), description,
+                    Type.Department_ChangeRequests, Status.Unread, LocalDateTime.now().plusDays(2));
         else
-            notification = new Notification(user.getParent(), description, Type.Department_ChangeRequests, Status.Unread);
+            notification = new Notification(user.getParent(), description,
+                    Type.Department_ChangeRequests, Status.Unread, LocalDateTime.now().plusDays(2));
         notificationService.save(notification);
 
         redirectAttributes.addFlashAttribute("successMessage", "Change Department Request Sent");

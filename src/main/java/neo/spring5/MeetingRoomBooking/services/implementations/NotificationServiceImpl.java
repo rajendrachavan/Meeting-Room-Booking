@@ -5,6 +5,9 @@ import neo.spring5.MeetingRoomBooking.repositories.NotificationRepository;
 import neo.spring5.MeetingRoomBooking.services.NotificationService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Service
 public class NotificationServiceImpl implements NotificationService {
 
@@ -22,5 +25,15 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public <Optional> Notification findById(Long id) {
         return notificationRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public void deleteExpiredNotifications() {
+        LocalDateTime today = LocalDateTime.now();
+        List<Notification> notifications = notificationRepository.findAll();
+        for (Notification notification: notifications) {
+            if(notification.getExpiryDate().isBefore(today))
+                notificationRepository.delete(notification);
+        }
     }
 }
