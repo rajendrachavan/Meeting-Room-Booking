@@ -15,6 +15,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/user")
@@ -127,8 +129,14 @@ public class UserController {
     public ModelAndView changeDepartment(ModelAndView modelAndView){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
+        List<Department> department = departmentRepository.findAll();
+        List<Department> departmentList = department
+                .stream()
+                .filter(department1 -> !department1.equals(user.getDepartment()))
+                .collect(Collectors.toList());
         modelAndView.addObject("previousDepartment",user.getDepartment().getName());
         modelAndView.addObject("temp", 2);
+        modelAndView.addObject("departments", departmentList);
         modelAndView.setViewName("user/change-request");
         return modelAndView;
     }
@@ -172,6 +180,7 @@ public class UserController {
         modelAndView.addObject("requests", user.getChangeRequests());
         modelAndView.addObject("successMessage", successMessage);
         modelAndView.addObject("errorMessage", errorMessage);
+        modelAndView.addObject("noRecords", "No Records Found!");
         modelAndView.setViewName("user/profile-change-requests");
         return modelAndView;
     }
@@ -182,7 +191,7 @@ public class UserController {
                                             RedirectAttributes redirectAttributes){
         changeRequestService.deleteById(id);
         redirectAttributes.addFlashAttribute("successMessage", "Request Cancelled.");
-        modelAndView.setViewName("user/profile-change-requests");
+        modelAndView.setViewName("redirect:/user/profile-change-requests");
         return modelAndView;
     }
 

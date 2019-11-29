@@ -106,7 +106,6 @@ public class IndexController {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
 		String role = user.getRole().getRole();
-
 		Notification notification = notificationService.findById(id);
 
 		if(notification.getType().equals(Type.BookingRequest)) {

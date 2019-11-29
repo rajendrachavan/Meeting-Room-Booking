@@ -59,6 +59,7 @@
                     </tr>
                     </thead>
                     <tbody>
+                    <tr th:if="${noRecords}"><td colspan="7" style="font-size: 20; color:#FF1C19; text-align:center" th:utext="${noRecords}">no records</td></tr>
                     <tr th:each="changeRequest: ${requests}">
                         <td th:text="${changeRequest.type}">Test</td>
                         <td th:text="${changeRequest.oldValue}">Class</td>
