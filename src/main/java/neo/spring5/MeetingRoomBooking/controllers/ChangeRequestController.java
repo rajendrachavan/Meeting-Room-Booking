@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Controller
 public class ChangeRequestController {
 
@@ -37,21 +40,28 @@ public class ChangeRequestController {
     public ModelAndView changeRequests(ModelAndView modelAndView){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
+        List<ChangeRequest> changeRequests = new ArrayList<>();
         Role role = null;
         switch (user.getRole().getRole()){
             case "ADMIN":
                 role = roleRepository.findByRole("PM").orElse(null);
+                for (ChangeRequest changeRequest: changeRequestRepository.findAll()) {
+                    if(changeRequest.getUser().getParent() == null) changeRequests.add(changeRequest);
+                }
+                changeRequests.addAll(changeRequestRepository.findAllByUserRole(role));
                 break;
             case "PM":
                 role = roleRepository.findByRole("TL").orElse(null);
+                changeRequests.addAll(changeRequestRepository.findAllByUserRole(role));
                 break;
             case "TL":
                 role = roleRepository.findByRole("USER").orElse(null);
+                changeRequests.addAll(changeRequestRepository.findAllByUserRole(role));
                 break;
         }
+
         modelAndView.addObject("role", user.getRole().getRole());
-        modelAndView.addObject("requests", changeRequestRepository
-                .findAllByUserRole(role));
+        modelAndView.addObject("requests", changeRequests);
         modelAndView.setViewName("/change-requests");
         return modelAndView;
     }
