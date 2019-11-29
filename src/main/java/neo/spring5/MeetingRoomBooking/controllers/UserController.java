@@ -6,7 +6,6 @@ import neo.spring5.MeetingRoomBooking.repositories.DepartmentRepository;
 import neo.spring5.MeetingRoomBooking.repositories.FeedbackRepository;
 import neo.spring5.MeetingRoomBooking.repositories.NotificationRepository;
 import neo.spring5.MeetingRoomBooking.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -20,20 +19,21 @@ import javax.validation.Valid;
 @RequestMapping("/user")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+    private final ChangeRequestRepository changeRequestRepository;
+    private final DepartmentRepository departmentRepository;
+    private final FeedbackRepository feedbackRepository;
+    private final NotificationRepository notificationRepository;
 
-    @Autowired
-    private ChangeRequestRepository changeRequestRepository;
-
-    @Autowired
-    private DepartmentRepository departmentRepository;
-
-    @Autowired
-    private FeedbackRepository feedbackRepository;
-
-    @Autowired
-    private NotificationRepository notificationRepository;
+    public UserController(UserService userService, ChangeRequestRepository changeRequestRepository,
+                          DepartmentRepository departmentRepository, FeedbackRepository feedbackRepository,
+                          NotificationRepository notificationRepository) {
+        this.userService = userService;
+        this.changeRequestRepository = changeRequestRepository;
+        this.departmentRepository = departmentRepository;
+        this.feedbackRepository = feedbackRepository;
+        this.notificationRepository = notificationRepository;
+    }
 
     @RequestMapping(value = "/user-profile")
     public ModelAndView userProfile(ModelAndView modelAndView,

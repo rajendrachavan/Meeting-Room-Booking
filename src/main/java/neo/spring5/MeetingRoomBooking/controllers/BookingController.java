@@ -5,7 +5,6 @@ import neo.spring5.MeetingRoomBooking.repositories.NotificationRepository;
 import neo.spring5.MeetingRoomBooking.services.BookingService;
 import neo.spring5.MeetingRoomBooking.services.MeetingRoomService;
 import neo.spring5.MeetingRoomBooking.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -27,17 +26,18 @@ import java.util.stream.IntStream;
 @Controller
 public class BookingController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+    private final BookingService bookingService;
+    private final MeetingRoomService meetingRoomService;
+    private final NotificationRepository notificationRepository;
 
-    @Autowired
-    private BookingService bookingService;
-
-    @Autowired
-    private MeetingRoomService meetingRoomService;
-
-    @Autowired
-    private NotificationRepository notificationRepository;
+    public BookingController(UserService userService, BookingService bookingService,
+                             MeetingRoomService meetingRoomService, NotificationRepository notificationRepository) {
+        this.userService = userService;
+        this.bookingService = bookingService;
+        this.meetingRoomService = meetingRoomService;
+        this.notificationRepository = notificationRepository;
+    }
 
     //------------------------------------= ADMIN =-------------------------------------------------------------
 
