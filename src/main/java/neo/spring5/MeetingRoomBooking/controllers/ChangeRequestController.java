@@ -67,6 +67,7 @@ public class ChangeRequestController {
 
         modelAndView.addObject("role", user.getRole().getRole());
         modelAndView.addObject("requests", changeRequests);
+        modelAndView.addObject("noRecords", "No Records Found!");
         modelAndView.setViewName("/change-requests");
         return modelAndView;
     }

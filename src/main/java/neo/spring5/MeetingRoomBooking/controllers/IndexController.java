@@ -17,7 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 
 @Controller
-public class LoginController {
+public class IndexController {
 	
 	private final UserService userService;
 	private final RoleRepository roleRepository;
@@ -25,7 +25,7 @@ public class LoginController {
 	private final TokenRepository tokenRepository;
 	private final NotificationRepository notificationRepository;
 
-	public LoginController(UserService userService, RoleRepository roleRepository,
+	public IndexController(UserService userService, RoleRepository roleRepository,
 						   DepartmentRepository departmentRepository, TokenRepository tokenRepository,
 						   NotificationRepository notificationRepository) {
 		this.userService = userService;

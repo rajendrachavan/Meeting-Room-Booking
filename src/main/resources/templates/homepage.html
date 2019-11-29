@@ -55,18 +55,10 @@
                 <h4 th:case="PM">Project Manager Console</h4>
                 <h4 th:case="TL">Team Leader Console</h4>
                 <h4 th:case="USER">User Console</h4>
-            </div>
-            <div class="panel-body">
                 <span th:utext="${userName}"></span>
             </div>
-        </div>
-    </div>
-    <div class="panel-group" style="margin-top:40px">
-        <div class="panel panel-primary">
-            <div class="panel-heading">
-                <h4>Notifications</h4>
-            </div>
             <div class="panel-body">
+                <h4><strong>Notifications</strong></h4>
                 <div class="table-responsive">
                     <table class="table table-hover">
                         <tbody>
@@ -80,7 +72,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td th:text="${noNotifications}" style="text-center">No Notifications</td>
+                            <td th:text="${noNotifications}" style="text-align:center">No Notifications</td>
                         </tr>
                         </tbody>
                     </table>

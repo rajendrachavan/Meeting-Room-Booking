@@ -68,13 +68,11 @@
                     </div>
                     <div class="form-group">
                         <label>Select Department:</label>
-                        <select class="form-control" name="department">
-                            <option value="Null" disabled selected>Select</option>
-                            <option value="1">Java</option>
-                            <option value="2">Android</option>
-                            <option value="3">IOS</option>
-                            <option value="4">JS</option>
-                            <option value="5">Testing</option>
+                        <select required class="form-control" name="department" >
+                            <option th:each="department: ${departments}"
+                                    th:value="${department.id}">
+                                <span th:text="${department.name}">dept</span>&nbsp;
+                            </option>
                         </select>
                     </div>
                     <div>
