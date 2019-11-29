@@ -1,9 +1,9 @@
 package neo.spring5.MeetingRoomBooking.controllers;
 
 import neo.spring5.MeetingRoomBooking.models.*;
-import neo.spring5.MeetingRoomBooking.repositories.NotificationRepository;
 import neo.spring5.MeetingRoomBooking.services.BookingService;
 import neo.spring5.MeetingRoomBooking.services.MeetingRoomService;
+import neo.spring5.MeetingRoomBooking.services.NotificationService;
 import neo.spring5.MeetingRoomBooking.services.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,14 +29,14 @@ public class BookingController {
     private final UserService userService;
     private final BookingService bookingService;
     private final MeetingRoomService meetingRoomService;
-    private final NotificationRepository notificationRepository;
+    private final NotificationService notificationService;
 
     public BookingController(UserService userService, BookingService bookingService,
-                             MeetingRoomService meetingRoomService, NotificationRepository notificationRepository) {
+                             MeetingRoomService meetingRoomService, NotificationService notificationService) {
         this.userService = userService;
         this.bookingService = bookingService;
         this.meetingRoomService = meetingRoomService;
-        this.notificationRepository = notificationRepository;
+        this.notificationService = notificationService;
     }
 
     //------------------------------------= ADMIN =-------------------------------------------------------------
@@ -110,8 +110,9 @@ public class BookingController {
             bookingService.save(bookingDetails);
             String description = "Your Booking request for "+bookingDetails.getMeetingRoom().getName()
                     +" on "+bookingDetails.getStartTime()+" is Confirmed";
-            Notification notification = new Notification(bookingDetails.getUser(), description, Type.BookingRequest, Status.Unread);
-            notificationRepository.save(notification);
+            Notification notification = new Notification(bookingDetails.getUser(), description,
+                    Type.BookingRequest, Status.Unread, bookingDetails.getStartTime());
+            notificationService.save(notification);
         }
         redirectAttributes.addFlashAttribute("successMessage", "BookingDetails Confirmed.");
         modelAndView.setViewName("redirect:/admin/booking-requests/1");
@@ -134,8 +135,9 @@ public class BookingController {
             bookingService.save(bookingDetails);
             String description = "Your Booking request for "+bookingDetails.getMeetingRoom().getName()
                     +" on "+bookingDetails.getStartTime()+" is Rejected";
-            Notification notification = new Notification(bookingDetails.getUser(), description, Type.BookingRequest, Status.Unread);
-            notificationRepository.save(notification);
+            Notification notification = new Notification(bookingDetails.getUser(), description,
+                    Type.BookingRequest, Status.Unread, bookingDetails.getStartTime());
+            notificationService.save(notification);
         }
         redirectAttributes.addFlashAttribute("successMessage", "BookingDetails Rejected.");
         modelAndView.setViewName("redirect:/admin/booking-requests/1");
@@ -288,8 +290,9 @@ public class BookingController {
         //sends notification to the admin
         String description = user.getFirstName()+" "+user.getLastName()+" has requested to book "+bookingDetails.getMeetingRoom().getName()
                 +" on "+bookingDetails.getStartTime();
-        Notification notification = new Notification(userService.getAdmin(), description, Type.BookingRequest, Status.Unread);
-        notificationRepository.save(notification);
+        Notification notification = new Notification(userService.getAdmin(), description,
+                Type.BookingRequest, Status.Unread, bookingDetails.getStartTime());
+        notificationService.save(notification);
       
         redirectAttributes.addFlashAttribute("successMessage", "Booking Request Sent");
         modelAndView.setViewName("redirect:/meeting-room-details/1");

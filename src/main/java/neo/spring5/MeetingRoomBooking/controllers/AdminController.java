@@ -3,10 +3,10 @@ package neo.spring5.MeetingRoomBooking.controllers;
 import neo.spring5.MeetingRoomBooking.models.Feedback;
 import neo.spring5.MeetingRoomBooking.models.Role;
 import neo.spring5.MeetingRoomBooking.models.User;
-import neo.spring5.MeetingRoomBooking.repositories.ChangeRequestRepository;
 import neo.spring5.MeetingRoomBooking.repositories.DepartmentRepository;
 import neo.spring5.MeetingRoomBooking.repositories.FeedbackRepository;
 import neo.spring5.MeetingRoomBooking.repositories.RoleRepository;
+import neo.spring5.MeetingRoomBooking.services.ChangeRequestService;
 import neo.spring5.MeetingRoomBooking.services.EmailService;
 import neo.spring5.MeetingRoomBooking.services.UserService;
 import org.springframework.data.domain.Page;
@@ -31,17 +31,17 @@ public class AdminController {
 
     private final UserService userService;
     private final RoleRepository roleRepository;
-    private final ChangeRequestRepository changeRequestRepository;
+    private final ChangeRequestService changeRequestService;
     private final EmailService emailService;
     private final DepartmentRepository departmentRepository;
     private final FeedbackRepository feedbackRepository;
 
     public AdminController(UserService userService, RoleRepository roleRepository,
-                           ChangeRequestRepository changeRequestRepository, EmailService emailService,
+                           ChangeRequestService changeRequestService, EmailService emailService,
                            DepartmentRepository departmentRepository, FeedbackRepository feedbackRepository) {
         this.userService = userService;
         this.roleRepository = roleRepository;
-        this.changeRequestRepository = changeRequestRepository;
+        this.changeRequestService = changeRequestService;
         this.emailService = emailService;
         this.departmentRepository = departmentRepository;
         this.feedbackRepository = feedbackRepository;

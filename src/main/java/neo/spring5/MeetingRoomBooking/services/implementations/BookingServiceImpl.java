@@ -1,15 +1,14 @@
-package neo.spring5.MeetingRoomBooking.services;
+package neo.spring5.MeetingRoomBooking.services.implementations;
 
 import neo.spring5.MeetingRoomBooking.models.BookingDetails;
 import neo.spring5.MeetingRoomBooking.models.Status;
 import neo.spring5.MeetingRoomBooking.models.User;
 import neo.spring5.MeetingRoomBooking.repositories.BookingRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import neo.spring5.MeetingRoomBooking.services.BookingService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.YearMonth;
 import java.util.ArrayList;
@@ -19,8 +18,11 @@ import java.util.Optional;
 @Service
 public class BookingServiceImpl implements BookingService {
 
-    @Autowired
-    private BookingRepository bookingRepository;
+    private final BookingRepository bookingRepository;
+
+    public BookingServiceImpl(BookingRepository bookingRepository) {
+        this.bookingRepository = bookingRepository;
+    }
 
     @Override
     public void save(BookingDetails bookingDetails) {

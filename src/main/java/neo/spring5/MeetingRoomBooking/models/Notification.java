@@ -1,9 +1,9 @@
 package neo.spring5.MeetingRoomBooking.models;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 
 @Data
@@ -24,13 +24,16 @@ public class Notification {
     @Enumerated(value = EnumType.STRING)
     private Status status;
 
+    private LocalDateTime expiryDate;
+
     public Notification() {
     }
 
-    public Notification(User to, String description, Type type, Status status) {
+    public Notification(User to, String description, Type type, Status status, LocalDateTime expiryDate) {
         this.to = to;
         this.description = description;
         this.type = type;
         this.status = status;
+        this.expiryDate = expiryDate;
     }
 }
