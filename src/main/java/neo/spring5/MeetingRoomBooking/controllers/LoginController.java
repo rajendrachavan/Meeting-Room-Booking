@@ -97,22 +97,26 @@ public class LoginController {
 	@RequestMapping(value = "/read/{id}")
 	public ModelAndView changeNotificationStatus(ModelAndView modelAndView,
 												 @PathVariable("id") Long id){
+
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = userService.findUserByEmail(auth.getName());
+		String role = user.getRole().getRole();
+
 		Notification notification = notificationRepository.findById(id).orElse(null);
+
 		if(notification.getType().equals(Type.BookingRequest)) {
-			notification.setStatus(Status.Read);
-			notificationRepository.save(notification);
-			modelAndView.setViewName("redirect:/user/booking-status/1");
+			if(role.equals("ADMIN")) modelAndView.setViewName("redirect:/admin/booking-requests/1");
+			else modelAndView.setViewName("redirect:/user/booking-status/1");
 		}
-		else if(notification.getType().equals(Type.Email_ChangeRequest)) {
-			notification.setStatus(Status.Read);
-			notificationRepository.save(notification);
+		else if(notification.getType().equals(Type.Email_ChangeRequest) || notification.getType().equals(Type.Department_ChangeRequest)) {
 			modelAndView.setViewName("redirect:/user/user-profile");
 		}
-		else if(notification.getType().equals(Type.Department_ChangeRequest)) {
-			notification.setStatus(Status.Read);
-			notificationRepository.save(notification);
-			modelAndView.setViewName("redirect:/user/user-profile");
+		else if(notification.getType().equals(Type.Department_ChangeRequests) || notification.getType().equals(Type.Email_ChangeRequests)) {
+			modelAndView.setViewName("redirect:/change-requests");
 		}
+
+		notification.setStatus(Status.Read);
+		notificationRepository.save(notification);
 		return modelAndView;
 	}
 

@@ -20,4 +20,6 @@ public interface UserService {
 	void editSave(User user);
 	Page<User> getPaginatedUsers(Pageable pageable);
 	List<User> findAllByRole(Role role);
+
+	User getAdmin();
 }

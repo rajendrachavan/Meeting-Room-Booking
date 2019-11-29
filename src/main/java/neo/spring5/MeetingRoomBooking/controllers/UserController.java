@@ -108,7 +108,11 @@ public class UserController {
         changeRequestRepository.save(changeRequest);
 
         String description = user.getFirstName()+" "+user.getLastName()+" has requested for change in email.";
-        Notification notification = new Notification(user.getParent(), description, Type.Email_ChangeRequest, Status.Unread);
+        Notification notification = null;
+        if(user.getParent() == null)
+            notification = new Notification(userService.getAdmin(), description, Type.Email_ChangeRequests, Status.Unread);
+        else
+            notification = new Notification(user.getParent(), description, Type.Email_ChangeRequests, Status.Unread);
         notificationRepository.save(notification);
 
         redirectAttributes.addFlashAttribute("successMessage", "Change Email Request sent");
@@ -141,10 +145,14 @@ public class UserController {
         changeRequestRepository.save(changeRequest);
 
         String description = user.getFirstName()+" "+user.getLastName()+" has requested for change in department.";
-        Notification notification = new Notification(user.getParent(), description, Type.Department_ChangeRequest, Status.Unread);
+        Notification notification = null;
+        if(user.getParent() == null)
+            notification = new Notification(userService.getAdmin(), description, Type.Department_ChangeRequests, Status.Unread);
+        else
+            notification = new Notification(user.getParent(), description, Type.Department_ChangeRequests, Status.Unread);
         notificationRepository.save(notification);
 
-        redirectAttributes.addFlashAttribute("successMessage", "Change Email Request Successful");
+        redirectAttributes.addFlashAttribute("successMessage", "Change Department Request Sent");
         modelAndView.setViewName("redirect:/user/user-profile");
         return modelAndView;
     }

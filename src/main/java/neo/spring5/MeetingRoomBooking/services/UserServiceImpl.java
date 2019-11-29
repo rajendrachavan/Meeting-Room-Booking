@@ -89,4 +89,10 @@ public class UserServiceImpl implements UserService {
 		return userRepository.findAllByRole(role);
 	}
 
+	@Override
+	public User getAdmin() {
+		List<User> users = userRepository.findAllByRole(roleRepository.findByRole("ADMIN").orElse(null));
+		return users.get(0);
+	}
+
 }
