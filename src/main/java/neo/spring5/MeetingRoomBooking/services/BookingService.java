@@ -1,6 +1,7 @@
 package neo.spring5.MeetingRoomBooking.services;
 
 import neo.spring5.MeetingRoomBooking.models.BookingDetails;
+import neo.spring5.MeetingRoomBooking.models.MeetingRoom;
 import neo.spring5.MeetingRoomBooking.models.Status;
 import neo.spring5.MeetingRoomBooking.models.User;
 import org.springframework.data.domain.Page;
@@ -22,4 +23,6 @@ public interface BookingService {
     List<BookingDetails> findAllByStatus(Status status);
     List<BookingDetails> findAllByUser(User user);
     List<BookingDetails> filterByMonth(YearMonth month, User user);
+
+    Boolean isAvailable(BookingDetails bookingDetails);
 }

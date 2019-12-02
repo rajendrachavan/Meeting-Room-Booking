@@ -1,6 +1,7 @@
 package neo.spring5.MeetingRoomBooking.services.implementations;
 
 import neo.spring5.MeetingRoomBooking.models.Notification;
+import neo.spring5.MeetingRoomBooking.models.Status;
 import neo.spring5.MeetingRoomBooking.repositories.NotificationRepository;
 import neo.spring5.MeetingRoomBooking.services.NotificationService;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,7 @@ public class NotificationServiceImpl implements NotificationService {
         LocalDateTime today = LocalDateTime.now();
         List<Notification> notifications = notificationRepository.findAll();
         for (Notification notification: notifications) {
-            if(notification.getExpiryDate().isBefore(today))
+            if(notification.getExpiryDate().isBefore(today) && notification.getStatus() == Status.Read)
                 notificationRepository.delete(notification);
         }
     }
