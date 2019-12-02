@@ -101,9 +101,8 @@ public class BookingController {
                                        @PathVariable(value = "id") Long id,
                                        RedirectAttributes redirectAttributes){
         BookingDetails bookingDetails = bookingService.findById(id).orElse(null);
-        if(bookingDetails == null){
-            redirectAttributes.addFlashAttribute("successMessage", "BookingDetails Not Found.");
-            modelAndView.setViewName("redirect:/admin/booking-requests/1");
+        if(!bookingService.isAvailable(bookingDetails)){
+            redirectAttributes.addFlashAttribute("errorMessage", "This Room has already been booked.");
         }
         else{
             bookingDetails.setStatus(Status.Confirmed);
@@ -113,8 +112,8 @@ public class BookingController {
             Notification notification = new Notification(bookingDetails.getUser(), description,
                     Type.BookingRequest, Status.Unread, bookingDetails.getStartTime());
             notificationService.save(notification);
+            redirectAttributes.addFlashAttribute("successMessage", "BookingDetails Confirmed.");
         }
-        redirectAttributes.addFlashAttribute("successMessage", "BookingDetails Confirmed.");
         modelAndView.setViewName("redirect:/admin/booking-requests/1");
         return modelAndView;
     }
