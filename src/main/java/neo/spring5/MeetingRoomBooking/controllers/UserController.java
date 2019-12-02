@@ -114,10 +114,10 @@ public class UserController {
         Notification notification = null;
         if(user.getParent() == null)
             notification = new Notification(userService.getAdmin(), description,
-                    Type.Email_ChangeRequests, Status.Unread, LocalDateTime.now().plusDays(2));
+                    Type.Email_ChangeRequest_List, Status.Unread, LocalDateTime.now().plusDays(2));
         else
             notification = new Notification(user.getParent(), description,
-                    Type.Email_ChangeRequests, Status.Unread, LocalDateTime.now().plusDays(2));
+                    Type.Email_ChangeRequest_List, Status.Unread, LocalDateTime.now().plusDays(2));
         notificationService.save(notification);
 
         redirectAttributes.addFlashAttribute("successMessage", "Change Email Request sent");
@@ -159,10 +159,10 @@ public class UserController {
         Notification notification = null;
         if(user.getParent() == null)
             notification = new Notification(userService.getAdmin(), description,
-                    Type.Department_ChangeRequests, Status.Unread, LocalDateTime.now().plusDays(2));
+                    Type.Department_ChangeRequest_List, Status.Unread, LocalDateTime.now().plusDays(2));
         else
             notification = new Notification(user.getParent(), description,
-                    Type.Department_ChangeRequests, Status.Unread, LocalDateTime.now().plusDays(2));
+                    Type.Department_ChangeRequest_List, Status.Unread, LocalDateTime.now().plusDays(2));
         notificationService.save(notification);
 
         redirectAttributes.addFlashAttribute("successMessage", "Change Department Request Sent");
@@ -176,11 +176,11 @@ public class UserController {
                                                    @ModelAttribute("errorMessage") String errorMessage){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
-        modelAndView.addObject("role", user.getRole().getRole());
+        if(user.getChangeRequests().isEmpty()) modelAndView.addObject("noRecords", "No Records Found!");
+        else modelAndView.addObject("role", user.getRole().getRole());
         modelAndView.addObject("requests", user.getChangeRequests());
         modelAndView.addObject("successMessage", successMessage);
         modelAndView.addObject("errorMessage", errorMessage);
-        modelAndView.addObject("noRecords", "No Records Found!");
         modelAndView.setViewName("user/profile-change-requests");
         return modelAndView;
     }

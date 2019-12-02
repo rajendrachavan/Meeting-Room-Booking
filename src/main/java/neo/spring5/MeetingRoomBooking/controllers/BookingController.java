@@ -73,6 +73,7 @@ public class BookingController {
         if(bookingService.findAllByStatus(Status.Pending).isEmpty()) modelAndView.addObject("noRecords",
                 "No Records found!!!");
         else modelAndView.addObject("bookingDetails", bookingService.findAllByStatus(Status.Pending));
+        modelAndView.addObject("role", "ADMIN");
         modelAndView.setViewName("admin/booking-requests");
         return modelAndView;
     }
@@ -82,6 +83,7 @@ public class BookingController {
         if(bookingService.findAllByStatus(Status.Confirmed).isEmpty()) modelAndView.addObject("noRecords",
                 "No Records found!!!");
         else modelAndView.addObject("bookingDetails", bookingService.findAllByStatus(Status.Confirmed));
+        modelAndView.addObject("role", "ADMIN");
         modelAndView.setViewName("admin/booking-requests");
         return modelAndView;
     }
@@ -91,6 +93,7 @@ public class BookingController {
         if(bookingService.findAllByStatus(Status.Rejected).isEmpty()) modelAndView.addObject("noRecords",
                 "No Records found!!!");
         else modelAndView.addObject("bookingDetails", bookingService.findAllByStatus(Status.Rejected));
+        modelAndView.addObject("role", "ADMIN");
         modelAndView.setViewName("admin/booking-requests");
         return modelAndView;
     }
