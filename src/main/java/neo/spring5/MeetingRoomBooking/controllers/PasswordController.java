@@ -49,8 +49,8 @@ public class PasswordController {
             token.setUser(user);
             tokenRepository.save(token);
 
-            //String appUrl = "http://10.0.60.51:8080";
-            String appUrl = "http://localhost:8080";
+            String appUrl = "http://10.0.60.51:8080";
+            //String appUrl = "http://localhost:8080";
             String subject= "Password Reset Request";
             String body = "To reset your password, click the link below:\n" +"<a href='"+ appUrl
                     + "/reset-password?token=" + token.getToken()+"'>Reset link</a>";
