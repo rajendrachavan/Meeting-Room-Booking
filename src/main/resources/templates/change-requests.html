@@ -23,7 +23,7 @@
                 <a href="/admin/user-management/1">Users</a>
                 <div class="dropdownNav-content">
                     <a class="btn btn-default" href="/change-requests">Change Requests</a>
-                    <a class="btn btn-default" href="/admin/assign-users">Assign <Users></Users></a>
+                    <a class="btn btn-default" href="/admin/assign-users">Assign Users</a>
                 </div>
             </li>
             <li th:if="${role} == 'USER' or ${role} == 'TL' or ${role} == 'PM'" class="dropdownNav active">
@@ -69,20 +69,22 @@
                     </tr>
                     </thead>
                     <tbody>
+                    <tr th:if="${noRecords}"><td colspan="7" style="font-size: 20; color:#FF1C19; text-align:center" th:utext="${noRecords}">no records</td></tr>
                     <tr th:each="changeRequest: ${requests}">
                         <td th:text="${changeRequest.id}">1</td>
-                        <td th:text="${changeRequest.Type}">Test</td>
+                        <td th:text="${changeRequest.type}">Test</td>
                         <td th:text="${changeRequest.oldValue}">Class</td>
                         <td th:text="${changeRequest.newValue}">Class</td>
                         <td><span th:text="${changeRequest.User.firstName}"></span>&nbsp;<span th:text="${changeRequest.User.lastName}"></span></td>
                         <td th:text="${changeRequest.status}">Pending</td>
-                        <td th:if="${changeRequest.status} == 'Pending'">
+                        <td th:if="${changeRequest.status == T(neo.spring5.MeetingRoomBooking.models.Status).Pending}">
                             <form th:action="@{/confirmChangeRequest/{id}(id=${changeRequest.id})}" method="post">
                                 <button class="btn btn-primary" name="confirm"
                                         type="Submit">Confirm</button>
                             </form>
                         </td>
-                        <td th:if="${changeRequest.status} == 'Pending' or ${changeRequest.status} == 'Confirmed'">
+                        <td th:if="${changeRequest.status == T(neo.spring5.MeetingRoomBooking.models.Status).Pending} or
+                         ${changeRequest.status == T(neo.spring5.MeetingRoomBooking.models.Status).Confirmed}">
                             <form th:action="@{/rejectChangeRequest/{id}(id=${changeRequest.id})}" method="post">
                                 <button class="btn btn-danger" name="confirm"
                                         type="Submit">Reject</button>

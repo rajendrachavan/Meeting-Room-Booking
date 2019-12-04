@@ -59,13 +59,14 @@
                     </tr>
                     </thead>
                     <tbody>
+                    <tr th:if="${noRecords}"><td colspan="7" style="font-size: 20; color:#FF1C19; text-align:center" th:utext="${noRecords}">no records</td></tr>
                     <tr th:each="changeRequest: ${requests}">
-                        <td th:text="${changeRequest.Type}">Test</td>
+                        <td th:text="${changeRequest.type}">Test</td>
                         <td th:text="${changeRequest.oldValue}">Class</td>
                         <td th:text="${changeRequest.newValue}">Class</td>
                         <td th:text="${changeRequest.status}">Pending</td>
 
-                        <td th:if="${changeRequest.status} == 'Pending'">
+                        <td th:if="${changeRequest.status == T(neo.spring5.MeetingRoomBooking.models.Status).Pending}">
                             <form th:action="@{/user/cancelChangeRequest/{id}(id=${changeRequest.id})}" method="post">
                                 <button class="btn btn-danger" name="confirm"
                                         type="Submit">Cancel Request</button>

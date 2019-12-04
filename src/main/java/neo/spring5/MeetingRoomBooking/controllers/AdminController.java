@@ -3,13 +3,12 @@ package neo.spring5.MeetingRoomBooking.controllers;
 import neo.spring5.MeetingRoomBooking.models.Feedback;
 import neo.spring5.MeetingRoomBooking.models.Role;
 import neo.spring5.MeetingRoomBooking.models.User;
-import neo.spring5.MeetingRoomBooking.repositories.ChangeRequestRepository;
 import neo.spring5.MeetingRoomBooking.repositories.DepartmentRepository;
 import neo.spring5.MeetingRoomBooking.repositories.FeedbackRepository;
 import neo.spring5.MeetingRoomBooking.repositories.RoleRepository;
+import neo.spring5.MeetingRoomBooking.services.ChangeRequestService;
 import neo.spring5.MeetingRoomBooking.services.EmailService;
 import neo.spring5.MeetingRoomBooking.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -30,23 +29,23 @@ import java.util.stream.IntStream;
 @RequestMapping("/admin")
 public class AdminController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+    private final RoleRepository roleRepository;
+    private final ChangeRequestService changeRequestService;
+    private final EmailService emailService;
+    private final DepartmentRepository departmentRepository;
+    private final FeedbackRepository feedbackRepository;
 
-    @Autowired
-    private RoleRepository roleRepository;
-
-    @Autowired
-    private ChangeRequestRepository changeRequestRepository;
-
-    @Autowired
-    private EmailService emailService;
-
-    @Autowired
-    private DepartmentRepository departmentRepository;
-
-    @Autowired
-    private FeedbackRepository feedbackRepository;
+    public AdminController(UserService userService, RoleRepository roleRepository,
+                           ChangeRequestService changeRequestService, EmailService emailService,
+                           DepartmentRepository departmentRepository, FeedbackRepository feedbackRepository) {
+        this.userService = userService;
+        this.roleRepository = roleRepository;
+        this.changeRequestService = changeRequestService;
+        this.emailService = emailService;
+        this.departmentRepository = departmentRepository;
+        this.feedbackRepository = feedbackRepository;
+    }
 
     //================================display all users==============================================
     @RequestMapping(value="/user-management/{page}", method = RequestMethod.GET)

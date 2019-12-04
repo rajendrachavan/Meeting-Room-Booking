@@ -1,6 +1,7 @@
 package neo.spring5.MeetingRoomBooking.repositories;
 
 import neo.spring5.MeetingRoomBooking.models.BookingDetails;
+import neo.spring5.MeetingRoomBooking.models.Status;
 import neo.spring5.MeetingRoomBooking.models.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,7 +14,7 @@ import java.util.List;
 
 @Repository
 public interface BookingRepository extends JpaRepository<BookingDetails, Long> {
-    List<BookingDetails> findAllByStatus(String status);
+    List<BookingDetails> findAllByStatus(Status status);
     Page<BookingDetails> findAll(Pageable pageable);
     Page<BookingDetails> findAllByUser(User user, Pageable pageable);
     List<BookingDetails> findAllByUser(User user);

@@ -1,9 +1,11 @@
-package neo.spring5.MeetingRoomBooking.services;
+package neo.spring5.MeetingRoomBooking.services.implementations;
 
 import neo.spring5.MeetingRoomBooking.models.BookingDetails;
+import neo.spring5.MeetingRoomBooking.models.MeetingRoom;
+import neo.spring5.MeetingRoomBooking.models.Status;
 import neo.spring5.MeetingRoomBooking.models.User;
 import neo.spring5.MeetingRoomBooking.repositories.BookingRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import neo.spring5.MeetingRoomBooking.services.BookingService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,8 +20,11 @@ import java.util.Optional;
 @Service
 public class BookingServiceImpl implements BookingService {
 
-    @Autowired
-    private BookingRepository bookingRepository;
+    private final BookingRepository bookingRepository;
+
+    public BookingServiceImpl(BookingRepository bookingRepository) {
+        this.bookingRepository = bookingRepository;
+    }
 
     @Override
     public void save(BookingDetails bookingDetails) {
@@ -54,7 +59,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDetails> findAllByStatus(String status) {
+    public List<BookingDetails> findAllByStatus(Status status) {
         return bookingRepository.findAllByStatus(status);
     }
 
@@ -75,5 +80,25 @@ public class BookingServiceImpl implements BookingService {
             }
         }
         return bookingDetailsList;
+    }
+
+    @Override
+    public Boolean isAvailable(BookingDetails bookingDetails) {
+        boolean flag = true;
+        MeetingRoom meetingRoom = bookingDetails.getMeetingRoom();
+        LocalDateTime startTime = bookingDetails.getStartTime();
+        LocalDateTime endTime = bookingDetails.getEndTime();
+
+        for (BookingDetails bookingDetail : meetingRoom.getBookingDetails()) {
+            if (bookingDetail.getStatus() == Status.Confirmed) {
+                if((startTime.isAfter(bookingDetail.getStartTime()) || startTime.equals(bookingDetail.getStartTime()))
+                        && startTime.isBefore(bookingDetail.getEndTime())){
+                    flag = false; break;
+                }else if(startTime.isBefore(bookingDetail.getStartTime()) && endTime.isAfter(bookingDetail.getStartTime())){
+                    flag = false; break;
+                }
+            }
+        }
+        return flag;
     }
 }

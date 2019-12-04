@@ -63,4 +63,7 @@ public class User {
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private List<Feedback> feedback;
+
+	@OneToMany(mappedBy = "to", cascade = CascadeType.ALL)
+	private List<Notification> notifications;
 }

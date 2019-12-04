@@ -1,12 +1,10 @@
 package neo.spring5.MeetingRoomBooking.controllers;
 
-import neo.spring5.MeetingRoomBooking.models.BookingDetails;
-import neo.spring5.MeetingRoomBooking.models.MeetingRoom;
-import neo.spring5.MeetingRoomBooking.models.User;
+import neo.spring5.MeetingRoomBooking.models.*;
 import neo.spring5.MeetingRoomBooking.services.BookingService;
 import neo.spring5.MeetingRoomBooking.services.MeetingRoomService;
+import neo.spring5.MeetingRoomBooking.services.NotificationService;
 import neo.spring5.MeetingRoomBooking.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -28,14 +26,18 @@ import java.util.stream.IntStream;
 @Controller
 public class BookingController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+    private final BookingService bookingService;
+    private final MeetingRoomService meetingRoomService;
+    private final NotificationService notificationService;
 
-    @Autowired
-    private BookingService bookingService;
-
-    @Autowired
-    private MeetingRoomService meetingRoomService;
+    public BookingController(UserService userService, BookingService bookingService,
+                             MeetingRoomService meetingRoomService, NotificationService notificationService) {
+        this.userService = userService;
+        this.bookingService = bookingService;
+        this.meetingRoomService = meetingRoomService;
+        this.notificationService = notificationService;
+    }
 
     //------------------------------------= ADMIN =-------------------------------------------------------------
 
@@ -68,28 +70,33 @@ public class BookingController {
     //===========================Filter booking Requests with its status=======================================
     @RequestMapping("/admin/booking-requests/pending")
     public ModelAndView roomAllocationPending(ModelAndView modelAndView){
-        if(bookingService.findAllByStatus("Pending").isEmpty()) modelAndView.addObject("noRecords", "No Records found!!!");
-        else modelAndView.addObject("bookingDetails", bookingService.findAllByStatus("Pending"));
+        if(bookingService.findAllByStatus(Status.Pending).isEmpty()) modelAndView.addObject("noRecords",
+                "No Records found!!!");
+        else modelAndView.addObject("bookingDetails", bookingService.findAllByStatus(Status.Pending));
+        modelAndView.addObject("role", "ADMIN");
         modelAndView.setViewName("admin/booking-requests");
         return modelAndView;
     }
 
     @RequestMapping("/admin/booking-requests/confirmed")
     public ModelAndView roomAllocationConfirmed(ModelAndView modelAndView){
-        if(bookingService.findAllByStatus("Confirmed").isEmpty()) modelAndView.addObject("noRecords", "No Records found!!!");
-        else modelAndView.addObject("bookingDetails", bookingService.findAllByStatus("Confirmed"));
+        if(bookingService.findAllByStatus(Status.Confirmed).isEmpty()) modelAndView.addObject("noRecords",
+                "No Records found!!!");
+        else modelAndView.addObject("bookingDetails", bookingService.findAllByStatus(Status.Confirmed));
+        modelAndView.addObject("role", "ADMIN");
         modelAndView.setViewName("admin/booking-requests");
         return modelAndView;
     }
 
     @RequestMapping("/admin/booking-requests/rejected")
     public ModelAndView roomAllocationCancelled(ModelAndView modelAndView){
-        if(bookingService.findAllByStatus("Rejected").isEmpty()) modelAndView.addObject("noRecords", "No Records found!!!");
-        else modelAndView.addObject("bookingDetails", bookingService.findAllByStatus("Rejected"));
+        if(bookingService.findAllByStatus(Status.Rejected).isEmpty()) modelAndView.addObject("noRecords",
+                "No Records found!!!");
+        else modelAndView.addObject("bookingDetails", bookingService.findAllByStatus(Status.Rejected));
+        modelAndView.addObject("role", "ADMIN");
         modelAndView.setViewName("admin/booking-requests");
         return modelAndView;
     }
-    //===============================================================================================
 
     //==================================confirm booking request==========================================
     @PostMapping(value = "/admin/confirmRequest/{id}")
@@ -97,15 +104,19 @@ public class BookingController {
                                        @PathVariable(value = "id") Long id,
                                        RedirectAttributes redirectAttributes){
         BookingDetails bookingDetails = bookingService.findById(id).orElse(null);
-        if(bookingDetails == null){
-            redirectAttributes.addFlashAttribute("successMessage", "BookingDetails Not Found.");
-            modelAndView.setViewName("redirect:/admin/booking-requests/1");
+        if(!bookingService.isAvailable(bookingDetails)){
+            redirectAttributes.addFlashAttribute("errorMessage", "This Room has already been booked.");
         }
         else{
-            bookingDetails.setStatus("Confirmed");
+            bookingDetails.setStatus(Status.Confirmed);
             bookingService.save(bookingDetails);
+            String description = "Your Booking request for "+bookingDetails.getMeetingRoom().getName()
+                    +" on "+bookingDetails.getStartTime()+" is Confirmed";
+            Notification notification = new Notification(bookingDetails.getUser(), description,
+                    Type.BookingRequest, Status.Unread, bookingDetails.getStartTime());
+            notificationService.save(notification);
+            redirectAttributes.addFlashAttribute("successMessage", "BookingDetails Confirmed.");
         }
-        redirectAttributes.addFlashAttribute("successMessage", "BookingDetails Confirmed.");
         modelAndView.setViewName("redirect:/admin/booking-requests/1");
         return modelAndView;
     }
@@ -122,14 +133,20 @@ public class BookingController {
             modelAndView.setViewName("redirect:/admin/booking-requests");
         }
         else{
-            bookingDetails.setStatus("Rejected");
+            bookingDetails.setStatus(Status.Rejected);
             bookingService.save(bookingDetails);
+            String description = "Your Booking request for "+bookingDetails.getMeetingRoom().getName()
+                    +" on "+bookingDetails.getStartTime()+" is Rejected";
+            Notification notification = new Notification(bookingDetails.getUser(), description,
+                    Type.BookingRequest, Status.Unread, bookingDetails.getStartTime());
+            notificationService.save(notification);
         }
         redirectAttributes.addFlashAttribute("successMessage", "BookingDetails Rejected.");
         modelAndView.setViewName("redirect:/admin/booking-requests/1");
         return modelAndView;
     }
 
+    //==========================================================================================================
     //-----------------------------------= USER =----------------------------------------------------------------
 
     @RequestMapping("/user/booking-status/{page}")
@@ -170,7 +187,7 @@ public class BookingController {
         User user = userService.findUserByEmail(auth.getName());
         List<BookingDetails> bookingDetails = new ArrayList<>();
         for (BookingDetails bookingDetail: bookingService.findAllByUser(user)) {
-            if(bookingDetail.getStatus().equals("Pending")){
+            if(bookingDetail.getStatus() == Status.Pending){
                 bookingDetails.add(bookingDetail);
             }
         }
@@ -187,7 +204,7 @@ public class BookingController {
         User user = userService.findUserByEmail(auth.getName());
         List<BookingDetails> bookingDetails = new ArrayList<>();
         for (BookingDetails bookingDetail: bookingService.findAllByUser(user)) {
-            if(bookingDetail.getStatus().equals("Confirmed")){
+            if(bookingDetail.getStatus() == Status.Confirmed){
                 bookingDetails.add(bookingDetail);
             }
         }
@@ -204,7 +221,7 @@ public class BookingController {
         User user = userService.findUserByEmail(auth.getName());
         List<BookingDetails> bookingDetails = new ArrayList<>();
         for (BookingDetails bookingDetail: bookingService.findAllByUser(user)) {
-            if(bookingDetail.getStatus().equals("Rejected")){
+            if(bookingDetail.getStatus() == Status.Rejected){
                 bookingDetails.add(bookingDetail);
             }
         }
@@ -214,7 +231,6 @@ public class BookingController {
         modelAndView.setViewName("user/booking-status");
         return modelAndView;
     }
-    //==================================================================================================
 
     //============================Booking History===============================================
     @RequestMapping(value = "/booking-history", method = RequestMethod.GET)
@@ -236,8 +252,8 @@ public class BookingController {
         modelAndView.setViewName("user/booking-status");
         return modelAndView;
     }
-    //============================================================================================
 
+    //============================================================================================
     @RequestMapping("/filter-booking-history")
     public ModelAndView filterBookings(ModelAndView modelAndView,
                                        @RequestParam("month") YearMonth month){
@@ -256,7 +272,8 @@ public class BookingController {
     @PostMapping("/bookRoom/{id}/{startTime}/{endTime}")
     public ModelAndView bookRoom(ModelAndView modelAndView, @PathVariable(value="id") Long id,
                                  @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") @PathVariable("startTime") LocalDateTime startTime,
-                                 @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") @PathVariable("endTime") LocalDateTime endTime) throws Exception{
+                                 @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") @PathVariable("endTime") LocalDateTime endTime,
+                                 RedirectAttributes redirectAttributes) throws Exception{
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
@@ -265,36 +282,26 @@ public class BookingController {
 
         BookingDetails bookingDetails = new BookingDetails();
         MeetingRoom meetingRoom = meetingRoomService.findById(id).orElse(null);
-        bookingDetails.setStatus("Pending");
+        bookingDetails.setStatus(Status.Pending);
         bookingDetails.setMeetingRoom(meetingRoom);
         bookingDetails.setUser(user);
         bookingDetails.setStartTime(startTime);
         bookingDetails.setEndTime(endTime);
         bookingService.save(bookingDetails);
-        modelAndView.addObject("bookingDetails", bookingDetails);
-        modelAndView.setViewName("user/bookRoom");
-        return modelAndView;
-    }
 
-    //====================================Booking Confirmation=========================================
-    @RequestMapping(value = "/confirmBookRoom")
-    public ModelAndView confirmBookRoom(ModelAndView modelAndView,
-                                        RedirectAttributes redirectAttributes){
-        redirectAttributes.addFlashAttribute("successMessage", "Room Booked successfully");
+        //sends notification to the admin
+        String description = user.getFirstName()+" "+user.getLastName()+" has requested to book "+bookingDetails.getMeetingRoom().getName()
+                +" on "+bookingDetails.getStartTime();
+        Notification notification = new Notification(userService.getAdmin(), description,
+                Type.BookingRequest, Status.Unread, bookingDetails.getStartTime());
+        notificationService.save(notification);
+      
+        redirectAttributes.addFlashAttribute("successMessage", "Booking Request Sent");
         modelAndView.setViewName("redirect:/meeting-room-details/1");
         return modelAndView;
     }
 
     //================================Cancel Booking===============================================
-    @RequestMapping(value = "/cancelBookRoom/{id}")
-    public ModelAndView cancelBookRoom(ModelAndView modelAndView, @PathVariable("id") Long id,
-                                       RedirectAttributes redirectAttributes){
-        bookingService.deleteById(id);
-        modelAndView.addObject("successMessage", "Request Deleted");
-        modelAndView.setViewName("redirect:/meeting-room-details/1");
-        return modelAndView;
-    }
-
     @RequestMapping(value = "/deleteRequest/{id}")
     public ModelAndView deleteRequest(ModelAndView modelAndView,
                                       @PathVariable(value="id") Long id,

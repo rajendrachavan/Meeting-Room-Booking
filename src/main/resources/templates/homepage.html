@@ -55,9 +55,28 @@
                 <h4 th:case="PM">Project Manager Console</h4>
                 <h4 th:case="TL">Team Leader Console</h4>
                 <h4 th:case="USER">User Console</h4>
+                <span th:utext="${userName}"></span>
             </div>
             <div class="panel-body">
-                <span th:utext="${userName}"></span>
+                <h4><strong>Notifications</strong></h4>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <tbody>
+                        <tr th:each="notification: ${notifications}">
+                            <td th:if="${notification.status == T(neo.spring5.MeetingRoomBooking.models.Status).Unread}"
+                                style="font-weight:bold">
+                                <a th:href="@{/read/{id}(id=${notification.id})}" th:text="${notification.description}">Unread &nbsp;<i class="fas fa-caret-right"></i></a>
+                            </td>
+                            <td th:unless="${notification.status == T(neo.spring5.MeetingRoomBooking.models.Status).Unread}">
+                                <a th:href="@{/read/{id}(id=${notification.id})}" th:text="${notification.description}">Read</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td th:text="${noNotifications}" style="text-align:center">No Notifications</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

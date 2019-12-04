@@ -1,13 +1,11 @@
 package neo.spring5.MeetingRoomBooking.controllers;
 
-import neo.spring5.MeetingRoomBooking.models.ChangeRequest;
-import neo.spring5.MeetingRoomBooking.models.Feedback;
-import neo.spring5.MeetingRoomBooking.models.User;
-import neo.spring5.MeetingRoomBooking.repositories.ChangeRequestRepository;
+import neo.spring5.MeetingRoomBooking.models.*;
 import neo.spring5.MeetingRoomBooking.repositories.DepartmentRepository;
 import neo.spring5.MeetingRoomBooking.repositories.FeedbackRepository;
+import neo.spring5.MeetingRoomBooking.services.ChangeRequestService;
+import neo.spring5.MeetingRoomBooking.services.NotificationService;
 import neo.spring5.MeetingRoomBooking.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -16,22 +14,29 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/user")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+    private final ChangeRequestService changeRequestService;
+    private final DepartmentRepository departmentRepository;
+    private final FeedbackRepository feedbackRepository;
+    private final NotificationService notificationService;
 
-    @Autowired
-    private ChangeRequestRepository changeRequestRepository;
-
-    @Autowired
-    private DepartmentRepository departmentRepository;
-
-    @Autowired
-    private FeedbackRepository feedbackRepository;
+    public UserController(UserService userService, ChangeRequestService changeRequestService,
+                          DepartmentRepository departmentRepository, FeedbackRepository feedbackRepository,
+                          NotificationService notificationService) {
+        this.userService = userService;
+        this.changeRequestService = changeRequestService;
+        this.departmentRepository = departmentRepository;
+        this.feedbackRepository = feedbackRepository;
+        this.notificationService = notificationService;
+    }
 
     @RequestMapping(value = "/user-profile")
     public ModelAndView userProfile(ModelAndView modelAndView,
@@ -98,13 +103,24 @@ public class UserController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
         ChangeRequest changeRequest = new ChangeRequest();
-        changeRequest.setType("email");
+        changeRequest.setType(Type.Email_ChangeRequest);
         changeRequest.setOldValue(user.getEmail());
         changeRequest.setNewValue(userEmail);
         changeRequest.setUser(user);
-        changeRequest.setStatus("Pending");
-        changeRequestRepository.save(changeRequest);
-        redirectAttributes.addFlashAttribute("successMessage", "Change Email Request Successful");
+        changeRequest.setStatus(Status.Pending);
+        changeRequestService.save(changeRequest);
+
+        String description = user.getFirstName()+" "+user.getLastName()+" has requested for change in email.";
+        Notification notification = null;
+        if(user.getParent() == null)
+            notification = new Notification(userService.getAdmin(), description,
+                    Type.Email_ChangeRequest_List, Status.Unread, LocalDateTime.now().plusDays(2));
+        else
+            notification = new Notification(user.getParent(), description,
+                    Type.Email_ChangeRequest_List, Status.Unread, LocalDateTime.now().plusDays(2));
+        notificationService.save(notification);
+
+        redirectAttributes.addFlashAttribute("successMessage", "Change Email Request sent");
         modelAndView.setViewName("redirect:/user/user-profile");
         return modelAndView;
     }
@@ -113,8 +129,14 @@ public class UserController {
     public ModelAndView changeDepartment(ModelAndView modelAndView){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
+        List<Department> department = departmentRepository.findAll();
+        List<Department> departmentList = department
+                .stream()
+                .filter(department1 -> !department1.equals(user.getDepartment()))
+                .collect(Collectors.toList());
         modelAndView.addObject("previousDepartment",user.getDepartment().getName());
         modelAndView.addObject("temp", 2);
+        modelAndView.addObject("departments", departmentList);
         modelAndView.setViewName("user/change-request");
         return modelAndView;
     }
@@ -126,13 +148,24 @@ public class UserController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
         ChangeRequest changeRequest = new ChangeRequest();
-        changeRequest.setType("department");
+        changeRequest.setType(Type.Department_ChangeRequest);
         changeRequest.setOldValue(user.getDepartment().getName());
         changeRequest.setNewValue(departmentRepository.findById(userDept).orElse(null).getName());
         changeRequest.setUser(user);
-        changeRequest.setStatus("Pending");
-        changeRequestRepository.save(changeRequest);
-        redirectAttributes.addFlashAttribute("successMessage", "Change Email Request Successful");
+        changeRequest.setStatus(Status.Pending);
+        changeRequestService.save(changeRequest);
+
+        String description = user.getFirstName()+" "+user.getLastName()+" has requested for change in department.";
+        Notification notification = null;
+        if(user.getParent() == null)
+            notification = new Notification(userService.getAdmin(), description,
+                    Type.Department_ChangeRequest_List, Status.Unread, LocalDateTime.now().plusDays(2));
+        else
+            notification = new Notification(user.getParent(), description,
+                    Type.Department_ChangeRequest_List, Status.Unread, LocalDateTime.now().plusDays(2));
+        notificationService.save(notification);
+
+        redirectAttributes.addFlashAttribute("successMessage", "Change Department Request Sent");
         modelAndView.setViewName("redirect:/user/user-profile");
         return modelAndView;
     }
@@ -143,7 +176,8 @@ public class UserController {
                                                    @ModelAttribute("errorMessage") String errorMessage){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
-        modelAndView.addObject("role", user.getRole().getRole());
+        if(user.getChangeRequests().isEmpty()) modelAndView.addObject("noRecords", "No Records Found!");
+        else modelAndView.addObject("role", user.getRole().getRole());
         modelAndView.addObject("requests", user.getChangeRequests());
         modelAndView.addObject("successMessage", successMessage);
         modelAndView.addObject("errorMessage", errorMessage);
@@ -155,9 +189,9 @@ public class UserController {
     public ModelAndView cancelChangeRequest(ModelAndView modelAndView,
                                             @PathVariable("id") Long id,
                                             RedirectAttributes redirectAttributes){
-        changeRequestRepository.deleteById(id);
+        changeRequestService.deleteById(id);
         redirectAttributes.addFlashAttribute("successMessage", "Request Cancelled.");
-        modelAndView.setViewName("user/profile-change-requests");
+        modelAndView.setViewName("redirect:/user/profile-change-requests");
         return modelAndView;
     }
 

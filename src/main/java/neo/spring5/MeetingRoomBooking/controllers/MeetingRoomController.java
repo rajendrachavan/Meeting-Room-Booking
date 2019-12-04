@@ -6,7 +6,6 @@ import neo.spring5.MeetingRoomBooking.models.User;
 import neo.spring5.MeetingRoomBooking.repositories.FacilityRepository;
 import neo.spring5.MeetingRoomBooking.services.MeetingRoomService;
 import neo.spring5.MeetingRoomBooking.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -21,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,14 +29,16 @@ import java.util.stream.IntStream;
 @Controller
 public class MeetingRoomController {
 
-    @Autowired
-    private MeetingRoomService meetingRoomService;
+    private final MeetingRoomService meetingRoomService;
+    private final UserService userService;
+    private final FacilityRepository facilityRepository;
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private FacilityRepository facilityRepository;
+    public MeetingRoomController(MeetingRoomService meetingRoomService, UserService userService,
+                                 FacilityRepository facilityRepository) {
+        this.meetingRoomService = meetingRoomService;
+        this.userService = userService;
+        this.facilityRepository = facilityRepository;
+    }
 
     //----------------------------= COMMON =------------------------------------
 
@@ -82,15 +84,19 @@ public class MeetingRoomController {
         User user = userService.findUserByEmail(auth.getName());
         modelAndView.addObject("role", user.getRole().getRole());
         modelAndView.addObject("userName", "Welcome " + user.getFirstName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
+
         LocalDateTime today = LocalDateTime.now();
+        long minutes = ChronoUnit.MINUTES.between(startTime, endTime);
+
         if(startTime.isBefore(today)){
             redirectAttributes.addFlashAttribute("errorDate", "Enter a valid Date.");
             modelAndView.setViewName("redirect:/meeting-room-details/1");
-            return modelAndView;
-        }else if(startTime.isAfter(endTime) || startTime.isBefore(LocalDateTime.now())){
+        }else if(startTime.isAfter(endTime)){
             redirectAttributes.addFlashAttribute("errorDate", "Invalid start or end time");
             modelAndView.setViewName("redirect:/meeting-room-details/1");
-            return modelAndView;
+        }else if(minutes<30){
+            redirectAttributes.addFlashAttribute("errorDate", "You can't book a room for less than 30 minutes");
+            modelAndView.setViewName("redirect:/meeting-room-details/1");
         }
         else {
             modelAndView.addObject("startTime", startTime);
@@ -101,8 +107,8 @@ public class MeetingRoomController {
             else
                 modelAndView.addObject("meetingRooms", meetingRoomService.filterByDateAndTime(startTime, endTime));
             modelAndView.setViewName("/meeting-room-details");
-            return modelAndView;
         }
+        return modelAndView;
     }
     //-------------------------------------------------------------------------------------------------
 
