@@ -115,7 +115,7 @@ public class IndexController {
 		else if(notification.getType().equals(Type.Email_ChangeRequest) || notification.getType().equals(Type.Department_ChangeRequest)) {
 			modelAndView.setViewName("redirect:/user/user-profile");
 		}
-		else if(notification.getType().equals(Type.Department_ChangeRequests) || notification.getType().equals(Type.Email_ChangeRequests)) {
+		else if(notification.getType().equals(Type.Department_ChangeRequest_List) || notification.getType().equals(Type.Email_ChangeRequest_List)) {
 			modelAndView.setViewName("redirect:/change-requests");
 		}
 
